@@ -1,6 +1,6 @@
 :time_estimate: 5
 
-= Design, Build, and ublish Edge Images
+= Design, Build, and Publish Edge Images
 
 _Estimated reading time: *{time_estimate} minutes*._
 
