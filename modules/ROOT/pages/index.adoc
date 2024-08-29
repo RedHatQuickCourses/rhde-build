@@ -1,6 +1,35 @@
-= An Example Quick Course
+= Building Red Hat Device Edge Images
 :navtitle: Home
 
-== Introduction
+== Objective
 
-This is an example quick course demonstrating the usage of Antora for authoring and publishing quick courses.
+This course teaches how to create Red Hat Device Edge images for edge devices and kiosk computers.
+
+== Audience
+
+Operations-focused customer roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
+* System Administrations
+* Site Reliability Engineers (SREs)
+* DevOps Engineers
+
+Red Hat and Partner roles that perform demonstrations, PoC ad PoV of Red Hat Device Edge as part of a sales motion, such as Solutions Architects.
+
+Red Hat and Partner roles that support Red Hat Device Edge on customers, such as Services Consultants and Customer Support Engineers.
+
+== Prerequisites
+
+* Familiarity with RHEL system administration, to the level of RHCA (Red Hat Certified System Administrator) or equivalent knowledge
+
+* Familiarity with Ansible playbooks and Ansible Automation Platform is useful but not required.
+
+* Familiarity with web server administration, such as Apache Web Server or NGinx, is useful but not required.
+
+== Classroom Environment
+
+For initial testing and development, use the https://rol-factory.ole.redhat.com/rol/app/courses/hol007-9.2/pages/pr01[HOL007: Red Hat Enterprise Linux (RHEL): Create the RHEL for Edge Image] classroom in ROLE, until we get a new classroom which addressess all requirments of this course. 
+
+== Author
+
+*Fernando Lozano* +
+Training Content Architect +
+Red Hat - Product Portfolio Marketing & Learning

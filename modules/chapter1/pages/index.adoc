@@ -1,3 +1,0 @@
-= Chapter 1
-
-This is the home page of _Chapter_ 1 in the *hello* quick course...

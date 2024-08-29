@@ -1,6 +1,6 @@
 site:
-  title: Placeholder Course Title
-  start_page: placeholder-course-name::index.adoc
+  title: Building Red Hat Device Edge Images
+  start_page: rhde-build::index.adoc
 
 content:
   sources:

@@ -1,0 +1,17 @@
+:time_estimate: 5
+
+= What is Red Hat Device Edge
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Understand how edge devices differ from traditional Linux servers and the features of Red Hat Enterprise Linux (RHEL) for Edge.
+
+== Edge Devices and Edge Servers
+
+Lorem Ipsum
+
+== Next Steps
+
+Lorem Ipsum
