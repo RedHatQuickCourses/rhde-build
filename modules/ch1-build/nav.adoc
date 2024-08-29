@@ -1,2 +1,3 @@
 * xref:index.adoc[]
 ** xref:s1-devices.adoc[]
+** xref:s3-images.adoc[]

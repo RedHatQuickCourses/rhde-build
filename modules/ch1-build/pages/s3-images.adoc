@@ -1,0 +1,17 @@
+:time_estimate: 5
+
+= Design, Build, and ublish Edge Images
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Understand the characteristics of RHEL for Edge images and the workflows for building and publishing them.
+
+== Image vesus Package-Based Operating System Deployments
+
+Lorem Ipsum
+
+== Next Steps
+
+Lorem Ipsum
