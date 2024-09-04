@@ -16,6 +16,8 @@ Red Hat Device Edge is a software and support subscription that bundles three co
 . Red Hat build of MicroShift
 . Red Hat Ansible Automation Platform
 
+[ figure of RHDE components, include something on elligible hardware or subscription sizing? ]
+
 All of these three components can be purchased as part of a number of other subscriptions from Red Hat. For example, RHEL and Ansible are frequently purchaged as their own subscriptions, instead of as part of a bundle, and MicroShift is also available as part of Red Hat OpenShift Container Platform and Red Hat OpenShift Plus.
 
 The Red Hat Device Edge subscription is not about unique features and capabilities of its software components, but about a price structure and support scope that better suits supporting edge devices and edge servers, as opposed to supporting servers and workstations at centralized datacenters, IaaS clouds, and corporate offices.
@@ -24,21 +26,29 @@ This course focus on the RHEL component of Red Hat Device Edge, and more specifi
 
 == Edge Devices and Edge Servers
 
-Traditional physical servers and cloud instances exist in strictly controlled datacenter environments and are maintained by an army of highly skilled IT operations personel such as Systems Administators and Site Reliability Engineers. They tend do be large machines, not necessarily in size but in capacity, as measured in CPU cores and RAM, which require sophisticated power supply and cooling.
+Traditional physical servers and cloud instances exist in strictly controlled datacenter environments and are maintained by an army of highly skilled IT operations personel such as Systems Administrators and Site Reliability Engineers. They tend do be large machines, not necessarily in size but in capacity, as measured in CPU cores and RAM, which require sophisticated power supply and cooling.
+
+// Could have many figures for each para, is it worth the effort? Or would it be distracting?
 
 Edge devices and edge servers, in contrast, may exist in hazard environments, subject to eletromagnetic fields, dust, and heat. They may be directly accessible to end users and the general public, instead of being protected in a server room, and usually have no dedicated team of IT staff. It should be possible to deploy and maintain edge devices without a Red Hat Certified System Administrator on site or acessing remotelly.
 
-Edge devices are usually small machines, not form factor, but also on capacity, so they do not require special cooling and power. Some of these machines are very similar to end user workstations, while others may be unrecognizable as standard "Personal Computers" (PCs). They tipically include non-standard hardware, at least not common for office workers, such as barcode scanners and programable logic controllers (PLCs).
+[ figure of edge devices/servers vs datacente/cloud servers (and office workstations?) ]
+
+Edge devices are usually small machines, not just on form factor, but also on capacity, so they do not require special cooling and power. Some of these machines are very similar to end user workstations, while others may be unrecognizable as standard "Personal Computers" (PCs). They tipically include non-standard hardware, at least not common for office workers, such as barcode scanners and programable logic controllers (PLCs).
 
 NOTE: RHEL for Edge uses the same kernel and device-drivers as RHEL, and certifies the same hardware. While there are many edge systems certified for RHEL, including a number of rugged computers and ARM systems, you cannot run RHEL in custom computer kits similar to Rasperry PIs.
 
 Edge sites, as the locations where you deploy edge devices and edge servers, vary from having no IT infrastructure at all to being connected to a local area network with dedicated servers and networking gear that would rival with the IT of a support a small business. Nowdadays it's very hard to imagine an edge site that is completely disconnected from corporate IT all the time, but edge sites may have low bandwidth, high latency connectivity which is spotty, so applications and management cannot depend on being online.
 
+[ Figure of the progression from central IT to near edge to far edge, as an illustration, I'm not trying to explain all those terms and concepts ]
+
 Those constraints of size, capacity, environment, users, and infrastructure require different strategies for deployment and management, as compared to the world of corporate datacenters and cloud instances. RHEL for Edge was desiged for those constraints and, though it is the same RHEL software you run elsewhere, it may not feel nor look like the RHEL you know.
 
 Edge is about variability and automation. You may find that, for a particular edge scenario, a traditional subscription from RHEL and OpenShift provides a better return of investiment, or that your hardware is too big to qualify for Red Hat Devie Edge subscriptions, but the tools and processes from RHEL for Edge still bring significant benefits.
 
-Consider recent incidents such as the CrowdStrike failure, that effective shut down check-in booths at airports and radiology equipment in hospitals, as a warning sign that you should NOT plan and manage edge sites the same way you used to plan and manage traditional office and datacenter IT. 
+[ Figure of edge scenarios using RHDE vs traditional RHEL and OCP ]
+
+Consider recent incidents such as the CrowdStrike failure, that effectively shut down large business for hourses because they couldn't operate check-in booths at airports and radiology equipment in hospitals, as a warning sign that you should NOT plan and manage edge sites the same way you used to plan and manage traditional office and datacenter IT. 
 
 == Image-Based Operating System Deployment
 
@@ -46,38 +56,46 @@ The main strategy for edge device and edge server management is deploying and up
 
 . Install the operating system from standard installation image or cloud image.
 . Install additional packages and software.
-. Configure operating system services and third-party applicaitons.
+. Configure operating system services and third-party applications.
+
+[ figure of day-0, day-1, and day2 of deploying and configuring a package-based system ]
 
 Each of the previous steps is, by itself, another multi-step process, which takes time, and can be performed with small or large variation each time, requiring specialized skills, and is prone to error.
 
 While you can prevent human erros and enforce reproducibility and consistency with automation, you woud be, in essense, emulating a human user performing all those steps at day-2. What happens if you lose connectivity to an edge device in the middle of one of those multi-step subprocesses?
 
-Image-based deployments ensure that all steps are performed at day-0, as part of image building, so that that systems are as close to ready as possible at day-1 and require only minimal maintenance on day-2.
+Image-based deployments ensure that most steps are performed at day-0, as part of image building, so that that systems are as close to ready as possible at day-1 and require only minimal maintenance on day-2.
 
-Building server images with preconfigured operating systemas and applications is not a new concept. It started with low-level server disk cloning software and evolved to different automation strategies. You can find many preconfigured machine images in large IaaS cloud provider marketplaces and many organizations use that to deploy applications consistently into multiple regional datacenter and cloud provider regions. But not all system images are designed to be edge images.
+[ Figure of day-0+1+2 of deploying and configuring an image-based system ]
+
+Building system images with preconfigured operating systemas and applications is not a new concept. It started with low-level server disk cloning software and evolved to different automation strategies. You can find many preconfigured machine images in large IaaS cloud provider marketplaces and many organizations use golden images to deploy applications consistently into multiple regional datacenter and cloud provider regions. But not all system images are designed to be edge images.
 
 
 == Image-Based Updates
 
-The key to image-based deployments for edge devices and edge servers is to use image-based deployments on day-2 also, when updating applications and system configuration. Instead of logging in to each server individually to install software patches or change local configurations, following a multi-step process which may fail at any point and requires and good connectivity to multiple remote resources, you build a new image that includes those patches and configuration changes. Then you deploy the new image as a single step on the target systems.
+The key to image-based deployments for edge devices and edge servers is to use image-based deployments on day-2 also, when updating applications and system configuration. Instead of logging in to each server to install software patches or change local configurations, following another multi-step process which may fail at any point, and also requires and good connectivity to multiple remote resources, you build a new image that includes those patches and configuration changes. Then you deploy the new image as a single step on the target systems.
 
-The biggest advantege of performing image-based dployments on day-2 is that those deployments are easy to rollback to the last known good configuration. Because you update the entire system image, instead of individual software packages and configuration files, there's always a known good system image with a known state. You never wonder if some dependency was updated or not, nor if a configuration change was reversed or not. You do not worry if there's a power outage in the middle of a system update.
+[ Figure of incomplete provision or updating a package-based system which ends in an uncertain state ]
+
+The biggest advantege of performing image-based dployments on day-2 is that those deployments are easy to rollback to a last known good configuration. Because you update the entire system image, instead of individual software packages and configuration files, there's always a known good system image with a known state. You never wonder if some dependency was updated or not, nor if a configuration change was reversed or not. You do not worry if there was a power outage in the middle of a system update and your systems are at an undeternined state.
 
 Your worst case scenario, with image-based deployments, is either restarting the update process, as if nothing happened, or rollback to before the update and wait until central IT sends you a new system image which fixed whatever issue is preventing the update. And you can perform such rollback at any time after completing the system update, if you find out during the day that the new image is not performing as expected.
+
+[ figure of updating an image-based system and rollback to last known good]
 
 Image-based deployments are consistent with the IT trend of "shift left" security and hardening to earlier steps of the application development life cycle, and also with cloud-native trends of managing systems and applications as throwaway instances which are easy to recreate and replicate, or as "cattle" instead of "pets".
 
 == The RHEL for Edge Software Stack
 
-The RHEL for Edge feature set relies on the following software components of Red Hat Enterprise Linux:
+The RHEL for Edge feature set relies on the following components of Red Hat Enterprise Linux:
 
 Image Builder::
 
-The Image builder tool takes a blueprint as input and outputs different types of operating system images from the specifications in the blueprint. Those images can be either traditional package-based images or single-system images, which it calls edge images, and those images can be deployed by means of physical media, network boot, or as cloud provider native images.
+The Image builder tool takes a blueprint as input and outputs different types of operating system images. Those images can be either traditional package-based images or single-system images, which it calls edge images, and those images can be deployed by means of physical media, network boot, or as cloud provider native images.
 
 OSTree::
 
-The OSTree technology enables deploying and updating bootable operating system images as atomic units, with eficient use of both disk space and network bandwidth. OSTree is also capable of preserving the local state of a device, including both operating system configuration and application data.
+The OSTree technology enables deploying and updating bootable operating system images as atomic units, with eficient use of both disk space and network bandwidth. OSTree is also capable of preserving the local state of a device, including both operating system configuration and application data, when updating a system image.
 
 RPM-OSTree::
 
@@ -85,23 +103,27 @@ The RPM-ostree technology is a bridge between the world of traditional Linux sys
 
 Green Boot::
 
-The Green Boot enables performing healh checks at system boot and, if those checks detect any issue, rollback the system to a previous system image. Green Boot ensures that system updates can be aplied safely and reliably, without interventin from IT personal in case of issues.
+The Green Boot enables performing healh checks at system boot and, if those checks detect any issue, rollback the system to a previous system image. Green Boot ensures that system updates can be aplied safely and reliably, without intervention from IT personal in case of issues.
 
 FIDO Device Onboard (FDO)::
 
-The FDO standars enable installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart, cloud-init, and ignition, but the FDO standard is gaining traction in the Internet-of-Things (IoT) commnuity and vendors.
+The FDO standars enable installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms and with central IT systems. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart, cloud-init, and ignition, but the FDO standard is gaining traction in the Internet-of-Things (IoT) commnuity and vendors.
 
 In this course, we focus on using the Image Builder and RPM-OSTree components of RHEL for Edge to deploy and update edge devices. Other courses will teach the use of Green Boot and FDO to automate system image rollback and device onboarding.
 
 == The Future: RHEL Image Mode and Bootc
 
-If you wonder that image-based operating system deployments and updates are very similar to containerised application deployment and management, you are right. In fact, there's an ongoing engineering effort to integrate workflows from the Linux container world to the image-based operating world. This will become a new feature set of RHEL, called Image Mode, and it is based on a new tool called Bootc.
+If you wonder that image-based operating system deployments and updates are very similar to containerised application deployment and management, you are right. In fact, there's an ongoing engineering effort to integrate workflows from the Linux container world with the image-based operating systems world. This will become a new feature set of RHEL, called Image Mode, and it is based on a new tool called Bootc.
 
-You will be able to use either Image Builder or traditional Linux container tools, such as Podman and Buildah, to build operating system images and distribute them as OCI container images, which eases integration with application development CI/CD processes. The first incarnations of RHEL Image Mode will still depend on the the OSTree and RPM-OStree foundations, and, if it ever comes the time they replace OSTree with something else, they are expected to continue relying long-tem on Green Boot, FDO, and other technologies from RHEL for Edge. 
+You will be able to use either Image Builder or traditional Linux container tools, such as Podman and Buildah, to build operating system images and distribute them as OCI container images, which eases integration with cloud-native application development tools and CI/CD processes.
 
-In essense, RHEL Image Mode will expand the RHEL for Edge feature set for better integration with containerized applicaiton development workflows instead of replacing it entirely with a new set of technologies.
+The first incarnations of RHEL Image Mode will still depend on the the OSTree and RPM-OStree foundations, and, if it ever comes the time they replace OSTree with something else, they are expected to continue relying long-tem on Green Boot, FDO, and other technologies from RHEL for Edge. 
+
+In essense, RHEL Image Mode will expand the RHEL for Edge feature set for better integration with containerized application development workflows instead of replacing it entirely with a new set of technologies.
 
 == Next Steps
+
+// Add links to previous headings on bootc, FDO, ostree, etc
 
 Before learning about the operation and image types supported by Image Builder, you will assess your understanding of how edge sites differ from corporate IT datacenters and cloud IT.
 
