@@ -111,6 +111,17 @@ The FDO standars enable installing secrets and configuration data into a device 
 
 In this course, we focus on using the Image Builder and RPM-OSTree components of RHEL for Edge to deploy and update edge devices. Other courses will teach the use of Green Boot and FDO to automate system image rollback and device onboarding.
 
+== RPM-OSTree, OpenShift, and Red Hat CoreOS
+
+The typical RHEL system administrator may not be used to manage image-based systems nor to using the RPM-OSTree technology, but can rest assured that these techologies are battle-tested in large production deployments of OpenShift 4 for many years already.
+
+Red Hat CoreOS is Red Hat Enterprise Linux, but deployed and updated using an image-based workflow by the Red Hat OpenShift installer and the OpenShift Machine Operator. The Linux Kernel, device drivers, and system services are the same as from regular RHEL, as they are with RHEL for Edge.
+
+Red Hat CoreOS is also designed to be managed by OpenShift, in the sense that you would not log in on OpenShift cluster nodes and change system settings, but would apply those changes using the OpenShift Machine Operator.
+
+RHEL for Edge makes the RPM-OSTree techonology and image-based systems available for edge devices and edge servers, whithout the need to use OpenShift and learn its deployment and management workflows. It is a ligher transition for the RHEL system administrator.
+
+
 == The Future: RHEL Image Mode and Bootc
 
 If you wonder that image-based operating system deployments and updates are very similar to containerised application deployment and management, you are right. In fact, there's an ongoing engineering effort to integrate workflows from the Linux container world with the image-based operating systems world. This will become a new feature set of RHEL, called Image Mode, and it is based on a new tool called Bootc.
