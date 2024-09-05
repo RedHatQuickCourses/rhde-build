@@ -1,0 +1,33 @@
+:time_estimate: 5
+
+= Lab: Create a Blueprint for an Edge Image
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Create and validate a blueprint for creating edge images.
+
+== Before you Begin
+
+You need a RHEL machine with either the root password or unrestricted sudo, and which was prepared by following the instructios from the xref:s3-install-lab.adoc[previous lab].
+
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+
+// Is there any customization worth of showcasing right now? Timezone, keyboard, networking?
+
+== Instructions
+
+1. Create a minimal blueprint for a RHEL 9 server in text mode.
+
+2. Upload the blueprint to Image Builder.
+
+3. Validate that ImageBuilder can resolve all package dependencies from the blueprint.
+
+4. Change the blueprint to add an Apache Web Server.
+
+5. Upload and validate the updated blueprint.
+
+== Next Steps
+
+The next activity builds a commit image from the blueprint you just created.
