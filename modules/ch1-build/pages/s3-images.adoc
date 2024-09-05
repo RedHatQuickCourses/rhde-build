@@ -8,9 +8,11 @@ Objective::
 
 Understand the characteristics of RHEL for Edge images and the workflows for building and publishing them.
 
-== The RHEL Image Builder Service and Clients
+== The RHEL Image Builder Service
 
-The Image Builder tools is a system service in RHEL, named *osbuild-composer*, with which you interact by means of the *composer-cli* command-line client or the *Composer* Cockpit module. It can generate various types of system images, including edge images.
+[ Maybe break this entire presentation into multiple lectures and interleave them with the labs ]
+
+The Image Builder tool is a system service in RHEL, named *osbuild-composer*, with which you interact by means of the *composer-cli* command-line client or the *Composer* Cockpit module. It can generate various types of system images, including edge images.
 
 [ figure of image builder service, its clients, input blueprint, and output images ]
 
@@ -18,85 +20,195 @@ The Image Builder service in RHEL is not designed for remote clients, and it doe
 
 You provide to Image Builder a blueprint using the https://toml.io/en/[TOML] syntax, which is very similar to INI files from Windows and Samba. A blueprint defines characteriscs of the system image, such as installed packages and enabled system services. It also enables customization of users, networking, and other system configurations, and not all of them are supported for edge images. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
 
-An Image Builder blueprint should be independent of the target environment where you deploy the image. When you build a compose, Image Builder adds hardcoded customizations which depend on the image type. For example, if you build an Amazon Web Services Machine Image (AMI), Image Builder enables the Cloud-Init service and also adds AWS agents. You could use the same blueprint to build different types of composes, for example ISO images to boot a physical system and Qcow2 images for OpenStack private clouds.
+An Image Builder blueprint should be independent of the target environment where you deploy the image. When you build a compose, Image Builder adds hardcoded customizations which depend on the image type. For example, if you build an Amazon Machine Image (AMI), Image Builder enables the Cloud-Init service and also adds the AWS Systems Manager client. You could use the same blueprint to build different types of composes, for example ISO images to boot a physical system and Qcow2 images for OpenStack private clouds.
 
-The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of different target platforms such as cloud providers and hypevisors. It ensures your image contains all required and recommended settings and system services for working whell on those platforms.
+The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of different target platforms such as cloud providers and hypevisors. It ensures your image contains all recommended settings and system services for working whell on each platform.
 
-All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to build composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual systems. As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take Amazon Web Services credentials as input and upload AMI images to AWS S3 so you can use them to create AWS instances.
+All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to build composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual systems. As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take AWS API credentials as input and upload AMI images to AWS S3 so you can use them to create AWS EC2 instances.
 
 Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of those images, for example Anaconda Kickstart files and Cloud-init. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.
 
+== Edge Images Versus Package-based Systems
+
+Regular compose types from Image Builder work the same as if you deploy RHEL from its installation media: they are package-based systems. After you install a physical system or boot a VM from these images, you manage it exactly the same way as if you installed the system from RHEL installation media.
+
+Edge compose types, in contrast, are image-based systems. They assume most customizations are predefined in the system image, and that software updates are performed by installing another system image.
+
+Consider the scenario of updating a system to mitigate a CVE vulnerability with the Apache Web Server. You would act differently on image-based systemas compared to traditional package-based systems:
+
+* On regular RHEL, which is a package-based system, you would SSH into the system and use `dnf` to update the `httpd-server` package and its dependencies.
+
+* On RHEL for Edge, which is an image-based system, you would use Image Build to build a new system image that includes the updated `httpd-server` package and dependencies, and them deploy the new system image on the system.
+
+Installing and updating RHEL for Edge systems requires different approaches from the RHEL systems you are used to, while preserving compatibility with applications and hardware. You can develop and test applications using "regular RHEL" and later depeloy them in RHEL for Edge systems. 
+
 == Edge Images and RPM-OSTree
 
-Regular compose types from Image Builder work the same as if you deploy RHEL from its installation media: they are package-based systems, which you can manage by adding and updating individual packages and changing files anywhere in the file system. 
+Edge images from Image Builder are based on the OSTree technology, which configures the root filesystem as read-only. Well, not the true root file system, it's actually a chroot, but you learn those details later in this course. In an OSTree-based system, you cannot change a system file, not even as root, except by deploying a new system image an rebooting into the new image.
 
-Edge images, in contrast, assume most customizations are predefined in the system image, and that software updates are performed by installing a new, complete system image. For example, if your system image includes the Apache Web Server, and you want to update to mitigate a CVE vulnerability, you would not update the httpd-server package on edge devices, but you would build a new system image which includes the updated package and then update your edge devices to use the new system image.
+OSTree can keep multiple system images side-by-side in a system, so downloading updates does not affect a running system -- constrast that with RPM package updates, which can alter files which are in use by running processes and produce unpredictable results.
 
-Edge images from Image Builder are based on the OSTree technology, which configures all system files as read-only. You cannot update a system file, not even as root, except by deploying a new system image an rebooting into the new image. OSTree can keep multiple system images side-by-side in a system, so downloading updates do not affect the running system -- constrast that with RPM package updates, which can break running processes. And you can reboot into any of the available system images, making it trivial to rollback a system update to a previous known good image -- constrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries which depend on the kernel version.
+You can reboot an OSTree system into any of the available system images, making it trivial to rollback a system update to a previous known good image -- constrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries which depend on the kernel version.
 
 OSTree allows writes to only `/etc` and `/var`, which are treated in different ways:
 
-*  Files in `/var` are only touched at first boot, when they're copied from the system image, but updates keep the contents in `/var` as they are. Applications must be designed to migrate and convert data to new formats, if required.
+*  Files in `/var` are only touched at first boot, when they're copied from the system image to the writable file system, but updates keep the contents in `/var` as they are.
 
-* Files in `/etc` are updated with a three-way merge process: the current `/etc` contents are compared with the original system image, and differences are applied to the contents of the `/etc` contents from the new system image. This way, new system images can bring new configuration files ot change configuration defaults, while preserving local customizations applied to the running system.
+* Files in `/etc` are updated with a three-way merge process: the current `/etc` contents are compared with the original system image, differences are applied to the contents of `/etc` from the new system image, and the result saved to the writable file system.
+
+The goal is, on one side, to preserve application data in `/var` across system updates, and on the other side, enable new system images to bring new configuration files and change configuration defaults, while preserving local customizations applied to the running system.
 
 [ figure of read-only /usr and read-write /etc and /var. Also /sysroot? ]
 
-The OSTree technology is not designed to be used by itself, but to be infrastructure bellow higher-level Linux distribution tooling. In RHEL, the higher level infrastructure is RPM-OSTree, which enables building OSTree system images from RPM packages (like Anaconda builds a root file system during installation). RPM-OSTree also enables managing a system deployed from an image-based workflow as if it were a package-based system, by creating a layer of local customizations, which you can either keep or discard during system updates. It is not expected that edge systems abuse that feature of RPM-OSTree.
+The OSTree technology is not designed to be usable by itself, but to be infrastructure under higher-level Linux distribution tooling. In RHEL, the higher level infrastructure is RPM-OSTree, which builds OSTree system images from RPM packages.
 
-Image Builder users do not interact with the RPM-OSTree tools directly, at least not to build and udpdate edge images. But they must interact with RPM-OSTree tools to distribute and apply updates to edge systems.
+RPM-OSTree also enables installing RPM packages in an image-based by creating a file system layer of local customizations, which you can either keep or discard during system updates. It is not expected that edge systems abuse that feature of RPM-OSTreem but it can be handy during development and troubleshooting of edge images.
+
+Image Builder users do not interact with the RPM-OSTree and OSTree tooling directly, at least not to build edge images. But they must interact with RPM-OSTree to distribute and apply updates to edge systems.
 
 == Edge Image Types
 
-The only indispensable type of edge image (or edge compose) from Image Builder is the *commit* image. It provides an OSTree image, called a *OSTree commit*, in raw format as a single, compressed archive.
+The only indispensable type of edge image (or edge compose) from Image Builder is the *edge commit image*. It provides an OSTree image, called a *OSTree commit*, as a single compressed archive.
 
-That OSTree commit can be pushed into an OSTree repository, and then consumed by the regular RHEL installation image (or the much smaller RHEL network installer) with a custom Kickstart file, to deploy into a physical system or virtual machine. This is a viable workflow for developer testing and for CI/CD systems.
+That OSTree commit can be pushed into an OSTree repository, and then consumed by a RHEL installation image, with a custom Kickstart file, to deploy into a physical system or virtual machine. This is a suggested workflow for developer testing and CI/CD pipelines.
 
-You can also use Image Builder to take an OSTree commit and build either an *edge installer* image or a *edge cloud* image. Those composer types enable creating bootable media which includes a RHEL installer and an OSTree commit, so you can install an edge system without remote access to an OSTree repository.
+You can also use Image Builder to take an OSTree commit and build one of the following kinds of derived edge composes:
+
+Edge installer images::
+
+They include a RHEL installer and an OSTree commit, so you can boot a physical system and install the system image, instead of using the RHEL installation media.
+
+Edge cloud images::
+
+They are directly bootable by cloud or hypervisor platforms and include an already deployed OSTree commit.
+
+Both types of derived edge composes can install an edge system without network access to an OSTree repository, and you can use either the standard RHEL installation image or an edge installer image to install edge systems from network boot instead of booting from local media.
 
 [ figure of RHEL ISO + remote OSTree commit and edge installer image with embeded OSTree commit ]
 
-You could use either the standard RHEL installation image or an edge installer image to perform network boot and install edge systems without booting from local media.
+Whatever the boot method and compose type you use for installing an edge system, it requires access to a remote OSTree repository to fetch and deploy system updates. Image Builder cannot build anyhing similar to an "edge update image", which would boot from local media or network boot and apply a system update. Such feature is currently in development, as part of the Red Hat In Veichle Operating System (RHIVOS), but it is not supported yet by Image Builder on RHEL.
 
-Whatever the boot method and image type you use for installing an edge system, they require access to remote OSTree repositories to fetch and deploy system updates. You cannot build an "edge update image", which would boot from local media or network boot and apply a system update. Such feature is currently in development, as part of the Red Hat In Veichle Operating System (RHIVOS), but it is not supported yet by Image Builder on RHEL.
+In fact, all bootable types of edge composers supported by Image Builder are preconfigured with an OSTree remote, which points to an OSTree repository server, except for the *edge container image*. This is a special type of compose designed to run as a Linux container which serves an OSTree commit over HTTP. It is intended as a quick way for a developer to provision a remote OSTree repository to build and test edge installer images, but it is not designed for long term usage nor for serving system updates.
 
-In fact, all bootable types of edge composers supported by Image Builder are preconfigured with an OSTree remote, which points to an OSTree repository server, except for the *edge container* image. This is a special type of composer which serves an OSTree commit over HTTP. It is intended as a quick way for a developer to provision a remote OSTree repository to test edge installer images, but it is not designed for long term usage nor for serving system updates.
-
-In this course, you will NOT use edge container composes, you will instead configure and manage remote OSTree repositories so you learn how to provide system updates to real edge devices.
+In this course, you will NOT use edge container composes, you will instead learn how to configure and manage remote OSTree repositories so you can provide system updates to edge devices.
 
 == Publishng OSTree Commits
 
-OSTree is, conceptually, very similar to Git: both are designed to manage changes to file system trees as atomic units, and to provide transactional updates and rollbacks to those trees. Both are also designed to manage multiple concurrent branches and to be efficient on both disk space and network bandwidth when handling deltas between two versions (or two commits) of the same file system tree.
+OSTree is, conceptually, very similar to Git: both are designed to manage changes to file trees as atomic units, providing transactional updates and rollbacks to those trees. Both are also designed to manage multiple concurrent branches and to be efficient on both disk space and network bandwidth when handling deltas between two versions (or two commits) of the same file tree.
 
-Why not just using Git? OSTree adds the following features, which are required to manage bootable operating system trees but are not needed to manage application source code:
+Why not just using Git? OSTree adds the following features, which are required to manage bootable Linux file systems but are not needed to manage application source code:
 
 * Recording SELinux labels and POSIX extended attributes
 * Installing booloaders, Linux Kernels, and initial ramdisks
 
-Similar to Git, a client OSTree system contains a copy (or a clone) of a remote OSTree repository, and it can pull and push changes from the remote. Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files.
+Similar to Git, a client OSTree system contains a copy (or a clone) of a remote OSTree repository, and it can pull changes from the remote repository. Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files.
 
-Also unlike Git, OSTree is designed to discard history, on the assumption that all operating system binaries in a commit can be recreated from their source code. An OSTree repository is not intended for long-term storage and auditing, not for tracking changes: these are best done on the source code rather than on the derived binaries.
+Another practical difference between OSTree and Git is the fact that OSTree provides no specialized server software: OSTree repositories are just files serverd by a standard HTTP server. You manage OSTree repositories using local file system access, and remote access over HTTP works only for downloading (pulling) updates from a remote to a local repository.
 
-The most striking difference between OSTree and Git is the fact that OSTree provides no specialized server and client software: OSTree repositories are just files serverd by a standard HTTP server. You manage OSTree repositories using local file system access, and remote access over HTTP works only for downloading (pulling) updates from a remote to a local repository.
-
-While this means that managing and updating OSTree repositories requires more effort than with Git, it also means you don't need to learn how to deploy and manage special server software: you just need to learn how to use the client-side OSTree tools, or just the client tools from a higher-level abstraction such as RPM-OSTree.
+While this means that managing remote OSTree repositories requires more effort than with Git, it also means you don't need to learn how to deploy and manage special server software: you just need to learn how to use the client-side OSTree tools. Actually you only need to learn the client tools from the higher-level abstraction above OSTree, which is RPM-OSTree in the case of RHEL for Edge,.
 
 == OSTree Static Deltas
 
 [ Move this heading to the update topic? ]
 
-OSTree repositories can include OSTree commits with no history between them, and yet be able to deduplicate file contents on local and remote repositories, and also optimize network traffic by sending only deltas from local to remote repository. So you can build many OSTree commits in a development system, using its local repository, but only promote for production usage, in a remote repository, the commits which passed quality assurance tests.
+Unlike Git, OSTree is designed to be able to easily and cleanly discard history, on the assumption that all operating system binaries in a commit can be recreated from their source code. An OSTree repository is not intended for long-term change tracking and auditing: these are best done on the source code rather than on the derived binaries.
 
-But, as Git users know, computing deltas and transfering them in a file-by-file basis is not efficient, requiring multiple network transactions and lots of protocol overhead. OSTree offers the possibility of precomputing and storing static deltas between two commits as part of an OSTree repository. OSTree clients will discover and use the deltas transparently.
+OSTree repositories can include OSTree commits with no change history between them, and are nonetheless able to deduplicate file contents between commits on both on local and remote repositories. OSTree also optimizes network traffic by sending only deltas between repositories. So you can build many OSTree commits in a development system, using its local repository, and only promote for production usage, in a remote repository, a few commits which passed unit tests and functional tests.
 
-Having precomputed static deltas also reduces the memory and CPU requirements of both clients and servers when updating systems. If you consider that an OSTree remote is serving content to a potentially larger population of edge devices, compared to the population of developers using a Git repository, the efficiency gains can be huge, not to mention a lower cloud bill for running your OSTree remotes.
+But, as Git users know, computing deltas and transfering them on-demand, one file at a time, is not the most efficient method. I requires multiple network transactions and incurrs in lots of protocol overhead. OSTree offers the possibility of precomputing and storing static deltas between two commits as part of an OSTree repository.
 
-Precomputed static deltas also saves CPU from smaller edge devices while downloading and deploy system updates. This is significant because those devices are expected to contine performing their regular tasks while downloading (or staging) system updates.
+OSTree clients will discover and use these precomputed deltas, called *static deltas*, transparently, saving network bandwidth and reducing the time to download updates. The savings are even more noticeable in high-latency networks.
+
+[ figure of multiple commits and deltas, and clients downloading either a commit or a delta ]
+
+Having static deltas also reduces the memory and CPU requirements of both clients and servers when updating systems. If you consider that an OSTree server has a potentially large population of client edge devices, compared to the population of developers using a Git repository, the efficiency gains can be large, not to mention a lower cloud bill for running your OSTree servers.
+
+Precomputed static deltas also saves CPU from smaller edge devices while downloading and deploy system updates. The gains are wellcome by edge devices, which have slower CPUs and less memory than data center servers. This is also significant because edge devices are expected to contine performing their regular tasks while downloading (or staging) system updates.
+
+== Naming Blueprints and Composes
+
+Image Builder allows you to give human-readable names to blueprints, but it allways identifies images or composes using UUIDs. A compose refers to a specific build of a blueprint, so there could me multiple composes for the same blueprint. For example, you could build a new compose from an existing blueprint to create a new image with RPM package updates from RHEL.
+
+Image Builder maintains not only the image data for a compose, but also metadata such as package lists and build logs. Using the compose metadata, it is easy to compare two composes from the same blueprint and see what changed in the resulting image.
 
 == The Composer CLI client
 
-Lorem ipsum
+The `composer-cli` command provides the Image Builder command-line client. It sumbits requests to the Image Builder service through the `/run/weldr/api.socket` UNIX socket, wich is accessible to the `weldr` group. So, any user that is member of the `weldr` group can build RHEL for Edge images using the Image Builder service.
+
+The Image Builder CLI client accepts commands composed of an _object_ and a _verb_, where object is an entity mangaged by Image Builder, such as `blueprints`, `compose`, and `projects`, and verb is an action to perform on the entity or set of entities:
+
+NOTE:: The `compose` command is singular, while most other commands, such as `blueprints` and `projects`, are plural.
+
+For example, the following command lists all blueprints known to Image Builder:
+
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli blueprints list*
+--
+
+And the following command lists the types of composes that Image Builder recognizes:
+
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose types*
+--
+
+You can use the `--help` option with any object or verb, and you can also use the `help` command, so all the following are examples ways of getting online help from the Image Builder CLI:
+
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli help*
+$ *composer-cli --help*
+$ *composer-cli help blueprints*
+$ *composer-cli blueprints --help*
+$ *composer-cli help blueprints list*
+$ *composer-cli blueprints list --help*
+--
+
+// gropmod weldr -a -U student
+
+Take your time to study the on-line help of the Image Builder CLI. There are some operations there which are not available from the Cockpit module.
+
+== The Composer Cockplit Module
+
+The Composer Cockpit module provives the Image Builder web user interface. It adds an *Image Builder* item to the left navigation pane of the Cockpit user interface with three tabs:
+
+Blueprints::
+
+Manages blueprints and creates images from blueprints.
+
+Images::
+
+Manages images and access the build logs from creating an image.
+
+Sources::
+
+Manages package repositories used to download RPM packages from RHEL and third-party applications.
+
+.The Composer Cockpit module in the blueprints page.
+image::cockpit-image-builder.png[]
+
+Notice that the Image Builder CLI uses the `compose` command to refer to images, while the Image Builder web UI uses the term "image" to refer to composes.
+
+.The Composer Cockpit module in the images page, which lists composes.
+image::cockpit-image-builder-images.png[]
+
+Notice that the Image Builder web UI is designed for large monitors and requires wide horizontal resolution, else headings and data may be truncated in the images page.
+
+== The RPM-OSTree tooling
+
+The `rpm-ostree` command fetches and deploys system image updates from a remote OSTree repository, including performing any bootloader and kernel changes required by the new image.
+
+A system image is downloaded and staged without affecting the running system. The new system image is only effective after a reboot.
+
+RPM-OSTree keeps the previous system image unchanged on disk and can rollback to it, which also requires a reboot.
+
+You can query the RPM database on the current system image, but you cannot install and update packages using `yum` and `dnf` commands. You must use the `rpm-ostree` command to first enable an overlay layer to record changes to the system, and them install new packages or update packages from the current system images.
+
+It is possible ot update the system image and keep the overlay, as long as the overlay does not include packages with releases olde than the new system image.
+
+In this course, we will not teach the use of overlays and managing packages on RHEL for Edge. We focus on building and updating system images.
 
 == Next Steps
 
-Lorem Ipsum
+Now that you was introduced to the essential concepts of RHEL for Edge, a series of hands-on activties install and configure Image Builder in a test system and build simple edge images. Later in this course you will test those edge images using local VMs, and them update those VMs to use new system images.
