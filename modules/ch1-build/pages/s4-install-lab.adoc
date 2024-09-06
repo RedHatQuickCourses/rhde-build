@@ -6,51 +6,231 @@ _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Install and configure Image Builder in a RHEL VM for creating edge images.
+Install and configure Image Builder in a RHEL machine for creating edge images.
 
 WARNING: Work In Progress
 
 == Before you Begin
 
-You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also for scratch space for downloading RPM packages and bootable device images.
+You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable device images.
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+
+If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student` and grant that same user access to the Image Builder service. If not, please adapt the instructions to your test environment.
 
 == Instructions
 
 1. Install the packages for the Image Buider service and its clients.
 
 .. Install the RPM packages for the ImageBuilder service and its CLI.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo dnf install osbuild-composer composer-cli cockpit-composer*
+...
+Complete!
+--
 
-.. Install the RPM packages for the Cockpit service and the Composer modue.
+.. Install the RPM packages for the Cockpit service and its Composer modue.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo dnf install cockpit-composer*
+...
+Complete!
+--
 
 2. Enable the Image Builder and Cockpit services.
 
 .. Enable and activiate the Image Builder service.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo systemctl enable osbuild-composer*
+Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.service → /usr/lib/systemd/system/osbuild-composer.service.
+$ *sudo systemctl start osbuild-composer*
+--
 
-.. Enable and activiate the Cockpit service.
+.. Enable and activiate the Cockpit service, if not already enabled on your test machine.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo systemctl enable cockpit*
+Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → /usr/lib/systemd/system/cockpit.service.
+$ *sudo systemctl start cockpit*
+--
 
-.. Enable remote access to the Cockpit service.
+.. Enable remote access to the Cockpit service, if not already enabled on your test machine.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo firewall-cmd --add-service=cockpit --permanent*
+success
+$ *firewall-cmd --reload*
+success
+--
 
 3. Grant an unprivilaged user access to Image Builder.
 
-.. Add the `student` user to the `weldr` group
+.. Add the `student` user to the `weldr` group so it can submit requests to the Image Builder service.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo usermod -a -G weldr student*
+--
 
-.. Verify that the `student` user can use the Image Builder CLI.
+.. Configure the user with bash command autocompletion for the Image Builder CLI.
++
+[source,subs="verbatim,quotes"]
+--
+$ *echo 'source /etc/bash_completion.d/composer-cli' >> $HOME/.bashrc*
+--
 
-4. Verify that an unprivileged user can access Image Builder from Cockpit
+4. Verify that an unprivileged user can access Image Builder using its CLI.
 
-.. Open a web browser and go to https://127.0.0.1:9090. Accept the insecure TLS certificate, if you need.
+.. Log out and login again, then verify that the `student` belongs to the `weldr` group.
++
+[source,subs="verbatim,quotes"]
+--
+$ *id*
+uid=1000(student) gid=1000(student) groups=1000(student),10(wheel),972(weldr) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+--
 
-.. Click `Image Builder`
+.. Verify that autocompletion works for the Image Builder CLI:
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli [TAB][TAB]*
+blueprints  compose     distros     help        modules     projects    sources     upload
+--
 
-5. Configure Image Builder to access package repositories from the local network.
+.. List compose types known to the Image Builder service. The list varies depending on the RHEL release.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose types*
+ami
+edge-commit
+edge-container
+edge-installer
+edge-raw-image
+edge-simplified-installer
+gce
+...
+--
 
-.. Create a source for the RHEL 9 baseos channel name.
+.. If your user is not a member of the `weldr` group, or you forgot to log off and log in again, you will see a permission error message:
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose types*
+ERROR: Types Error: you do not have permission to access /run/weldr/api.socket.  Check to make sure that you are a member of the weldr group
+--
 
-.. Create a source for the RHEL 9 appstream channel.
+5. Verify that an unprivileged user can access the Image Builder service from Cockpit.
 
-// Is there anything more substantial we could do to prove the clients can indeed submit requests to the Image Builder service? Before we actually create a blueprint and a compose?
+.. Open a web browser and go to https://127.0.0.1:9090. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivigeded user that you configured in previous steps.
++
+image::s4-cockpit-login.png[]
+
+.. After you log in, click *Image Builder* to the left to enter the Image Builder web UI.
++
+image::s4-cockpit-image-builder.png[]
+
+.. If your user is not a member of the `weldr` group, you will see a misleading error message stating that the Image Builder service was not started.
++
+image::s4-cockpit-error.png[]
+
+6. Configure Image Builder to access package repositories from the local network.
++
+This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization's policies. If you have local mirrors of RHEL package repositories, it is best to use then for better performance and to conserve internet bandwidth.
++
+[ Needs updates for the RHEL 9.4 classroom! ]
+
+.. Create a directory to store your repository overrides.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo mkdir -p /etc/osbuild-composer/repositories*
+--
+
+.. Copy the example configuration file for your distribution from the `/usr/share/osbuild-composer/` directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo cp /usr/share/osbuild-composer/repositories/rhel-92.json /etc/osbuild-composer/repositories/*
+--
+
+.. Modify the configuration file to match your local DNF repository. Pay attention to attributes such as `baseurl`, `rhsm` and `check_gpg`.
++
+In the classroom environment, you should make the following edits:
++
+[source,subs="verbatim,quotes"]
+--
+...
+  "x86_64": [
+    {
+      "name": "baseos",
+      "baseurl": "*http://content.example.com/rhel9.2/x86_64/dvd/BaseOS*",
+      ...
+      "rhsm": *false*,
+      "check_gpg": *false*
+    },
+    {
+      "name": "appstream",
+      "baseurl": "*http://content.example.com/rhel9.2/x86_64/dvd/AppStream*",
+      ...
+      "rhsm": *false*,
+      "check_gpg": *false*
+    },
+...
+--
++
+You can download a configuration file with all changes done from the sample applications repository in GitHub. [ Add a Link! ]
+
+.. Restart the Image Builder service.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo systemctl restart osbuild-composer*
+--
+
+7. Check that the Image Builder service is using your RHEL repository overides.
+
+.. Verify that the repository overides are in effect, using the Image Builder CLI.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli sources list*
+appstream
+baseos
+$ *composer-cli sources info baseos*
+check_gpg = false
+check_repogpg = false
+...
+rhsm = false
+system = true
+type = "yum-baseurl"
+url = "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS"
+$ *composer-cli sources info appstream*
+check_gpg = false
+check_repogpg = false
+...
+rhsm = false
+system = true
+type = "yum-baseurl"
+url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"
+--
+
+.. You cannot configure repositoy overides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
++
+Enter the *Image Builder* item in Cockpit and click *Sources*. Then, for both the *BaseOS* and the *AppStreams* channels, click the arrow (*>*) to expand the URL and verify it matches your configuration overide.
++
+image::s4-cockpit-repository-url.png[]
++
+If you have Cockpit open in your web browser, you must reload the web page to see the changes.
+
+Now your test system should be fully configured to build edge image using Image Builder.
 
 == Next Steps
 

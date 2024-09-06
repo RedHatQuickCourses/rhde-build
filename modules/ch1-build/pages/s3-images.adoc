@@ -14,6 +14,8 @@ WARNING: Work In Progress
 
 [ Maybe break this entire presentation into multiple lectures and interleave them with the labs ]
 
+[ Add something on why it needs to be a system service and why it's secure (unlike docker)]
+
 The Image Builder tool is a system service in RHEL, named *osbuild-composer*, with which you interact by means of the *composer-cli* command-line client or the *Composer* Cockpit module. It can generate various types of system images, including edge images.
 
 [ figure of image builder service, its clients, input blueprint, and output images ]
