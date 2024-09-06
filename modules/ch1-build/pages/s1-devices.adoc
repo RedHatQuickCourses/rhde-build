@@ -8,6 +8,9 @@ Objective::
 
 Understand how edge devices differ from traditional Linux servers and the features of Red Hat Enterprise Linux (RHEL) for Edge.
 
+
+WARNING: Work In Progress
+
 == What is Red Hat Device Edge
 
 Red Hat Device Edge is a software and support subscription that bundles three components:

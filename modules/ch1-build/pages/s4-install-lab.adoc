@@ -8,6 +8,8 @@ Objective::
 
 Install and configure Image Builder in a RHEL VM for creating edge images.
 
+WARNING: Work In Progress
+
 == Before you Begin
 
 You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also for scratch space for downloading RPM packages and bootable device images.
