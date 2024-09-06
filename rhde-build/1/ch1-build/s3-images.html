@@ -118,6 +118,18 @@
 </dd>
 </dl>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Work In Progress
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -339,13 +351,21 @@
 <p>The <code>composer-cli</code> command provides the Image Builder command-line client. It sumbits requests to the Image Builder service through the <code>/run/weldr/api.socket</code> UNIX socket, wich is accessible to the <code>weldr</code> group. So, any user that is member of the <code>weldr</code> group can build RHEL for Edge images using the Image Builder service.</p>
 </div>
 <div class="paragraph">
-<p>The Image Builder CLI client accepts commands composed of an <em>object</em> and a <em>verb</em>, where object is an entity mangaged by Image Builder, such as <code>blueprints</code>, <code>compose</code>, and <code>projects</code>, and verb is an action to perform on the entity or set of entities:</p>
+<p>The general syntax of Image Builder CLI client commands consists of an <em>object</em> and a <em>verb</em>, where object is an entity mangaged by Image Builder, such as <code>blueprints</code>, <code>compose</code>, and <code>projects</code>, and verb is an action to perform on the entity or set of entities.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">composer-cli <em>object</em> <em>verb</em> [<em>options</em>] [<em>arguments</em>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Not all commands start with an object, sometimes there&#8217;s just a verb.</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">NOTE</dt>
 <dd>
-<p>The <code>compose</code> command is singular, while most other commands, such as <code>blueprints</code> and <code>projects</code>, are plural.</p>
+<p>The <code>compose</code> object is singular, while most other objects, such as <code>blueprints</code> and <code>projects</code>, are plural.</p>
 </dd>
 </dl>
 </div>
@@ -445,6 +465,12 @@ $ <strong>composer-cli blueprints list --help</strong></code></pre>
 </div>
 <div class="paragraph">
 <p>In this course, we will not teach the use of overlays and managing packages on RHEL for Edge. We focus on building and updating system images.</p>
+</div>
+<div class="paragraph">
+<p>[ Either add an introduction to the syntax of the rpm-ostree command, or move this heading to another topic ]</p>
+</div>
+<div class="paragraph">
+<p>[ Do we need to introduce the ostree command? For example, can I check the integrity of an ostree commit (or edte commit image) from rpm-ostree aline? ]</p>
 </div>
 </div>
 </div>
