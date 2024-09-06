@@ -114,7 +114,7 @@
 <dl>
 <dt class="hdlist1">Objective</dt>
 <dd>
-<p>Install and configure Image Builder in a RHEL VM for creating edge images.</p>
+<p>Install and configure Image Builder in a RHEL machine for creating edge images.</p>
 </dd>
 </dl>
 </div>
@@ -136,10 +136,13 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also for scratch space for downloading RPM packages and bootable device images.</p>
+<p>You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable device images.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code> and grant that same user access to the Image Builder service. If not, please adapt the instructions to your test environment.</p>
 </div>
 </div>
 </div>
@@ -154,9 +157,23 @@ Work In Progress
 <ol class="loweralpha" type="a">
 <li>
 <p>Install the RPM packages for the ImageBuilder service and its CLI.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install osbuild-composer composer-cli cockpit-composer</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Install the RPM packages for the Cockpit service and the Composer modue.</p>
+<p>Install the RPM packages for the Cockpit service and its Composer modue.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install cockpit-composer</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
@@ -167,12 +184,34 @@ Work In Progress
 <ol class="loweralpha" type="a">
 <li>
 <p>Enable and activiate the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable osbuild-composer</strong>
+Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.service → /usr/lib/systemd/system/osbuild-composer.service.
+$ <strong>sudo systemctl start osbuild-composer</strong></code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Enable and activiate the Cockpit service.</p>
+<p>Enable and activiate the Cockpit service, if not already enabled on your test machine.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable cockpit</strong>
+Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → /usr/lib/systemd/system/cockpit.service.
+$ <strong>sudo systemctl start cockpit</strong></code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Enable remote access to the Cockpit service.</p>
+<p>Enable remote access to the Cockpit service, if not already enabled on your test machine.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo firewall-cmd --add-service=cockpit --permanent</strong>
+success
+$ <strong>firewall-cmd --reload</strong>
+success</code></pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
@@ -182,41 +221,223 @@ Work In Progress
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Add the <code>student</code> user to the <code>weldr</code> group</p>
+<p>Add the <code>student</code> user to the <code>weldr</code> group so it can submit requests to the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo usermod -a -G weldr student</strong></code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Verify that the <code>student</code> user can use the Image Builder CLI.</p>
+<p>Configure the user with bash command autocompletion for the Image Builder CLI.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>echo 'source /etc/bash_completion.d/composer-cli' &gt;&gt; $HOME/.bashrc</strong></code></pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
 </li>
 <li>
-<p>Verify that an unprivileged user can access Image Builder from Cockpit</p>
+<p>Verify that an unprivileged user can access Image Builder using its CLI.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Open a web browser and go to <a href="https://127.0.0.1:9090" class="bare">https://127.0.0.1:9090</a>. Accept the insecure TLS certificate, if you need.</p>
+<p>Log out and login again, then verify that the <code>student</code> belongs to the <code>weldr</code> group.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>id</strong>
+uid=1000(student) gid=1000(student) groups=1000(student),10(wheel),972(weldr) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023</code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Click <code>Image Builder</code></p>
+<p>Verify that autocompletion works for the Image Builder CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli [TAB][TAB]</strong>
+blueprints  compose     distros     help        modules     projects    sources     upload</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>List compose types known to the Image Builder service. The list varies depending on the RHEL release.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose types</strong>
+ami
+edge-commit
+edge-container
+edge-installer
+edge-raw-image
+edge-simplified-installer
+gce
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If your user is not a member of the <code>weldr</code> group, or you forgot to log off and log in again, you will see a permission error message:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose types</strong>
+ERROR: Types Error: you do not have permission to access /run/weldr/api.socket.  Check to make sure that you are a member of the weldr group</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Verify that an unprivileged user can access the Image Builder service from Cockpit.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Open a web browser and go to <a href="https://127.0.0.1:9090" class="bare">https://127.0.0.1:9090</a>. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivigeded user that you configured in previous steps.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-login.png" alt="s4 cockpit login">
+</div>
+</div>
+</li>
+<li>
+<p>After you log in, click <strong>Image Builder</strong> to the left to enter the Image Builder web UI.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-image-builder.png" alt="s4 cockpit image builder">
+</div>
+</div>
+</li>
+<li>
+<p>If your user is not a member of the <code>weldr</code> group, you will see a misleading error message stating that the Image Builder service was not started.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-error.png" alt="s4 cockpit error">
+</div>
+</div>
 </li>
 </ol>
 </div>
 </li>
 <li>
 <p>Configure Image Builder to access package repositories from the local network.</p>
+<div class="paragraph">
+<p>This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization&#8217;s policies. If you have local mirrors of RHEL package repositories, it is best to use then for better performance and to conserve internet bandwidth.</p>
+</div>
+<div class="paragraph">
+<p>[ Needs updates for the RHEL 9.4 classroom! ]</p>
+</div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Create a source for the RHEL 9 baseos channel name.</p>
+<p>Create a directory to store your repository overrides.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo mkdir -p /etc/osbuild-composer/repositories</strong></code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Create a source for the RHEL 9 appstream channel.</p>
+<p>Copy the example configuration file for your distribution from the <code>/usr/share/osbuild-composer/</code> directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo cp /usr/share/osbuild-composer/repositories/rhel-92.json /etc/osbuild-composer/repositories/</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Modify the configuration file to match your local DNF repository. Pay attention to attributes such as <code>baseurl</code>, <code>rhsm</code> and <code>check_gpg</code>.</p>
+<div class="paragraph">
+<p>In the classroom environment, you should make the following edits:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">...
+  "x86_64": [
+    {
+      "name": "baseos",
+      "baseurl": "<strong>http://content.example.com/rhel9.2/x86_64/dvd/BaseOS</strong>",
+      ...
+      "rhsm": <strong>false</strong>,
+      "check_gpg": <strong>false</strong>
+    },
+    {
+      "name": "appstream",
+      "baseurl": "<strong>http://content.example.com/rhel9.2/x86_64/dvd/AppStream</strong>",
+      ...
+      "rhsm": <strong>false</strong>,
+      "check_gpg": <strong>false</strong>
+    },
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can download a configuration file with all changes done from the sample applications repository in GitHub. [ Add a Link! ]</p>
+</div>
+</li>
+<li>
+<p>Restart the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl restart osbuild-composer</strong></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check that the Image Builder service is using your RHEL repository overides.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Verify that the repository overides are in effect, using the Image Builder CLI.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli sources list</strong>
+appstream
+baseos
+$ <strong>composer-cli sources info baseos</strong>
+check_gpg = false
+check_repogpg = false
+...
+rhsm = false
+system = true
+type = "yum-baseurl"
+url = "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS"
+$ <strong>composer-cli sources info appstream</strong>
+check_gpg = false
+check_repogpg = false
+...
+rhsm = false
+system = true
+type = "yum-baseurl"
+url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You cannot configure repositoy overides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
+<div class="paragraph">
+<p>Enter the <strong>Image Builder</strong> item in Cockpit and click <strong>Sources</strong>. Then, for both the <strong>BaseOS</strong> and the <strong>AppStreams</strong> channels, click the arrow (<strong>&gt;</strong>) to expand the URL and verify it matches your configuration overide.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-repository-url.png" alt="s4 cockpit repository url">
+</div>
+</div>
+<div class="paragraph">
+<p>If you have Cockpit open in your web browser, you must reload the web page to see the changes.</p>
+</div>
 </li>
 </ol>
 </div>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>Now your test system should be fully configured to build edge image using Image Builder.</p>
 </div>
 </div>
 </div>
