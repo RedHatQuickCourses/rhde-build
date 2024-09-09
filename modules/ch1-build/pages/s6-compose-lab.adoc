@@ -23,6 +23,9 @@ If you are using the course classroom, you will log in on the `workstation` VM a
 
 // Is there any customization worth of showcasing right now? Timezone, keyboard, networking?
 
+//$ ARCH=$(uname -i)
+
+
 == Instructions
 
 1. Verify that you have the prerequisites from previous labs.
@@ -42,7 +45,7 @@ API server status:
 ...
 --
 
-.. Verify that you have a blueprint named `rhe9-edge` that includes the `httpd` package.
+.. Verify that your Image Builder service has a blueprint named `rhe9-edge` that includes the `httpd` package.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -55,47 +58,122 @@ name = "httpd"*
 
 2. Build an OSTree commit from the blueprint.
 
-.. Start an OSTree compose from the bueprint
-[student@workstation ~]$ ARCH=$(uname -i)
-[student@workstation ~]$ 
-[student@workstation ~]$ echo $ARCH
-x86_64
-[student@workstation ~]$ 
-[student@workstation ~]$ composer-cli compose start-ostree rhel9-edge edge-commit --test 2
+.. Start an OSTree compose from the bueprint.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose start-ostree rhel9-edge edge-commit*
 Compose 01f3796b-85fd-4383-bbe8-eefc9550acdc added to the queue
-[student@workstation ~]$ composer-cli compose list
+--
+
+.. To ease the following steps, copy and paste the UUID from the previous command output to a shell variable.
++
+[source,subs="verbatim,quotes"]
+--
+$ *UUID=_01f3796b-85fd-4383-bbe8-eefc9550acdc_*
+--
+
+.. While the Image Builder service builds the image, its compose will show a status of `RUNNING`:
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose list*
 ID                                     Status    Blueprint    Version   Type
 01f3796b-85fd-4383-bbe8-eefc9550acdc   RUNNING   rhel9-edge   0.0.1     edge-commit
-[student@workstation ~]$ 
-[student@workstation ~]$ composer-cli compose list
+--
++
+If your Image Builder service has many composes, you can filter the listing by appending `finished` or `running` to the `compose list` command.
+
+.. Repeat the previous command until you see that the compose changed its status to `FINISHED`.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose list*
 ID                                     Status     Blueprint    Version   Type
 01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge   0.0.1     edge-commit
-[student@workstation ~]$ composer-cli compose status 
-ID                                     Status     Time                      Blueprint         Version   Type               Size
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   Fri Sep 6 18:07:56 2024   rhel9-edge        0.0.1     edge-commit
+--
++
+Before a compose finishes, you can cancel it.
 
-$ composer-cli compose image  01f3796b-85fd-4383-bbe8-eefc9550acdc
+
+3. Download and verify the edge commit image from the compose.
+
+.. Download the image to your home directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose image $UUID*
 01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar
+--
 
-$ mkdir ttt
-$ cd ttt
-$ tar xf ../01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar
-$ cd
+.. Extract the image contents to a temporary directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *mkdir delete-me*
+$ *cd delete-me*
+$ *tar xf ../01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar*
+$ *cd*
+--
 
-$ rpm-ostree db list rhel/9/x86_64/edge --repo=ttt/repo
+.. Check that the `rpm-ostree` command can use the temporary directory as an OSTree repository and list RPM packages inside the image.
++
+[source,subs="verbatim,quotes"]
+--
+$ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
 ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
  ModemManager-1.20.2-1.el9.x86_64
  ModemManager-glib-1.20.2-1.el9.x86_64
  NetworkManager-1:1.42.2-1.el9.x86_64
 ...
+--
 
-// it seems that --test did nothing and I got a full commit image
+.. Delete the temporary directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *rm -rf delete-me*
+--
 
-// need a jq filter as a reliable way of getting the id of a compose from its blueprint instead of grep and awk
 
-[ Fetch metadata from a compose, especially its build logs and blueprint ]
+4. Fetch metadata from the compose.
 
-Conclusion statement.
+.. Get the information, such as requested and dependency packages from the compose.
++
+[source,subs="verbatim,quotes"]
+--
+$ *compose-cli info $UUID | less*
+01f3796b-85fd-4383-bbe8-eefc9550acdc FINISHED rhel9-edge      0.0.1 edge-commit      
+Packages:
+    httpd-
+Modules:
+Dependencies:
+    ModemManager-1.20.2-1.el9.x86_64
+    ModemManager-glib-1.20.2-1.el9.x86_64
+    NetworkManager-1:1.42.2-1.el9.x86_64
+...
+--    
+
+.. Get the build logs of the compose. There are many errors at the start of the log which are expected and can be ignored.
++
+[source,subs="verbatim,quotes"]
+--
+$ *compose-cli log $UUID | less*
+Pipeline build
+Stage org.osbuild.rpm
+Output:
+/usr/lib/tmpfiles.d/colord.conf:1: Failed to resolve user 'colord': No such process
+...
+Failed to open file "/sys/fs/selinux/checkreqprot": Read-only file system
+imported gpg key
+imported gpg key
+Verifying packages...
+Preparing packages...
+libgcc-11.3.1-4.3.el9.x86_64
+...
+--
+
+Now you know the basics of managing composes and building images with the Image Builder service.
 
 == Next Steps
 

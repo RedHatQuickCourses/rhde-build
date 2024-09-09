@@ -233,7 +233,7 @@ If you have Cockpit open in your web browser, you must reload the web page to se
 
 [ Add JQ because we'll need it later ]
 
-Now your test system should be fully configured to build edge image using Image Builder.
+Now your test system should be fully configured to build edge image using the Image Builder service.
 
 == Next Steps
 

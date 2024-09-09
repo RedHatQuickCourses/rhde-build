@@ -57,7 +57,7 @@ $ *ls \*commit.tar*
 _01f3796b-85fd-4383-bbe8-eefc9550acdc_-commit.tar
 --
 
-.. To ease the following steps, copy and paste the UUID to a shell variable.
+.. To ease the following steps, copy and paste the UUID from the file name to a shell variable.
 +
 [source,subs="verbatim,quotes"]
 --
