@@ -135,6 +135,8 @@ Image Builder allows you to give human-readable names to blueprints, but it allw
 
 Image Builder maintains not only the image data for a compose, but also metadata such as package lists and build logs. Using the compose metadata, it is easy to compare two composes from the same blueprint and see what changed in the resulting image.
 
+[ Need more -- concepts. docs/upstream links, or maybe just more highlight as heading or def lists -- to blueprints and composes. Trying to postpone details to RHDE-2-4 ]
+
 == The Composer CLI client
 
 The `composer-cli` command provides the Image Builder command-line client. It sumbits requests to the Image Builder service through the `/run/weldr/api.socket` UNIX socket, wich is accessible to the `weldr` group. So, any user that is member of the `weldr` group can build RHEL for Edge images using the Image Builder service.

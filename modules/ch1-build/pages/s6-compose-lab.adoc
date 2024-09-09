@@ -1,0 +1,102 @@
+:time_estimate: 5
+
+= Lab: Create and Manage Composes for Edge Images
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Create and validate Image Builder composes for building edge images.
+
+WARNING: Work In Progress
+
+== Before you Begin
+
+You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s3-install-lab.adoc[first lab].
+
+You also need the blueprint that was created and uploaded to the Image Builder Service by the xref:s5-blueprint-lab.adoc[previous lab].
+
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+
+If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`. If not, please adapt the instructions to your test environment.
+
+
+// Is there any customization worth of showcasing right now? Timezone, keyboard, networking?
+
+== Instructions
+
+1. Verify that you have the prerequisites from previous labs.
+
+.. Verify that the Image Builder service is active and that the current Linux user can submit requests to it.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli status show*
+API server status:
+    Database version:   0
+    Database supported: true
+    Schema version:     0
+    API version:        1
+    Backend:            osbuild-composer
+    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+...
+--
+
+.. Verify that you have a blueprint named `rhe9-edge` that includes the `httpd` package.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli blueprint show rhel9-edge*
+...
+*[[packages]]
+name = "httpd"*
+...
+--
+
+2. Build an OSTree commit from the blueprint.
+
+.. Start an OSTree compose from the bueprint
+[student@workstation ~]$ ARCH=$(uname -i)
+[student@workstation ~]$ 
+[student@workstation ~]$ echo $ARCH
+x86_64
+[student@workstation ~]$ 
+[student@workstation ~]$ composer-cli compose start-ostree rhel9-edge edge-commit --test 2
+Compose 01f3796b-85fd-4383-bbe8-eefc9550acdc added to the queue
+[student@workstation ~]$ composer-cli compose list
+ID                                     Status    Blueprint    Version   Type
+01f3796b-85fd-4383-bbe8-eefc9550acdc   RUNNING   rhel9-edge   0.0.1     edge-commit
+[student@workstation ~]$ 
+[student@workstation ~]$ composer-cli compose list
+ID                                     Status     Blueprint    Version   Type
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge   0.0.1     edge-commit
+[student@workstation ~]$ composer-cli compose status 
+ID                                     Status     Time                      Blueprint         Version   Type               Size
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   Fri Sep 6 18:07:56 2024   rhel9-edge        0.0.1     edge-commit
+
+$ composer-cli compose image  01f3796b-85fd-4383-bbe8-eefc9550acdc
+01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar
+
+$ mkdir ttt
+$ cd ttt
+$ tar xf ../01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar
+$ cd
+
+$ rpm-ostree db list rhel/9/x86_64/edge --repo=ttt/repo
+ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
+ ModemManager-1.20.2-1.el9.x86_64
+ ModemManager-glib-1.20.2-1.el9.x86_64
+ NetworkManager-1:1.42.2-1.el9.x86_64
+...
+
+// it seems that --test did nothing and I got a full commit image
+
+// need a jq filter as a reliable way of getting the id of a compose from its blueprint instead of grep and awk
+
+[ Fetch metadata from a compose, especially its build logs and blueprint ]
+
+Conclusion statement.
+
+== Next Steps
+
+The next activity pushes the edge commit image to an OSTree repository, making it available to edge systems.

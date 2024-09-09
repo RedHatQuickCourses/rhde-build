@@ -1,0 +1,188 @@
+:time_estimate: 5
+
+= Lab: Publish Edge Images on Remote OSTree Repositories
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Publish an Image Builder edge commit image in a remote HTTP server so it is available to edge devices.
+
+WARNING: Work In Progress
+
+== Before you Begin
+
+You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s3-install-lab.adoc[first lab].
+
+You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.
+
+You could use the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardneed server acessible to remote edge devices in multiple locations. 
+
+You also need the edge commit image that was created and downloaded to your user home directory by the xref:s5-compose-lab.adoc[previous lab].
+
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+
+If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
+
+[ rename "test machine" everywhere to "developer manchine"? It's not like real "developers" would use image builder ]
+
+== Instructions
+
+[ could use a worflow diagram of the entire process, which spans multiple labs (and chapters!) ]
+
+[ switch everyhere to use the hostname in the prompt? ]
+
+1. On your test machine, verify that you have the prerequisites from previous labs.
+
+.. Verify that the Image Builder service is active and that the current Linux user can submit requests to it.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli status show*
+API server status:
+    Database version:   0
+    Database supported: true
+    Schema version:     0
+    API version:        1
+    Backend:            osbuild-composer
+    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+...
+--
+
+.. Verify that you have a tar file named `_uuid_-compose.tar` that contains an OSTree commit. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ls \*commit.tar*
+_01f3796b-85fd-4383-bbe8-eefc9550acdc_-commit.tar
+--
+
+.. To ease the following steps, copy and paste the UUID to a shell variable.
++
+[source,subs="verbatim,quotes"]
+--
+$ *UUID=_01f3796b-85fd-4383-bbe8-eefc9550acdc_*
+--
+
+
+2. On your web server machine, configure a web server dedicated to providing OSTree repositories.
++
+The instructions bellow confingure an Apache Web Server as a system service on the `servera` machine. You could use the NGinx web server and run the web server as a container, among other variations. Production deployments might require further customization, such as enabling TLS connections, using trusted certificates, and requiring authentication, which are not inclided here.
+
+.. On another terminal, start an SSH session on your web server machine (`servera`), and copy the shell variable from the first terminal.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ssh servera*
+$ *UUID=_01f3796b-85fd-4383-bbe8-eefc9550acdc_*
+--
+
+.. Install the Apache Web Server packages from RHEL.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo yum install -y httpd*
+...
+Complete!
+--
+
+.. Enable and start the Apache Web Server system service.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo systemctl enable httpd*
+Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.
+$ *sudo systemctl start httpd*
+...
+--
+
+.. Enable remote access to the Apache Web Server on the system's firewall.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo firewall-cmd --add-service=http --permanent*
+success
+$ *sudo firewall-cmd --reload*
+success
+--
+
+3. On your test machine, check that you have access to the web server machine and copy the edge commit image, generated in a previous lab, to the web server.
+
+.. Use a web browser or any web client to access the default welcome page from the Apache Web Server.
++
+[source,subs="verbatim,quotes"]
+--
+$ *curl http://servera.lab.example.com*
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+        <head>
+                <title>Test Page for the HTTP Server on Red Hat Enterprise Linux</title>
+...
+--
+
+.. Copy the edge commit image to your home directory on the web server machine.
++
+[source,subs="verbatim,quotes"]
+--
+$ *scp $UUID-commit.tar servera.lab.example.com:~*
+...
+--
+
+
+4. On your web sever machine, publish the OSTree commit in the web server content directory.
+
+.. Extract the OSTree commit in the web server content directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ls $UUID-commit.tar*
+_01f3796b-85fd-4383-bbe8-eefc9550acdc_-commit.tar
+$ *cd /var/www/html*
+$ *sudo tar xf ~/$UUID-commit.tar*
+--
+
+.. Ensure the OSTree repository contents are acessive to the `apache` user and have correct SELinux labels.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ls -lZ*
+total 4
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
+drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
+--
+
+.. If you need, change file permissions and SELinux labels. Or just delete the `repo` directory and extract the OSTree commit again.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo chmod -R a+X repo*
+$ *sudo restorecon -R repo*
+--
+
+.. Remove the compose metadata, because you do not need it to server OSTree content.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo rm compose.json*
+--
+
+5. On your test machine, verify that a remote client can access a remote OSTree repository from the web server, by reading its repository configuration file.
+
++
+[source,subs="verbatim,quotes"]
+--
+$ *curl http://servera.lab.example.com/repo/config*
+[core]
+repo_version=1
+mode=archive-z2
+--
+
+6. If you wish, you can now close the SSH connection to the web server machine and its terminal. If you prefer to leave it open for future labs, please return do your home directory.
+
+Conclusion statement.
+
+== Next Steps
+
+Before proceeding to test the edge image using a virtual machine, in the next chapter, the next activity demonstates using Red Hat Ansible Automation Platform to automate building and publishing edge images.
+

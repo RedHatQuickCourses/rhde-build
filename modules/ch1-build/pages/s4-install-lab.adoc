@@ -66,7 +66,7 @@ $ *sudo systemctl start cockpit*
 --
 $ *sudo firewall-cmd --add-service=cockpit --permanent*
 success
-$ *firewall-cmd --reload*
+$ *sudo firewall-cmd --reload*
 success
 --
 
@@ -229,6 +229,9 @@ Enter the *Image Builder* item in Cockpit and click *Sources*. Then, for both th
 image::s4-cockpit-repository-url.png[]
 +
 If you have Cockpit open in your web browser, you must reload the web page to see the changes.
+
+
+[ Add JQ because we'll need it later ]
 
 Now your test system should be fully configured to build edge image using Image Builder.
 

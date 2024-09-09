@@ -6,13 +6,13 @@ _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Create, validate, and update a blueprint for creating edge images.
+Create, validate, and update Image Builder blueprints for building edge images.
 
 WARNING: Work In Progress
 
 == Before you Begin
 
-You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructios from the xref:s3-install-lab.adoc[previous lab].
+You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s3-install-lab.adoc[previous lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
@@ -65,7 +65,7 @@ You can download a minimal blueprint from the sample applications repository in 
 $ *composer-cli blueprints push rhel9-edge.toml*
 --
 
-.. Verify that the blueprint exists in the Image Builder service storage. Notice that it has no record of the original file name, you identify blueprints by ther `name` attribute.
+.. Verify that the blueprint exists in the Image Builder service storage. Notice that it has no record of the original file name, you identify blueprints by ther `name` attributes.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -79,6 +79,8 @@ rhel9-edge
 --
 $ *composer-cli blueprints show rhel9-edge*
 name = "rhel9-edge"
+description = "blueprint-rhel9-edge"
+version = "0.0.1"
 ...
 --
 
@@ -117,6 +119,7 @@ description = "blueprint-rhel9-edge"
 version = "0.0.1"
 modules = [ ]
 groups = [ ]
+
 *[[packages]]
 name = "httpd"*
 
@@ -156,7 +159,7 @@ ERROR: BlueprintsError: 400 Bad Request: The browser (or proxy) sent a request t
 +
 In that case, fix your file and upload the blueprint again.
 
-Now you know the basics of managing blueprints with the image Builder Service.
+Now you know the basics of managing blueprints with the Image Builder Service.
 
 == Next Steps
 
