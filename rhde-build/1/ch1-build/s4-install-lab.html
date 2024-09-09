@@ -61,6 +61,12 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s5-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s6-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s7-ostree-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -208,7 +214,7 @@ $ <strong>sudo systemctl start cockpit</strong></code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo firewall-cmd --add-service=cockpit --permanent</strong>
 success
-$ <strong>firewall-cmd --reload</strong>
+$ <strong>sudo firewall-cmd --reload</strong>
 success</code></pre>
 </div>
 </div>
@@ -437,7 +443,10 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
 </ol>
 </div>
 <div class="paragraph">
-<p>Now your test system should be fully configured to build edge image using Image Builder.</p>
+<p>[ Add JQ because we&#8217;ll need it later ]</p>
+</div>
+<div class="paragraph">
+<p>Now your test system should be fully configured to build edge image using the Image Builder service.</p>
 </div>
 </div>
 </div>
