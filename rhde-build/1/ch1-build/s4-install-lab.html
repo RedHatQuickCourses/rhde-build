@@ -440,10 +440,32 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
 </ol>
 </div>
 </li>
-</ol>
+<li>
+<p>Add the JQ command-line JSON processor, because it&#8217;s useful for scripting Image Builder tasks.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install -y jq</strong>
+...
+Complete!</code></pre>
 </div>
-<div class="paragraph">
-<p>[ Add JQ because we&#8217;ll need it later ]</p>
+</div>
+</li>
+<li>
+<p>Verify that you have the RPM-OStree and OSTree tools, which were installed as dependencies from image Builder. You may see different versions than the following output, depending on your RHEL release and package updates.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rpm-ostree --version</strong>
+rpm-ostree:
+ Version: '2022.19'
+...
+$ <strong>ostree --version</strong>
+libostree:
+ Version: '2023.1'
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>Now your test system should be fully configured to build edge image using the Image Builder service.</p>

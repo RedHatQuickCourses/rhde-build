@@ -141,16 +141,16 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="#s3-install-lab.adoc" class="xref unresolved">first lab</a>.</p>
+<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.</p>
 </div>
 <div class="paragraph">
-<p>You could use the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardneed server acessible to remote edge devices in multiple locations.</p>
+<p>You run the web server in the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
 </div>
 <div class="paragraph">
-<p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="#s5-compose-lab.adoc" class="xref unresolved">previous lab</a>.</p>
+<p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="s6-compose-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -195,11 +195,11 @@ API server status:
 </div>
 </li>
 <li>
-<p>Verify that you have a tar file named <code><em>uuid</em>-compose.tar</code> that contains an OSTree commit. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.</p>
+<p>Verify that you have a tar file named <code><em>uuid</em>-compose.tar</code> that contains the edge commit image from the <a href="s6-compose-lab.html" class="xref page">previous lab</a>. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls \*commit.tar</strong>
-<em>01f3796b-85fd-4383-bbe8-eefc9550acdc</em>-commit.tar</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls *commit.tar</strong>
+<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em>-commit.tar</code></pre>
 </div>
 </div>
 </li>
@@ -207,7 +207,7 @@ API server status:
 <p>To ease the following steps, copy and paste the UUID from the file name to a shell variable.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>01f3796b-85fd-4383-bbe8-eefc9550acdc</em></strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em></strong></code></pre>
 </div>
 </div>
 </li>
@@ -217,7 +217,19 @@ API server status:
 <li>
 <p>On your web server machine, configure a web server dedicated to providing OSTree repositories.</p>
 <div class="paragraph">
-<p>The instructions bellow confingure an Apache Web Server as a system service on the <code>servera</code> machine. You could use the NGinx web server and run the web server as a container, among other variations. Production deployments might require further customization, such as enabling TLS connections, using trusted certificates, and requiring authentication, which are not inclided here.</p>
+<p>The instructions bellow confingure an Apache Web Server as a system service on the <code>servera</code> machine. You could use the NGinx web server and run the web server as a container, among other variations.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Production deployments usually require further customization, such as enabling TLS connections, using trusted certificates, and requiring authentication, which are not performed here.
+</td>
+</tr>
+</table>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -226,7 +238,7 @@ API server status:
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ssh servera</strong>
-$ <strong>UUID=<em>01f3796b-85fd-4383-bbe8-eefc9550acdc</em></strong></code></pre>
+$ <strong>UUID=<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em></strong></code></pre>
 </div>
 </div>
 </li>
@@ -262,11 +274,21 @@ success</code></pre>
 </div>
 </div>
 </li>
+<li>
+<p>Install the RPM-OSTree and the lower level OSTree tooling on the web server machine, just in case you need to perform maintenance on the OSTree repositories you will store on it.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo yum install -y rpm-ostree ostree</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
+</li>
 </ol>
 </div>
 </li>
 <li>
-<p>On your test machine, check that you have access to the web server machine and copy the edge commit image, generated in a previous lab, to the web server.</p>
+<p>On your test machine, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="s6-compose-lab.html" class="xref page">previous lab</a>, to the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -296,42 +318,105 @@ success</code></pre>
 </div>
 </li>
 <li>
-<p>On your web sever machine, publish the OSTree commit in the web server content directory.</p>
+<p>Still on your test manchine, create an Anacond Kickstart file that points to the OSTree repository on the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Extract the OSTree commit in the web server content directory.</p>
+<p>Using your preferred text editor, create a file named <code>rhel-httpd.ks</code> with the following contents:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls $UUID-commit.tar</strong>
-<em>01f3796b-85fd-4383-bbe8-eefc9550acdc</em>-commit.tar
-$ <strong>cd /var/www/html</strong>
-$ <strong>sudo tar xf ~/$UUID-commit.tar</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">lang en_US.UTF-8
+keyboard us
+timezone Etc/UTC --isUtc
+text
+zerombr
+clearpart --all --initlabel
+autopart
+reboot
+user --name=core --group=wheel
+rootpw --lock
+network --bootproto=dhcp
+
+ostreesetup --nogpg --osname=rhel --remote=edge --url=https://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also downlod the kickstart file from sample applications repository in GitHub. [Add a link!]</p>
+</div>
+<div class="paragraph">
+<p>Most lines on that kickstart file can be changed according to needs, and real-world deployments would include items such as SSH keys for remote login and remote management. The important piece is the <code>ostreesetup</code> command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.</p>
+</div>
+</li>
+<li>
+<p>Copy the Kickstart file to your home directory on the web server machine.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>scp rhel-httpd.ks servera.lab.example.com:~</strong>
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Switch to your web sever machine and publish the kickstart file and the OSTree commit in the web server content directory.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Copy the kickstart file to the web server content directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -1</strong>
+<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em>-commit.tar
+rhel-httpd.ks
+$ <strong>sudo cp rhel-httpd.ks /var/ww/html</strong></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Ensure the OSTree repository contents are acessive to the <code>apache</code> user and have correct SELinux labels.</p>
+<p>Extract the OSTree commit to the web server content directory.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -lZ</strong>
-total 4
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo tar xf ~/$UUID-commit.tar -C /var/www/html</strong></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Extracting an edge commit image only works for initializing a new OSTree repository with a single commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the <code>ostree pull-local</code> command. This command will be presented in a later chapter of this course, when we teach how to publish and apply updates.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Ensure the OSTree repository contents are acessiblee to the <code>apache</code> user and have correct SELinux labels.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -lZ /var/www/html</strong>
+total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
-drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo</code></pre>
+drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 299 Sep  6 18:07 rhel-httpd.ks</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>If you need, change file permissions and SELinux labels. Or just delete the <code>repo</code> directory and extract the OSTree commit again.</p>
+<p>If you need, change file permissions and SELinux labels.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo chmod -R a+X repo</strong>
-$ <strong>sudo restorecon -R repo</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo chmod -R a+X /var/www/html</strong>
+$ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Remove the compose metadata, because you do not need it to server OSTree content.</p>
+<p>Remove the compose metadata, because you do not need it to serve OSTree content.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo rm compose.json</strong></code></pre>
@@ -342,7 +427,23 @@ $ <strong>sudo restorecon -R repo</strong></code></pre>
 </div>
 </li>
 <li>
-<p>On your test machine, verify that a remote client can access a remote OSTree repository from the web server, by reading its repository configuration file.</p>
+<p>Back to your test machine, verify that a remote client can access the kickstart file and the remote OSTree repository.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Check that a remote client can read the kickstart file over HTTP.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/rhel-httpd.ks</strong>
+lang en_US.UTF-8
+keyboard us
+timezone Etc/UTC --isUtc
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to setup a local OSTree repository just to check access to the remode repository.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/config</strong>
@@ -352,8 +453,11 @@ mode=archive-z2</code></pre>
 </div>
 </div>
 </li>
+</ol>
+</div>
+</li>
 <li>
-<p>If you wish, you can now close the SSH connection to the web server machine and its terminal. If you prefer to leave it open for future labs, please return do your home directory.</p>
+<p>If you wish, you can now close the SSH connection to the web server machine and its terminal.</p>
 </li>
 </ol>
 </div>
@@ -366,7 +470,7 @@ mode=archive-z2</code></pre>
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before proceeding to test the edge image using a virtual machine, in the next chapter, the next activity demonstates using Red Hat Ansible Automation Platform to automate building and publishing edge images.</p>
+<p>Before proceeding to test the edge image using a virtual machine, the next activity demonstates using Red Hat Ansible Automation Platform to automate building and publishing edge images.</p>
 </div>
 </div>
 </div>

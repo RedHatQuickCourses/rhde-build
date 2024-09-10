@@ -142,7 +142,7 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="#s3-install-lab.adoc" class="xref unresolved">first lab</a>.</p>
+<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You also need the blueprint that was created and uploaded to the Image Builder Service by the <a href="s5-blueprint-lab.html" class="xref page">previous lab</a>.</p>
@@ -181,7 +181,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Verify that your Image Builder service has a blueprint named <code>rhe9-edge</code> that includes the <code>httpd</code> package.</p>
+<p>Verify that your Image Builder service has a blueprint named <code>rhe9-edge</code> that includes the <code>httpd</code> package, from the <a href="s5-blueprint-lab.html" class="xref page">previous lab</a>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprint show rhel9-edge</strong>
@@ -196,7 +196,7 @@ name = "httpd"</strong>
 </div>
 </li>
 <li>
-<p>Build an OSTree commit from the blueprint.</p>
+<p>Build an OSTree commit from the blueprint, but cancel it before its finished.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -230,63 +230,51 @@ ID                                     Status    Blueprint    Version   Type
 </div>
 </li>
 <li>
-<p>Repeat the previous command until you see that the compose changed its status to <code>FINISHED</code>.</p>
+<p>Before a compose finishes running, you can cancel it:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose cancel $UUID</strong>
+$ <strong>composer-cli compose list</strong>
 ID                                     Status     Blueprint    Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge   0.0.1     edge-commit</code></pre>
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FAILED     rhel9-edge   0.0.1     edge-commit</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Before a compose finishes, you can cancel it.</p>
+<p>If you took too long to cancel the compose, you can start another one and cancel it. Or just move forward, because you won&#8217;t need that canceled compose for the remaining of this activity and this course.</p>
 </div>
 </li>
 </ol>
 </div>
 </li>
 <li>
-<p>Download and verify the edge commit image from the compose.</p>
+<p>Build another OSTree commit from the same blueprint, but this time let it finish.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Download the image to your home directory.</p>
+<p>Start a new OSTree compose from the bueprint.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID</strong>
-01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-edge edge-commit</strong>
+Compose 575d8ddc-2902-4de3-a0d5-82f5f194f5d8 added to the queue</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Extract the image contents to a temporary directory.</p>
+<p>Copy and paste the UUID from the previous command output to a shell variable, overriding its previous value.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
-$ <strong>cd delete-me</strong>
-$ <strong>tar xf ../01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar</strong>
-$ <strong>cd</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em></strong></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Check that the <code>rpm-ostree</code> command can use the temporary directory as an OSTree repository and list RPM packages inside the image.</p>
+<p>Repeat the command that list composes until you see that the latest changed its status to <code>FINISHED</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
-ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
- ModemManager-1.20.2-1.el9.x86_64
- ModemManager-glib-1.20.2-1.el9.x86_64
- NetworkManager-1:1.42.2-1.el9.x86_64
-...</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Delete the temporary directory.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rm -rf delete-me</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list</strong>
+ID                                     Status     Blueprint    Version   Type
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FAILED     rhel9-edge   0.0.1     edge-commit
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FINISHED   rhel9-edge   0.0.1     edge-commit</code></pre>
 </div>
 </div>
 </li>
@@ -298,11 +286,11 @@ ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Get the information, such as requested and dependency packages from the compose.</p>
+<p>Get information such as requested and dependency packages from the compose.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>compose-cli info $UUID | less</strong>
-01f3796b-85fd-4383-bbe8-eefc9550acdc FINISHED rhel9-edge      0.0.1 edge-commit
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8 FINISHED rhel9-edge      0.0.1 edge-commit
 Packages:
     httpd-
 Modules:
@@ -335,6 +323,121 @@ libgcc-11.3.1-4.3.el9.x86_64
 </div>
 </li>
 </ol>
+</div>
+</li>
+<li>
+<p>Download and verify the edge commit image from the latest compose.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Download the image to your home directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID</strong>
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8-commit.tar</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Extract the image contents to a temporary directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
+$ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the <code>rpm-ostree</code> command can use the temporary directory as an OSTree repository and list RPM packages inside the image.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
+ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
+ ModemManager-1.20.2-1.el9.x86_64
+ ModemManager-glib-1.20.2-1.el9.x86_64
+ NetworkManager-1:1.42.2-1.el9.x86_64
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>If you wish, you can perform additional integrity check of your edge commit image using the lower level OSTree tooling.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>COMMIT=$(jq -r '.["ostree-commit"]' &lt; delete-me/compose.json)</strong>
+$ <strong>echo $COMMIT</strong>
+4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.</p>
+</div>
+</li>
+<li>
+<p>Get the branch reference from the compose metadata and store it in a shell variable.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>REF=$(jq -r '.["ref"]' &lt; delete-me/compose.json)</strong>
+$ <strong>echo $REF</strong>
+rhel/9/x86_64/edge</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.</p>
+</div>
+</li>
+<li>
+<p>List the commits available on your OSTree repository. There should be only one commit which matches the compose metadata.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo log $REF</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
+Date:  2024-09-06 22:07:45 +0000
+Version: 9.2
+(no subject)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>List the branches available on your OSTree repository. There should be only one branch which matches the compose metadata.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo refs</strong>
+rhel/9/x86_64/edge</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Peform an integrity check in the OSTree repository.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo fsck</strong>
+Validating refs...
+Validating refs in collections...
+Enumerating commits...
+Verifying content integrity of 1 commit objects...
+fsck objects (28670/28670) [=============] 100%
+object fsck of 1 commits completed successfully - no errors found.</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>You can now delete the temporary directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rm -rf delete-me</strong></code></pre>
+</div>
 </div>
 </li>
 </ol>

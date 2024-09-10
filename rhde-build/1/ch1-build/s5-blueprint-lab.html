@@ -142,7 +142,7 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="#s3-install-lab.adoc" class="xref unresolved">previous lab</a>.</p>
+<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -174,7 +174,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Create a blueprint for an edge device and upload it to the Image Builder service.</p>
+<p>Create a minimal blueprint for an edge device and upload it to the Image Builder service.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -195,7 +195,7 @@ hostname = "edge"</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can download a minimal blueprint from the sample applications repository in GitHub. [ Add a Link! ]</p>
+<p>You can download the minimal blueprint from the sample applications repository in GitHub. [ Add a Link! ]</p>
 </div>
 </li>
 <li>
@@ -253,19 +253,22 @@ original intent was to include the web server as the application on this bluepri
 <ol class="loweralpha" type="a">
 <li>
 <p>Download the blueprint from the Image Builder service to the <code>rhel9-httpd.toml</code> file.</p>
+<div class="paragraph">
+<p>You could make changes directly to your local file, or grab the original file from version control, but we get it from the Image Builder Service just to show how it can be done.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints save rhel9-edge --filename rhel9-httpd.toml</strong></code></pre>
 </div>
 </div>
-<div class="admonitionblock warning">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Red Hat does not recommend that you use Image Builder as the source of truth for blueprints, but only as a temporary storage. Red Hat recommends that you keep your blueprints under version control, using Git or similar software.
+Red Hat does NOT recommend that you use Image Builder as the source of truth for blueprints, but only as a temporary storage. Red Hat recommends that you keep your blueprints under version control, using Git or similar software.
 </td>
 </tr>
 </table>
@@ -308,11 +311,18 @@ hostname = "edge"</code></pre>
 </div>
 </li>
 <li>
-<p>Upload and verify the updated blueprint.</p>
+<p>Upload the changed blueprint.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-httpd.toml</strong>
-$ <strong>composer-cli blueprints depsolve rhel9-edge | grep httpd</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-httpd.toml</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify the blueprint now includes the Apache Web Server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints depsolve rhel9-edge | grep httpd</strong>
     httpd-2.4.53-11.el9_2.4.x86_64
     httpd-core-2.4.53-11.el9_2.4.x86_64
 ...</code></pre>
@@ -320,10 +330,10 @@ $ <strong>composer-cli blueprints depsolve rhel9-edge | grep httpd</strong>
 </div>
 </li>
 <li>
-<p>If you made a mistake in the package name, the pipe to grep will not hide error messages:</p>
+<p>If you made a mistake in the package name, when you changed the blueprint, the pipe to <code>grep</code> will NOT hide error messages:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ composer-cli blueprints push rhel9-edge.toml
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-edge.toml</strong>
 ERROR: BlueprintsError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand: toml: line 6 (last key "packages"): type mismatch for blueprint.Package: expected table but found string</code></pre>
 </div>
 </div>
