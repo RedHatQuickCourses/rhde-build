@@ -230,8 +230,28 @@ image::s4-cockpit-repository-url.png[]
 +
 If you have Cockpit open in your web browser, you must reload the web page to see the changes.
 
+8. Add the JQ command-line JSON processor, because it's useful for scripting Image Builder tasks.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo dnf install -y jq*
+...
+Complete!
+--
 
-[ Add JQ because we'll need it later ]
+9. Verify that you have the RPM-OStree and OSTree tools, which were installed as dependencies from image Builder. You may see different versions than the following output, depending on your RHEL release and package updates.
++
+[source,subs="verbatim,quotes"]
+--
+$ *rpm-ostree --version*
+rpm-ostree:
+ Version: '2022.19'
+...
+$ *ostree --version*
+libostree:
+ Version: '2023.1'
+...
+--
 
 Now your test system should be fully configured to build edge image using the Image Builder service.
 

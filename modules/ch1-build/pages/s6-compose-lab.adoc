@@ -12,7 +12,7 @@ WARNING: Work In Progress
 
 == Before you Begin
 
-You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s3-install-lab.adoc[first lab].
+You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
 
 You also need the blueprint that was created and uploaded to the Image Builder Service by the xref:s5-blueprint-lab.adoc[previous lab].
 
@@ -45,7 +45,7 @@ API server status:
 ...
 --
 
-.. Verify that your Image Builder service has a blueprint named `rhe9-edge` that includes the `httpd` package.
+.. Verify that your Image Builder service has a blueprint named `rhe9-edge` that includes the `httpd` package, from the xref:s5-blueprint-lab.adoc[previous lab].
 +
 [source,subs="verbatim,quotes"]
 --
@@ -56,7 +56,7 @@ name = "httpd"*
 ...
 --
 
-2. Build an OSTree commit from the blueprint.
+2. Build an OSTree commit from the blueprint, but cancel it before its finished.
 
 .. Start an OSTree compose from the bueprint.
 +
@@ -84,66 +84,53 @@ ID                                     Status    Blueprint    Version   Type
 +
 If your Image Builder service has many composes, you can filter the listing by appending `finished` or `running` to the `compose list` command.
 
-.. Repeat the previous command until you see that the compose changed its status to `FINISHED`.
+.. Before a compose finishes running, you can cancel it:
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose cancel $UUID*
+$ *composer-cli compose list*
+ID                                     Status     Blueprint    Version   Type
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FAILED     rhel9-edge   0.0.1     edge-commit
+--
++
+If you took too long to cancel the compose, you can start another one and cancel it. Or just move forward, because you won't need that canceled compose for the remaining of this activity and this course.
+
+3. Build another OSTree commit from the same blueprint, but this time let it finish.
+
+.. Start a new OSTree compose from the bueprint.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose start-ostree rhel9-edge edge-commit*
+Compose 575d8ddc-2902-4de3-a0d5-82f5f194f5d8 added to the queue
+--
+
+.. Copy and paste the UUID from the previous command output to a shell variable, overriding its previous value.
++
+[source,subs="verbatim,quotes"]
+--
+$ *UUID=_575d8ddc-2902-4de3-a0d5-82f5f194f5d8_*
+--
+
+.. Repeat the command that list composes until you see that the latest changed its status to `FINISHED`.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *composer-cli compose list*
 ID                                     Status     Blueprint    Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge   0.0.1     edge-commit
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FAILED     rhel9-edge   0.0.1     edge-commit
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FINISHED   rhel9-edge   0.0.1     edge-commit
 --
-+
-Before a compose finishes, you can cancel it.
-
-
-3. Download and verify the edge commit image from the compose.
-
-.. Download the image to your home directory.
-+
-[source,subs="verbatim,quotes"]
---
-$ *composer-cli compose image $UUID*
-01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar
---
-
-.. Extract the image contents to a temporary directory.
-+
-[source,subs="verbatim,quotes"]
---
-$ *mkdir delete-me*
-$ *cd delete-me*
-$ *tar xf ../01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar*
-$ *cd*
---
-
-.. Check that the `rpm-ostree` command can use the temporary directory as an OSTree repository and list RPM packages inside the image.
-+
-[source,subs="verbatim,quotes"]
---
-$ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
-ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
- ModemManager-1.20.2-1.el9.x86_64
- ModemManager-glib-1.20.2-1.el9.x86_64
- NetworkManager-1:1.42.2-1.el9.x86_64
-...
---
-
-.. Delete the temporary directory.
-+
-[source,subs="verbatim,quotes"]
---
-$ *rm -rf delete-me*
---
-
 
 4. Fetch metadata from the compose.
 
-.. Get the information, such as requested and dependency packages from the compose.
+.. Get information such as requested and dependency packages from the compose.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *compose-cli info $UUID | less*
-01f3796b-85fd-4383-bbe8-eefc9550acdc FINISHED rhel9-edge      0.0.1 edge-commit      
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8 FINISHED rhel9-edge      0.0.1 edge-commit      
 Packages:
     httpd-
 Modules:
@@ -172,6 +159,101 @@ Preparing packages...
 libgcc-11.3.1-4.3.el9.x86_64
 ...
 --
+
+5. Download and verify the edge commit image from the latest compose.
+
+.. Download the image to your home directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose image $UUID*
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8-commit.tar
+--
+
+.. Extract the image contents to a temporary directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *mkdir delete-me*
+$ *tar xf $UUID-commit.tar -C delete-me*
+--
+
+.. Check that the `rpm-ostree` command can use the temporary directory as an OSTree repository and list RPM packages inside the image.
++
+[source,subs="verbatim,quotes"]
+--
+$ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
+ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
+ ModemManager-1.20.2-1.el9.x86_64
+ ModemManager-glib-1.20.2-1.el9.x86_64
+ NetworkManager-1:1.42.2-1.el9.x86_64
+...
+--
+
+6. If you wish, you can perform additional integrity check of your edge commit image using the lower level OSTree tooling.
+
+.. Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.
++
+[source,subs="verbatim,quotes"]
+--
+$ *COMMIT=$(jq -r '.["ostree-commit"]' < delete-me/compose.json)*
+$ *echo $COMMIT*
+4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+--
++
+You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.
+
+.. Get the branch reference from the compose metadata and store it in a shell variable.
++
+[source,subs="verbatim,quotes"]
+--
+$ *REF=$(jq -r '.["ref"]' < delete-me/compose.json)*
+$ *echo $REF*
+rhel/9/x86_64/edge
+--
++
+You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.
+
+.. List the commits available on your OSTree repository. There should be only one commit which matches the compose metadata.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ostree --repo=delete-me/repo log $REF*
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
+Date:  2024-09-06 22:07:45 +0000
+Version: 9.2
+(no subject)
+--
+
+.. List the branches available on your OSTree repository. There should be only one branch which matches the compose metadata.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ostree --repo=delete-me/repo refs*
+rhel/9/x86_64/edge
+--
+
+.. Peform an integrity check in the OSTree repository.
++
+[source,subs="verbatim,quotes"]
+--
+$ *ostree --repo=delete-me/repo fsck*
+Validating refs...
+Validating refs in collections...
+Enumerating commits...
+Verifying content integrity of 1 commit objects...
+fsck objects (28670/28670) [=============] 100%
+object fsck of 1 commits completed successfully - no errors found.
+--
+
+7. You can now delete the temporary directory.
++
+[source,subs="verbatim,quotes"]
+--
+$ *rm -rf delete-me*
+--
+
 
 Now you know the basics of managing composes and building images with the Image Builder service.
 
