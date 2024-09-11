@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab: Boot Edge VMs from Remote OSTree Repostories :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="index.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch1-build/index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s4-install-lab.html">Lab: Install Image Builder on a Development VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s5-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s6-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s7-ostree-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Validate initial deployment of RHEL for Edge images in local VMs using virsh and cockpit</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Validate initial deployment of RHEL for Edge images in local VMs using virsh and cockpit</a></li>
+    <li><a href="s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab: Boot Edge VMs from Remote OSTree Repostories</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Publish an Image Builder edge commit image in a remote HTTP server so it is available to edge devices.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Work In Progress
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+</div>
+<div class="paragraph">
+<p>You need a second machine to run a web server that serves OSTree repositories. Make sure that machine was configured and verified by following the instructions from <a href="../ch1-build/s7-ostree-lab.html" class="xref page">Lab: Publish Edge Images on Remote OSTree Repositories</a>.</p>
+</div>
+<div class="paragraph">
+<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On your test machine, verify that you have the prerequisites from previous labs.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Verify that TBD</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli status show</strong>
+API server status:
+    Database version:   0
+    Database supported: true
+    Schema version:     0
+    API version:        1
+    Backend:            osbuild-composer
+    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Install the libvirtd tools and its Cockpit module.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Install the "Virtualization Host" package group to get the libvirtd, KVM, and Qemu daemons and tools.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ sudo dnf group install -y "Virtualization Host"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Grant an unprivileged user with pemrission to create and manage virtual machines (MVs).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ sudo groupmod libvirt -a -U student</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a RHEL VM which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>[ 1st attempt, from product docs ]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ virt-install \
+--name edge-test-1 \
+--memory 2048 \
+--vcpus 2 \
+--disk path=edge-test-1.qcow2,format=qcow2,size=8 \
+--os-variant rhel9.0 \
+--cdrom /home/student/Downloads/rhel-9.4-x86_64-boot.iso</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Edit the kernel manually entry by appending:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">inst.ks=http://servera.lab.example.com/rhel-httpd.ks</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>[ 2nd attempt, from HOL007 ]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ virt-install \
+--name edge-test-1 \
+--memory 4096 \
+--vcpus 2 \
+--disk size=40 \
+--os-variant rhel9.2 \
+--location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
+--graphics=none \
+--extra-args inst.ks=http://servera.lab.example.com/rhel-httpd.ks \
+--extra-arg console=ttyS0 -v</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If I use --cdrom instead of --location I get: ERROR    Kernel arguments are only supported with location or kernel installs.</p>
+</div>
+</li>
+<li>
+<p>All my attempts at using my custom kickstart with an edge commit image result in VMs that, after reboot, stay forever on "A start job is running for…rhel-swap/rhel-boot".</p>
+<div class="paragraph">
+<p>They seem to deploy the ostree commit, from boot messages and the apache access log. I have no clue why they cannot finish installation.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Cleaning up test VMs up between each attempt.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ virsh destroy edge-test-1
+Domain 'edge-test-1' destroyed
+$ virsh undefine edge-test-1
+Domain 'edge-test-1' has been undefined</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create an edge installer image.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a mininal blueprint for the edge installer image .</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ cat rhel9-installer.toml
+name = "rhel9-installer"
+description = "blueprint-rhel9-installer"
+version = "0.0.1"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Upload the blueprint to the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$  composer-cli blueprints push rhel9-installer.toml
+$ composer-cli blueprints list
+rhel9-edge
+rhel9-installer</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Build an edge installer using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a <a href="../ch1-build/s7-ostree-lab.html" class="xref page">previous lab</a>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ composer-cli compose start-ostree rhel9-installer edge-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo/
+Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait until the compose finishes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ composer-cli compose list
+ID                                     Status     Blueprint         Version   Type
+7a5036e1-4037-4edc-82ff-4c632c0a84fc   RUNNING    rhel9-installer   0.0.1     edge-installer
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
+$ composer-cli compose list
+ID                                     Status     Blueprint         Version   Type
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
+7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Download the edge installer image. You should get an ISO file.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ composer-cli compose image 7a5036e1-4037-4edc-82ff-4c632c0a84fc
+7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a VM that boots from the edge installer image.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>[ 1st attempt, it fails to process the kickstart embeded in the ISO ]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ virt-install \
+--name edge-test-2 \
+--memory 4096 \
+--vcpus 2 \
+--disk size=40 \
+--os-variant rhel9.2 \
+--location /home/student/7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso \
+--graphics=none \
+--extra-arg console=ttyS0 -v</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>[ 2nd attempt, it kinda works, seems to deploy the OSTree commit, but after reboot, it stays forever on "A start job is running for…rhel-swap/rhel-boot"&#8230;&#8203; like it did with the attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository. ]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">virt-install \
+--name edge-test-2 \
+--memory 4096 \
+--vcpus 2 \
+--disk size=40 \
+--os-variant rhel9.2 \
+--cdrom /home/student/7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>I verified the edge installer ISO, it looks good: I can see the osbuild.ks file, the grub menus that refer to iso, and the local copy of OSTree repository.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>At this point, I have no clue why my edge images fail to finish installing/booting. What&#8217;s different between my environment, besides not using the edge container image, compared to the HOL007?</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>HOL7 does not use the kickstart inside the edge installer image, it uses its own custom kickstart&#8230;&#8203; which was the basis for the one I used on my first attemp. HOL7 is <strong>not</strong> using the OSTree repo from inside the ISO, so it should work the same with a standard RHEL installation ISO.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Conclusion statement.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lorem Ipsum.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Validate initial deployment of RHEL for Edge images in local VMs using virsh and cockpit</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

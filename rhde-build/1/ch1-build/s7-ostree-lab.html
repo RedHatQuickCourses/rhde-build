@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Lab: Publish Edge Images on Remote OSTree Repositories :: Building Red Hat Device Edge Images</title>
     <link rel="prev" href="s6-compose-lab.html">
+    <link rel="next" href="../ch2-test/index.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -65,6 +66,19 @@
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="s7-ostree-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-test/index.html">Validate initial deployment of RHEL for Edge images in local VMs using virsh and cockpit</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-test/s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a>
   </li>
 </ul>
   </li>
@@ -333,11 +347,11 @@ zerombr
 clearpart --all --initlabel
 autopart
 reboot
-user --name=core --group=wheel
+user --name=core --group=wheel --password=redhat
 rootpw --lock
 network --bootproto=dhcp
 
-ostreesetup --nogpg --osname=rhel --remote=edge --url=https://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>
+ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -402,7 +416,7 @@ Extracting an edge commit image only works for initializing a new OSTree reposit
 total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
 drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
--rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 299 Sep  6 18:07 rhel-httpd.ks</code></pre>
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel-httpd.ks</code></pre>
 </div>
 </div>
 </li>
@@ -476,6 +490,7 @@ mode=archive-z2</code></pre>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="s6-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a></span>
+  <span class="next"><a href="../ch2-test/index.html">Validate initial deployment of RHEL for Edge images in local VMs using virsh and cockpit</a></span>
 </nav>
 </article>
   </div>
