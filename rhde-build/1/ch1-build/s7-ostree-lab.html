@@ -336,7 +336,7 @@ Complete!</code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Using your preferred text editor, create a file named <code>rhel-httpd.ks</code> with the following contents:</p>
+<p>Using your preferred text editor, create a file named <code>rhel9-httpd.ks</code> with the following contents:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">lang en_US.UTF-8
@@ -355,7 +355,7 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 </div>
 </div>
 <div class="paragraph">
-<p>You can also downlod the kickstart file from sample applications repository in GitHub. [Add a link!]</p>
+<p>You can also downlod the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks">kickstart file</a> from sample applications repository in GitHub.</p>
 </div>
 <div class="paragraph">
 <p>Most lines on that kickstart file can be changed according to needs, and real-world deployments would include items such as SSH keys for remote login and remote management. The important piece is the <code>ostreesetup</code> command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.</p>
@@ -365,7 +365,7 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 <p>Copy the Kickstart file to your home directory on the web server machine.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>scp rhel-httpd.ks servera.lab.example.com:~</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>scp rhel9-httpd.ks servera.lab.example.com:~</strong>
 ...</code></pre>
 </div>
 </div>
@@ -383,8 +383,8 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -1</strong>
 <em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em>-commit.tar
-rhel-httpd.ks
-$ <strong>sudo cp rhel-httpd.ks /var/ww/html</strong></code></pre>
+rhel9-httpd.ks
+$ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
 </div>
 </div>
 </li>
@@ -416,7 +416,7 @@ Extracting an edge commit image only works for initializing a new OSTree reposit
 total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
 drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
--rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel-httpd.ks</code></pre>
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel9-httpd.ks</code></pre>
 </div>
 </div>
 </li>
@@ -448,7 +448,7 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 <p>Check that a remote client can read the kickstart file over HTTP.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/rhel-httpd.ks</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/rhel9-httpd.ks</strong>
 lang en_US.UTF-8
 keyboard us
 timezone Etc/UTC --isUtc

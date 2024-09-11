@@ -240,7 +240,7 @@ API server status:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">inst.ks=http://servera.lab.example.com/rhel-httpd.ks</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">inst.ks=http://servera.lab.example.com/rhel9-httpd.ks</code></pre>
 </div>
 </div>
 </li>
@@ -256,7 +256,7 @@ API server status:
 --os-variant rhel9.2 \
 --location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
 --graphics=none \
---extra-args inst.ks=http://servera.lab.example.com/rhel-httpd.ks \
+--extra-args inst.ks=http://servera.lab.example.com/rhel9-httpd.ks \
 --extra-arg console=ttyS0 -v</code></pre>
 </div>
 </div>
@@ -289,7 +289,7 @@ Domain 'edge-test-1' has been undefined</code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Create a mininal blueprint for the edge installer image .</p>
+<p>Create a blueprint for the edge installer image.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ cat rhel9-installer.toml
@@ -297,6 +297,9 @@ name = "rhel9-installer"
 description = "blueprint-rhel9-installer"
 version = "0.0.1"</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can also downlod the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/rhel9-installer.toml">installer blueprint</a> from sample applications repository in GitHub.</p>
 </div>
 </li>
 <li>
