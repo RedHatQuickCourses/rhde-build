@@ -4,3 +4,4 @@ version: 1
 nav:
 - modules/ROOT/nav.adoc
 - modules/ch1-build/nav.adoc
+- modules/ch2-test/nav.adoc

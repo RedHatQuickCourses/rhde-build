@@ -1,0 +1,206 @@
+:time_estimate: 5
+
+= Lab: Boot Edge VMs from Remote OSTree Repostories
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Publish an Image Builder edge commit image in a remote HTTP server so it is available to edge devices.
+
+WARNING: Work In Progress
+
+== Before you Begin
+
+You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
+
+You need a second machine to run a web server that serves OSTree repositories. Make sure that machine was configured and verified by following the instructions from xref:ch1-build:s7-ostree-lab.adoc[].
+
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+
+If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
+
+== Instructions
+
+1. On your test machine, verify that you have the prerequisites from previous labs.
+
+.. Verify that TBD
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli status show*
+API server status:
+    Database version:   0
+    Database supported: true
+    Schema version:     0
+    API version:        1
+    Backend:            osbuild-composer
+    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+...
+--
+
+2. Install the libvirtd tools and its Cockpit module.
+
+.. Install the "Virtualization Host" package group to get the libvirtd, KVM, and Qemu daemons and tools.
++
+[source,subs="verbatim,quotes"]
+--
+$ sudo dnf group install -y "Virtualization Host"
+--
+
+.. Grant an unprivileged user with pemrission to create and manage virtual machines (MVs).
++
+[source,subs="verbatim,quotes"]
+--
+$ sudo groupmod libvirt -a -U student
+--
+
+3. Create a RHEL VM which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
+
+.. [ 1st attempt, from product docs ]
++
+[source,subs="verbatim,quotes"]
+--
+$ virt-install \
+--name edge-test-1 \
+--memory 2048 \
+--vcpus 2 \
+--disk path=edge-test-1.qcow2,format=qcow2,size=8 \
+--os-variant rhel9.0 \
+--cdrom /home/student/Downloads/rhel-9.4-x86_64-boot.iso
+--
++
+Edit the kernel manually entry by appending:
++
+[source,subs="verbatim,quotes"]
+--
+inst.ks=http://servera.lab.example.com/rhel-httpd.ks
+--
+
+.. [ 2nd attempt, from HOL007 ]
++
+[source,subs="verbatim,quotes"]
+--
+$ virt-install \
+--name edge-test-1 \
+--memory 4096 \
+--vcpus 2 \
+--disk size=40 \
+--os-variant rhel9.2 \
+--location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
+--graphics=none \
+--extra-args inst.ks=http://servera.lab.example.com/rhel-httpd.ks \
+--extra-arg console=ttyS0 -v
+--
++
+If I use --cdrom instead of --location I get: ERROR    Kernel arguments are only supported with location or kernel installs.
+
+.. All my attempts at using my custom kickstart with an edge commit image result in VMs that, after reboot, stay forever on "A start job is running for…rhel-swap/rhel-boot".
++
+They seem to deploy the ostree commit, from boot messages and the apache access log. I have no clue why they cannot finish installation.
+
+4. Cleaning up test VMs up between each attempt.
++
+[source,subs="verbatim,quotes"]
+--
+$ virsh destroy edge-test-1
+Domain 'edge-test-1' destroyed
+$ virsh undefine edge-test-1
+Domain 'edge-test-1' has been undefined
+--
+
+5. Create an edge installer image.
+
+.. Create a mininal blueprint for the edge installer image .
++
+[source,subs="verbatim,quotes"]
+--
+$ cat rhel9-installer.toml 
+name = "rhel9-installer"
+description = "blueprint-rhel9-installer"
+version = "0.0.1"
+--
+
+.. Upload the blueprint to the Image Builder service.
++
+[source,subs="verbatim,quotes"]
+--
+$  composer-cli blueprints push rhel9-installer.toml 
+$ composer-cli blueprints list
+rhel9-edge
+rhel9-installer
+--
+
+.. Build an edge installer using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a xref:ch1-build:s7-ostree-lab.adoc[previous lab].
++
+[source,subs="verbatim,quotes"]
+--
+$ composer-cli compose start-ostree rhel9-installer edge-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo/
+Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue
+--
+
+.. Wait until the compose finishes.
++
+[source,subs="verbatim,quotes"]
+--
+$ composer-cli compose list
+ID                                     Status     Blueprint         Version   Type
+7a5036e1-4037-4edc-82ff-4c632c0a84fc   RUNNING    rhel9-installer   0.0.1     edge-installer
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
+$ composer-cli compose list
+ID                                     Status     Blueprint         Version   Type
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
+7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
+575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
+--
+
+.. Download the edge installer image. You should get an ISO file.
++
+[source,subs="verbatim,quotes"]
+--
+$ composer-cli compose image 7a5036e1-4037-4edc-82ff-4c632c0a84fc
+7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso
+--
+
+6. Create a VM that boots from the edge installer image.
+
+.. [ 1st attempt, it fails to process the kickstart embeded in the ISO ]
++
+[source,subs="verbatim,quotes"]
+--
+$ virt-install \
+--name edge-test-2 \
+--memory 4096 \
+--vcpus 2 \
+--disk size=40 \
+--os-variant rhel9.2 \
+--location /home/student/7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso \
+--graphics=none \
+--extra-arg console=ttyS0 -v
+--
+
+.. [ 2nd attempt, it kinda works, seems to deploy the OSTree commit, but after reboot, it stays forever on "A start job is running for…rhel-swap/rhel-boot"... like it did with the attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository. ]
++
+[source,subs="verbatim,quotes"]
+--
+virt-install \
+--name edge-test-2 \
+--memory 4096 \
+--vcpus 2 \
+--disk size=40 \
+--os-variant rhel9.2 \
+--cdrom /home/student/7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso
+--
+
+.. I verified the edge installer ISO, it looks good: I can see the osbuild.ks file, the grub menus that refer to iso, and the local copy of OSTree repository.
+
+7. At this point, I have no clue why my edge images fail to finish installing/booting. What's different between my environment, besides not using the edge container image, compared to the HOL007?
+
+.. HOL7 does not use the kickstart inside the edge installer image, it uses its own custom kickstart... which was the basis for the one I used on my first attemp. HOL7 is *not* using the OSTree repo from inside the ISO, so it should work the same with a standard RHEL installation ISO.
+
+Conclusion statement.
+
+== Next Steps
+
+Lorem Ipsum.

@@ -153,11 +153,11 @@ zerombr
 clearpart --all --initlabel
 autopart
 reboot
-user --name=core --group=wheel
+user --name=core --group=wheel --password=redhat
 rootpw --lock
 network --bootproto=dhcp
 
-ostreesetup --nogpg --osname=rhel --remote=edge --url=https://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
+ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
 --
 +
 You can also downlod the kickstart file from sample applications repository in GitHub. [Add a link!]
@@ -201,7 +201,7 @@ $ *ls -lZ /var/www/html*
 total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
 drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
--rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 299 Sep  6 18:07 rhel-httpd.ks
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel-httpd.ks
 --
 
 .. If you need, change file permissions and SELinux labels.
