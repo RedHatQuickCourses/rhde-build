@@ -157,7 +157,7 @@ Work In Progress
 <p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You need a second machine to run a web server that serves OSTree repositories. Make sure that machine was configured and verified by following the instructions from <a href="../ch1-build/s7-ostree-lab.html" class="xref page">Lab: Publish Edge Images on Remote OSTree Repositories</a>.</p>
+<p>You need a second machine to run a web server that serves OSTree repositories. Make sure that machine was configured and verified by following the instructions from <a href="../ch1-build/s7-ostree-lab.html" class="xref page">the previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -223,7 +223,7 @@ API server status:
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>[ 1st attempt, from product docs ]</p>
+<p>1st attempt, from product docs.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ virt-install \
@@ -245,7 +245,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>[ 2nd attempt, from HOL007 ]</p>
+<p>2nd attempt, from HOL007.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ virt-install \
@@ -265,9 +265,9 @@ API server status:
 </div>
 </li>
 <li>
-<p>All my attempts at using my custom kickstart with an edge commit image result in VMs that, after reboot, stay forever on "A start job is running for…rhel-swap/rhel-boot".</p>
+<p>Both attempts at using a custom kickstart with an edge commit image result in VMs that, after reboot, stay forever on "A start job is running for…rhel-swap/rhel-boot".</p>
 <div class="paragraph">
-<p>They seem to deploy the ostree commit, from boot messages and the apache access log. I have no clue why they cannot finish installation.</p>
+<p>They seem to deploy the ostree commit, from boot messages and the apache access log. I have no clue why they cannot finish installation. :-(</p>
 </div>
 </li>
 </ol>
@@ -306,7 +306,7 @@ version = "0.0.1"</code></pre>
 <p>Upload the blueprint to the Image Builder service.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$  composer-cli blueprints push rhel9-installer.toml
+<pre class="highlightjs highlight"><code class="language-none hljs">$ composer-cli blueprints push rhel9-installer.toml
 $ composer-cli blueprints list
 rhel9-edge
 rhel9-installer</code></pre>
@@ -356,7 +356,7 @@ ID                                     Status     Blueprint         Version   Ty
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>[ 1st attempt, it fails to process the kickstart embeded in the ISO ]</p>
+<p>1st attempt, it fails to process the kickstart embeded in the ISO. It should <strong>not</strong> display Anaconda screens for choosing packages, installation source, etc.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ virt-install \
@@ -372,7 +372,10 @@ ID                                     Status     Blueprint         Version   Ty
 </div>
 </li>
 <li>
-<p>[ 2nd attempt, it kinda works, seems to deploy the OSTree commit, but after reboot, it stays forever on "A start job is running for…rhel-swap/rhel-boot"&#8230;&#8203; like it did with the attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository. ]</p>
+<p>2nd attempt, it kinda works, seems to deploy the OSTree commit, but after reboot, it stays forever on "A start job is running for…rhel-swap/rhel-boot"&#8230;&#8203;</p>
+<div class="paragraph">
+<p>Exactly like it did with the previous attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">virt-install \
@@ -396,7 +399,13 @@ ID                                     Status     Blueprint         Version   Ty
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>HOL7 does not use the kickstart inside the edge installer image, it uses its own custom kickstart&#8230;&#8203; which was the basis for the one I used on my first attemp. HOL7 is <strong>not</strong> using the OSTree repo from inside the ISO, so it should work the same with a standard RHEL installation ISO.</p>
+<p>HOL7 does not use the kickstart inside the edge installer image, it uses its own custom kickstart&#8230;&#8203; which was the basis for the one I used on my first attemp. HOL007 is <strong>not</strong> using the OSTree repo from inside the ISO, so it should work the same with a standard RHEL installation ISO.</p>
+</li>
+<li>
+<p>I refuse to accept it&#8217;s something with libvirtd or nested virtualization: we run OpenShift Virtualization, OpenStack, and RHV in the same environment. Why couldn&#8217;t image-based VMs using OSTree work? I&#8217;m more inclined to think there&#8217;s either an issue with the kickstart files (including the one generated by Image Builder inside the edge installer image) or with my virt-install commands.</p>
+</li>
+<li>
+<p>Would it be because I&#8217;m running VMs as an unprivileged user? I didn&#8217;t try following the HOL007 instructions, which work on the same classroom, without sudo.</p>
 </li>
 </ol>
 </div>
