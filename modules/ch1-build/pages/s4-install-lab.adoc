@@ -186,7 +186,7 @@ In the classroom environment, you should make the following edits:
 ...
 --
 +
-You can download a configuration file with all changes done from the sample applications repository in GitHub. [ Add a Link! ]
+You can download a https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-92.json[configuration file] with all changes done from the sample applications repository in GitHub.
 
 .. Restart the Image Builder service.
 +

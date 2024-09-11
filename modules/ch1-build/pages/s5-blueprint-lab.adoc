@@ -56,7 +56,7 @@ groups = [ ]
 hostname = "edge"
 --
 +
-You can download the minimal blueprint from the sample applications repository in GitHub. [ Add a Link! ]
+You can download the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/rhel9-edge.toml[minimal blueprint] from the sample applications repository in GitHub.
 
 .. Upload the blueprint to Image Builder.
 +
@@ -129,7 +129,7 @@ name = "httpd"*
 hostname = "edge"
 --
 +
-You can download the updated version of the blueprint from the sample applications repository in GitHub. [ Add a Link! ]
+You can download the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/rhel9-httpd.toml[changed version of the blueprint] from the sample applications repository in GitHub.
 
 5. Upload and validate the changed blueprint. It is not sufficient to make changes to the local file copy of the blueprint, you must send the changes to Image Builder so you can create images with your changes.
 

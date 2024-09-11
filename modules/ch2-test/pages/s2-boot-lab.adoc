@@ -74,7 +74,7 @@ Edit the kernel manually entry by appending:
 +
 [source,subs="verbatim,quotes"]
 --
-inst.ks=http://servera.lab.example.com/rhel-httpd.ks
+inst.ks=http://servera.lab.example.com/rhel9-httpd.ks
 --
 
 .. [ 2nd attempt, from HOL007 ]
@@ -89,7 +89,7 @@ $ virt-install \
 --os-variant rhel9.2 \
 --location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
 --graphics=none \
---extra-args inst.ks=http://servera.lab.example.com/rhel-httpd.ks \
+--extra-args inst.ks=http://servera.lab.example.com/rhel9-httpd.ks \
 --extra-arg console=ttyS0 -v
 --
 +
@@ -111,7 +111,7 @@ Domain 'edge-test-1' has been undefined
 
 5. Create an edge installer image.
 
-.. Create a mininal blueprint for the edge installer image .
+.. Create a blueprint for the edge installer image.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -120,6 +120,8 @@ name = "rhel9-installer"
 description = "blueprint-rhel9-installer"
 version = "0.0.1"
 --
++
+You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/rhel9-installer.toml[installer blueprint] from sample applications repository in GitHub.
 
 .. Upload the blueprint to the Image Builder service.
 +

@@ -141,7 +141,7 @@ $ *scp $UUID-commit.tar servera.lab.example.com:~*
 
 4. Still on your test manchine, create an Anacond Kickstart file that points to the OSTree repository on the web server.
 
-.. Using your preferred text editor, create a file named `rhel-httpd.ks` with the following contents:
+.. Using your preferred text editor, create a file named `rhel9-httpd.ks` with the following contents:
 +
 [source,subs="verbatim,quotes"]
 --
@@ -160,7 +160,7 @@ network --bootproto=dhcp
 ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
 --
 +
-You can also downlod the kickstart file from sample applications repository in GitHub. [Add a link!]
+You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks[kickstart file] from sample applications repository in GitHub.
 +
 Most lines on that kickstart file can be changed according to needs, and real-world deployments would include items such as SSH keys for remote login and remote management. The important piece is the `ostreesetup` command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.
 
@@ -168,7 +168,7 @@ Most lines on that kickstart file can be changed according to needs, and real-wo
 +
 [source,subs="verbatim,quotes"]
 --
-$ *scp rhel-httpd.ks servera.lab.example.com:~*
+$ *scp rhel9-httpd.ks servera.lab.example.com:~*
 ...
 --
 
@@ -180,8 +180,8 @@ $ *scp rhel-httpd.ks servera.lab.example.com:~*
 --
 $ *ls -1*
 _575d8ddc-2902-4de3-a0d5-82f5f194f5d8_-commit.tar
-rhel-httpd.ks
-$ *sudo cp rhel-httpd.ks /var/ww/html*
+rhel9-httpd.ks
+$ *sudo cp rhel9-httpd.ks /var/ww/html*
 --
 
 .. Extract the OSTree commit to the web server content directory.
@@ -201,7 +201,7 @@ $ *ls -lZ /var/www/html*
 total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
 drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
--rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel-httpd.ks
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel9-httpd.ks
 --
 
 .. If you need, change file permissions and SELinux labels.
@@ -225,7 +225,7 @@ $ *sudo rm compose.json*
 +
 [source,subs="verbatim,quotes"]
 --
-$ *curl http://servera.lab.example.com/rhel-httpd.ks*
+$ *curl http://servera.lab.example.com/rhel9-httpd.ks*
 lang en_US.UTF-8
 keyboard us
 timezone Etc/UTC --isUtc
