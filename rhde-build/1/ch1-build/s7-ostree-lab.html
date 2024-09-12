@@ -161,7 +161,7 @@ Work In Progress
 <p>You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.</p>
 </div>
 <div class="paragraph">
-<p>You run the web server in the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
+<p>You could run the web server in the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
 </div>
 <div class="paragraph">
 <p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="s6-compose-lab.html" class="xref page">previous lab</a>.</p>
@@ -173,7 +173,7 @@ Work In Progress
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>[ rename "test machine" everywhere to "developer manchine"? It&#8217;s not like real "developers" would use image builder ]</p>
+<p>[ rename "test machine" everywhere to "developement manchine"? It&#8217;s not like real "developers" would use image builder ]</p>
 </div>
 </div>
 </div>
@@ -185,6 +185,9 @@ Work In Progress
 </div>
 <div class="paragraph">
 <p>[ switch everyhere to use the hostname in the prompt? ]</p>
+</div>
+<div class="paragraph">
+<p>[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and comment about SSH keys ]</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -353,7 +356,6 @@ user --name=core --group=wheel --password=redhat123
 reboot
 
 network --bootproto=dhcp
-
 ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>
 </div>
 </div>
