@@ -16,7 +16,7 @@ You need a RHEL machine configured with the Image Builder service, its CLI and w
 
 You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.
 
-You run the web server in the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations. 
+You could run the web server in the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations. 
 
 You also need the edge commit image that was created and downloaded to your user home directory by the xref:s6-compose-lab.adoc[previous lab].
 
@@ -24,13 +24,15 @@ These instructions were tested on RHEL 9.4 [tentative!] but should work with min
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
-[ rename "test machine" everywhere to "developer manchine"? It's not like real "developers" would use image builder ]
+[ rename "test machine" everywhere to "developement manchine"? It's not like real "developers" would use image builder ]
 
 == Instructions
 
 [ could use a worflow diagram of the entire process, which spans multiple labs (and chapters!) ]
 
 [ switch everyhere to use the hostname in the prompt? ]
+
+[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and comment about SSH keys ]
 
 1. On your test machine, verify that you have the prerequisites from previous labs.
 
@@ -159,7 +161,6 @@ user --name=core --group=wheel --password=redhat123
 reboot
 
 network --bootproto=dhcp 
-
 ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
 --
 +

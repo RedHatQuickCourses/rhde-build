@@ -114,6 +114,8 @@ IMPORTANT: Red Hat does NOT recommend that you use Image Builder as the source o
 
 .. Use your preferred text editor to change the `rhel9-httpd.toml` file as follows. Make sure you do NOT change its `name` atribute!
 +
+Add Services and Firewall customizations, so the service is readily available on the device?
++
 [source,subs="verbatim,quotes"]
 --
 name = "rhel9-edge"
