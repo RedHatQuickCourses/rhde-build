@@ -56,6 +56,8 @@ $ sudo groupmod libvirt -a -U student
 --
 
 3. Create a RHEL VM which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
++
+*UPDATE:* second attempt now works, thanks to fixes to kickstart (autopart --type=plain). Now to find out how to put that entry on the kickstart for the installer image... and if I still need those for RHEL 9.4 and later.
 
 .. 1st attempt, from product docs.
 +
@@ -182,7 +184,7 @@ $ virt-install \
 --extra-arg console=ttyS0 -v
 --
 
-.. 2nd attempt, it kinda works, seems to deploy the OSTree commit, but after reboot, it stays forever on "A start job is running for…rhel-swap/rhel-boot"...
+.. 2nd attempt, it kinda works, but doesn't work unattended, as it would be expected. It enters anaconda UI stating that the kickstart is unsufficient and asking to enter the "Installation Destination" screen. I enter and accept the defaults of automatic partitioning. Then I can begin installation, it seems to deploy the OSTree commit, and complete the installation. But after rebooting, it stays forever on "A start job is running for…rhel-swap/rhel-root"... just like the previous attempts. :-(
 +
 Exactly like it did with the previous attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository.
 +
