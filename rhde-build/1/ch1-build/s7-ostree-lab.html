@@ -341,14 +341,17 @@ Complete!</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">lang en_US.UTF-8
 keyboard us
-timezone Etc/UTC --isUtc
+timezone Etc/UTC --utc
 text
+
 zerombr
 clearpart --all --initlabel
-autopart
-reboot
-user --name=core --group=wheel --password=redhat
+autopart --type=plain
 rootpw --lock
+user --name=core --group=wheel --password=redhat123
+
+reboot
+
 network --bootproto=dhcp
 
 ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>

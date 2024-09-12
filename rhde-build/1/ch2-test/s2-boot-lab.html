@@ -220,6 +220,9 @@ API server status:
 </li>
 <li>
 <p>Create a RHEL VM which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
+<div class="paragraph">
+<p><strong>UPDATE:</strong> second attempt now works, thanks to fixes to kickstart (autopart --type=plain). Now to find out how to put that entry on the kickstart for the installer image&#8230;&#8203; and if I still need those for RHEL 9.4 and later.</p>
+</div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -372,7 +375,7 @@ ID                                     Status     Blueprint         Version   Ty
 </div>
 </li>
 <li>
-<p>2nd attempt, it kinda works, seems to deploy the OSTree commit, but after reboot, it stays forever on "A start job is running for…rhel-swap/rhel-boot"&#8230;&#8203;</p>
+<p>2nd attempt, it kinda works, but doesn&#8217;t work unattended, as it would be expected. It enters anaconda UI stating that the kickstart is unsufficient and asking to enter the "Installation Destination" screen. I enter and accept the defaults of automatic partitioning. Then I can begin installation, it seems to deploy the OSTree commit, and complete the installation. But after rebooting, it stays forever on "A start job is running for…rhel-swap/rhel-root"&#8230;&#8203; just like the previous attempts. :-(</p>
 <div class="paragraph">
 <p>Exactly like it did with the previous attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository.</p>
 </div>
