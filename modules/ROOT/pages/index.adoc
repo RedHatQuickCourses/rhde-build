@@ -3,13 +3,13 @@
 
 == Objective
 
-This course teaches how to create Red Hat Device Edge images for edge devices and kiosk computers. It focus on using the image builder tool to create and deploy edge images based on the OSTree technology.
+This course teaches how to create *Red Hat Device Edge* images for edge devices and kiosk computers using Red Hat Enterprise Linux (RHEL), more specifically its *RHEL for Edge* features. It focus on using the Image Builder tool to create and deploy edge images based on the OSTree technology.
 
 == Audience
 
 Operations-focused customer roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
 
-* System Administrations
+* System Administrations (IT and OT)
 * Site Reliability Engineers (SREs)
 * DevOps Engineers
 
