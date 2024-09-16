@@ -15,9 +15,9 @@ WARNING: Work In Progress
 
 Red Hat Device Edge is a software and support subscription that bundles three components:
 
-. Red Hat Enterprise Linux (RHEL)
-. Red Hat build of MicroShift
-. Red Hat Ansible Automation Platform
+. Red Hat Enterprise Linux (RHEL) and its RHEL for Edge feature.
+. Red Hat build of MicroShift.
+. Red Hat Ansible Automation Platform.
 
 [ figure of RHDE components, include something on elligible hardware or subscription sizing? ]
 
@@ -67,12 +67,11 @@ Each of the previous steps is, by itself, another multi-step process, which take
 
 While you can prevent human erros and enforce reproducibility and consistency with automation, you woud be, in essense, emulating a human user performing all those steps at day-2. What happens if you lose connectivity to an edge device in the middle of one of those multi-step subprocesses?
 
-Image-based deployments ensure that most steps are performed at day-0, as part of image building, so that that systems are as close to ready as possible at day-1 and require only minimal maintenance on day-2.
+Image-based deployments work on the premise that most steps are performed at day-0, as part of image building, so that that systems are as close to ready as possible at day-1 and require only minimal maintenance on day-2.
 
 [ Figure of day-0+1+2 of deploying and configuring an image-based system ]
 
 Building system images with preconfigured operating systemas and applications is not a new concept. It started with low-level server disk cloning software and evolved to different automation strategies. You can find many preconfigured machine images in large IaaS cloud provider marketplaces and many organizations use golden images to deploy applications consistently into multiple regional datacenter and cloud provider regions. But not all system images are designed to be edge images.
-
 
 == Image-Based Updates
 
@@ -90,7 +89,7 @@ Image-based deployments are consistent with the IT trend of "shift left" securit
 
 == The RHEL for Edge Software Stack
 
-The RHEL for Edge feature set relies on the following components of Red Hat Enterprise Linux:
+The RHEL for Edge feature relies on the following components of Red Hat Enterprise Linux:
 
 Image Builder::
 
@@ -102,36 +101,51 @@ The OSTree technology enables deploying and updating bootable operating system i
 
 RPM-OSTree::
 
-The RPM-ostree technology is a bridge between the world of traditional Linux systems and image-based deployments. It enables building OSTree operating system images from RPM packages and, optionally, adding RPM packages as an extension layer to an OSTree deployment.
+The RPM-ostree technology is a bridge between the world of traditional Linux systems and image-based deployments. It enables building OSTree operating system images from RPM packages and, optionally, adding RPM packages as an extension layer into an OSTree deployment.
 
 Green Boot::
 
-The Green Boot enables performing healh checks at system boot and, if those checks detect any issue, rollback the system to a previous system image. Green Boot ensures that system updates can be aplied safely and reliably, without intervention from IT personal in case of issues.
+The Green Boot technology enables performing healh checks at system boot and, if those checks detect any issue, rollback the system to a previous system image. Green Boot ensures that system updates can be aplied safely and reliably, without intervention from IT personal in case of issues.
 
 FIDO Device Onboard (FDO)::
 
-The FDO standars enable installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms and with central IT systems. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart, cloud-init, and ignition, but the FDO standard is gaining traction in the Internet-of-Things (IoT) commnuity and vendors.
+The FDO standard enable installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms and with central IT systems. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart, cloud-init, and ignition, but the FDO standard is gaining traction in the Internet-of-Things (IoT) commnuity and vendors.
 
 In this course, we focus on using the Image Builder and RPM-OSTree components of RHEL for Edge to deploy and update edge devices. Other courses will teach the use of Green Boot and FDO to automate system image rollback and device onboarding.
 
+== Managing Edge Systems Versus Tradictional RHEL Systems
+
+Regular images from Image Builder work the same as if you deploy RHEL from its installation media: they are package-based systems. After you install a physical system or boot a VM from these images, you manage it exactly the same way as if you installed the system from RHEL installation media.
+
+Edge images, in contrast, are image-based systems. They assume most customizations are predefined in the system image, and that software updates are performed by installing another complete system image.
+
+Consider the scenario of updating a system to mitigate a CVE vulnerability with the Apache Web Server. You would act differently on image-based systemas compared to traditional package-based systems:
+
+* On regular RHEL, which is a package-based system, you would SSH into the system and use `dnf` to update the `httpd-server` package and its dependencies.
+
+* On RHEL for Edge, which is an image-based system, you would use Image Build to build a new system image that includes the updated `httpd-server` package and dependencies, and them deploy the new system image on the system.
+
+Installing and updating RHEL for Edge systems requires different approaches and operationa procedures, compared to traditional RHEL systems. Good news, this does not have to affect application development and testing. Because RHEL for Edge is RHEL, edge devices have compatibility with applications and hardware with traditional RHEL. You can develop and test applications using traditional RHEL and later depeloy them in RHEL for Edge systems.
+
+An added benefit of RHEL for Edge is a consequence of the fact that RPM-OSTree keeps multiple system images side-by-side in a system, so downloading updates does not affect a running system -- constrast that with RPM package updates, which can alter files which are in use by running processes and produce unpredictable results. And, if the switch to the updated system image fails, the previous working system image is still unchanged in your edge devices, and you can roolback to it quickly.
+
 == RPM-OSTree, OpenShift, and Red Hat CoreOS
 
-The typical RHEL system administrator may not be used to manage image-based systems nor to using the RPM-OSTree technology, but can rest assured that these techologies are battle-tested in large production deployments of OpenShift 4 for many years already.
+The typical RHEL system administrator may not be used to manage image-based systems nor to using the RPM-OSTree technology, but can rest assured that these techologies are already mature, being used in large production deployments of OpenShift 4 for many years already.
 
-Red Hat CoreOS is Red Hat Enterprise Linux, but deployed and updated using an image-based workflow by the Red Hat OpenShift installer and the OpenShift Machine Operator. The Linux Kernel, device drivers, and system services are the same as from regular RHEL, as they are with RHEL for Edge.
+Red Hat CoreOS is Red Hat Enterprise Linux, but deployed as an image-based system by the Red Hat OpenShift installer and updated by the OpenShift Machine Operator. The binaries for the Linux Kernel, device drivers, and system services are the same as from regular RHEL, as they are with RHEL for Edge.
 
-Red Hat CoreOS is also designed to be managed by OpenShift, in the sense that you would not log in on OpenShift cluster nodes and change system settings, but would apply those changes using the OpenShift Machine Operator.
+Red Hat CoreOS is also designed to be managed by OpenShift, in the sense that you would not log in on OpenShift cluster nodes and change system settings, but would apply those changes using the OpenShift Machine Operator. RHEL for Edge, in constrast, is designed to be managed using regular RHEL tools, such as Ansible and Secure Shell.
 
 RHEL for Edge makes the RPM-OSTree techonology and image-based systems available for edge devices and edge servers, whithout the need to use OpenShift and learn its deployment and management workflows. It is a ligher transition for the RHEL system administrator.
 
-
 == The Future: RHEL Image Mode and Bootc
 
-If you wonder that image-based operating system deployments and updates are very similar to containerised application deployment and management, you are right. In fact, there's an ongoing engineering effort to integrate workflows from the Linux container world with the image-based operating systems world. This will become a new feature set of RHEL, called Image Mode, and it is based on a new tool called Bootc.
+If you wonder that image-based operating system deployments and updates are very similar to containerised application deployment and management, you are right. In fact, there's an ongoing engineering effort to integrate workflows from the Linux container world with the image-based operating systems world. This will become a new feature set of RHEL, called RHEL Image Mode, and it is based on a new tool called Bootc.
 
 You will be able to use either Image Builder or traditional Linux container tools, such as Podman and Buildah, to build operating system images and distribute them as OCI container images, which eases integration with cloud-native application development tools and CI/CD processes.
 
-The first incarnations of RHEL Image Mode will still depend on the the OSTree and RPM-OStree foundations, and, if it ever comes the time they replace OSTree with something else, they are expected to continue relying long-tem on Green Boot, FDO, and other technologies from RHEL for Edge. 
+The first incarnations of RHEL Image Mode still depend on the the RPM-OStree foundation, and, if it ever comes the time it replaces OSTree with something else, RHEL Image Mode is expected to continue relying long-tem on Green Boot, FDO, and other technologies from RHEL for Edge. 
 
 In essense, RHEL Image Mode will expand the RHEL for Edge feature set for better integration with containerized application development workflows instead of replacing it entirely with a new set of technologies.
 
@@ -139,5 +153,5 @@ In essense, RHEL Image Mode will expand the RHEL for Edge feature set for better
 
 // Add links to previous headings on bootc, FDO, ostree, etc
 
-Before learning about the operation and image types supported by Image Builder, you will assess your understanding of how edge sites differ from corporate IT datacenters and cloud IT.
+Before learning about the operation of Image Builder and edge image types, you will assess your understanding of how edge sites differ from traditional corporate IT datacenters and cloud IT.
 

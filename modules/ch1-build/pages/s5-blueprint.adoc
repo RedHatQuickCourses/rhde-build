@@ -1,0 +1,133 @@
+:time_estimate: 5
+
+= Create and Manage Blueprints for Edge Images
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Undestand the syntax and usage of Image Builder blueprints to produce edge images.
+
+WARNING: Work In Progress
+
+== Image Builder Blueprints and Composes
+
+[ Reminder of the build/publish process, and where we are in it ]
+
+Operation of the Image Builder service is based on the concepts of blueprints and composes.
+
+You provide to Image Builder a _blueprint_ that defines characteriscs of the system image, such as installed packages and enabled system services. It also defines customization such as predefined users, enabled sytem services, and open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
+
+Using blueprint as input, Image Builder runs a _compose_, which a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.
+
+An Image Builder blueprint should be independent of the target environment where you deploy the image. When you build a compose, Image Builder adds hardcoded customizations which depend on the image type. For example, if you build an Amazon Machine Image (AMI), Image Builder enables the Cloud-Init service and also adds the AWS Systems Manager client. You could use the same blueprint to build different types of composes, for example ISO images to boot a physical system and Qcow2 images for OpenStack private clouds.
+
+The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of different target platforms such as cloud providers and hypevisors. It ensures your image contains all recommended settings and system services for working whell on each platform.
+
+All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to create composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual systems. As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take AWS API credentials as input and upload AMI images to AWS S3 so you can use them to create AWS EC2 instances.
+
+// Advance that on the previous section
+Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of those images, for example Anaconda Kickstart files and Cloud-init. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.
+
+The remaining of this section focuses on blueprints, and the next section focuses on composes.
+
+== Using Blueprints with Image Builder
+
+A Blueprint is a text file using the https://toml.io/en/[TOML] syntax, which is very similar to INI files from Windows and Samba. The TOML syntax was designed for ease of processing by code and ease of converting to and from JSON. Keys in a TOML file can be composed of dot notation, supporting nested attributes, and multiple sections of same name are grouped in arrays.
+
+You upload the TOML file to the Image Builder service, and the copy in Image Builder storage serves as input for composes. If you change a blueprint file, you must upload the changed file to Image Builder to be able to run new composes with the changes.
+
+Once you upload (or push) a blueprint to Image Builder, it's file name is fogotten. You must refer to the blueprint by its `name` attribute.
+
+== General Blueprint Syntax
+
+Lorem ipsum.
+
+== Naming Blueprints and Composes
+
+Image Builder allows you to give human-readable names to blueprints, but it allways identifies images or composes using UUIDs. A compose refers to a specific build of a blueprint, so there could me multiple composes for the same blueprint. For example, you could build a new compose from an existing blueprint to create a new image with RPM package updates from RHEL.
+
+Image Builder maintains not only the image data for a compose, but also metadata such as package lists and build logs. Using the compose metadata, it is easy to compare two composes from the same blueprint and see what changed in the resulting image.
+
+[ Need more -- concepts. docs/upstream links, or maybe just more highlight as heading or def lists -- to blueprints and composes. Trying to postpone details to RHDE-2-4 ]
+
+== General Syntax of a Blueprint
+
+Lorem ipsum
+
+== The Composer CLI client
+
+The `composer-cli` command provides the Image Builder command-line client. It sumbits requests to the Image Builder service through the `/run/weldr/api.socket` UNIX socket, wich is accessible to the `weldr` group. So, any user that is member of the `weldr` group can build RHEL for Edge images using the Image Builder service.
+
+The general syntax of Image Builder CLI client commands consists of an _object_ and a _verb_, where object is an entity mangaged by Image Builder, such as `blueprints`, `compose`, and `projects`, and verb is an action to perform on the entity or set of entities.
+
+[source,subs="verbatim,quotes"]
+--
+composer-cli _object_ _verb_ [_options_] [_arguments_]
+--
+
+Not all commands start with an object, sometimes there's just a verb.
+
+NOTE:: The `compose` object is singular, while most other objects, such as `blueprints` and `projects`, are plural.
+
+For example, the following command lists all blueprints known to Image Builder:
+
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli blueprints list*
+--
+
+And the following command lists the types of composes that Image Builder recognizes:
+
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose types*
+--
+
+You can use the `--help` option with any object or verb, and you can also use the `help` command, so all the following are examples ways of getting online help from the Image Builder CLI:
+
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli help*
+$ *composer-cli --help*
+$ *composer-cli help blueprints*
+$ *composer-cli blueprints --help*
+$ *composer-cli help blueprints list*
+$ *composer-cli blueprints list --help*
+--
+
+// gropmod weldr -a -U student
+
+Take your time to study the on-line help of the Image Builder CLI. There are some operations there which are not available from the Cockpit module.
+
+== The Composer Cockplit Module
+
+The Composer Cockpit module provives the Image Builder web user interface. It adds an *Image Builder* item to the left navigation pane of the Cockpit user interface with three tabs:
+
+Blueprints::
+
+Manages blueprints and creates images from blueprints.
+
+Images::
+
+Manages images and access the build logs from creating an image.
+
+Sources::
+
+Manages package repositories used to download RPM packages from RHEL and third-party applications.
+
+.The Composer Cockpit module in the blueprints page.
+image::cockpit-image-builder.png[]
+
+Notice that the Image Builder CLI uses the `compose` command to refer to images, while the Image Builder web UI uses the term "image" to refer to composes.
+
+.The Composer Cockpit module in the images page, which lists composes.
+image::cockpit-image-builder-images.png[]
+
+Notice that the Image Builder web UI is designed for large monitors and requires wide horizontal resolution, else headings and data may be truncated in the images page.
+
+== Next Steps
+
+REWRITE
+
+Now that you was introduced to the essential concepts of RHEL for Edge, a series of hands-on activties install and configure Image Builder in a test system and build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use new system images.

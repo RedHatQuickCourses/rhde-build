@@ -1,7 +1,7 @@
 = Build Operating System Images for Edge Devices
 
 Goal:: 
-Build RHEL for Edge images using RHEL image builder and cockpit
+Build RHEL for Edge images using RHEL Image Builder and Cockpit
 
 == Introduction
 

@@ -6,164 +6,72 @@ _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Understand the characteristics of RHEL for Edge images and the workflows for building and publishing them.
+Understand the generic characteristics of RHEL for Edge images and the workflows for building and publishing them.
 
 WARNING: Work In Progress
 
+[ This needs to work as an intro to the whole process of building and publishing edge images]
+
+== Provision and Update Edge Devices with Image Builder and RPM-OSTree
+
+The Image Builder service is the main tool to create RHEL for Edge system images, which it calls edge images. There are multiple ways of using those images to provision and update edge devices, and the following figure gives an overview of the general workflow:
+
+// The figure from slide #24 https://docs.google.com/presentation/d/1h9eEpeSgUTAWVxi3gSjbereypMQEuoTE3I5dPtY_DeQ/edit#slide=id.g2c32966f6af_0_1664 and the blog post https://www.redhat.com/en/blog/how-to-create-a-fully-self-contained-os-image-that-includes-your-kubernetes-workload are variations of each other. IMHO the one from the blog is better. IMHO both figures are incorrect to mention "files" as input. I cannot just add a random file, not packaged as an RPM, at least not to edge images.
+
+image:imagebuilder-ostree-device.png[Edge device provision and update workflow]
+
+Image Builder takes as input a blueprint, which describes the operating system and application components to include in the system image, such as RPM packages from RHEL, RHEL packages from third-party DNF repositories, and container images.
+
+Image Builder and outputs a system image which, in the case of an edge system image, is an OSTree commit produced by RPM-OSTree.
+
+You can use the OSTree commit as-is, and copy (or push) the OSTree commit to a remote OSTree repository in a standard web server. Then the standard RHEL instaler, with a custom kickstart file, can download and deploy the OSTree commit into an edge device.
+
+Alternatively, you can instruct Image Builder to embed the OSTree commit into a bootable image, producing a custom installation image which is self-sufficient to boot and install an edge device without access to a remote web server.
+
+The same custom installation media could be used with a standard network boot server, maybe a server that is local to an edge site.
+
+Regardless of how an edge device was initially provisioned, edge device updates must follow the same workflow: the device downloads a new OSTree commit from a remote web server. You must copy (or push) the new image, from Image Builder, to that web server, so that edge devices can fetch the new image and update themselves.
+
 == The RHEL Image Builder Service
 
-[ Maybe break this entire presentation into multiple lectures and interleave them with the labs ]
+The Image Builder runs as a system service in RHEL, named *osbuild-composer*, with which you interact by means of the *composer-cli* command-line client or the *Composer* Cockpit module. It can generate various types of system images, including edge images.
 
-[ Add something on why it needs to be a system service and why it's secure (unlike docker)]
+Image Builder needs elevated system privileges to manipulate SELinux labels and other attributes in files that belong to a system image, but unprivileged users can interact with it safely using one of its clients. That means, you don't need a root password or sudo privilege to build sustem images with the Image Builder service. You only need file system access to its UNIX socket file, which is allowed to the `weldr` group.
 
-[ Use figure from slide #24 https://docs.google.com/presentation/d/1h9eEpeSgUTAWVxi3gSjbereypMQEuoTE3I5dPtY_DeQ/edit#slide=id.g2c32966f6af_0_1664 ]
+Unlike other similar services, such as the Docker daemon, Image Builder has a limited scope of operations, which ensures that access to the Image Builder service does not allow its users to perform privileged operations. Access to Image Builder does *not* make a user a "root equivalent" and does not create any significant security risks.
 
-The Image Builder tool is a system service in RHEL, named *osbuild-composer*, with which you interact by means of the *composer-cli* command-line client or the *Composer* Cockpit module. It can generate various types of system images, including edge images.
+The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of multiple target platforms such as cloud providers and hypevisors. It ensures your image contains all recommended settings and system services for working well on each platform.
 
-[ figure of image builder service, its clients, input blueprint, and output images ]
+Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of those images, for device or site-specific configuration. Anaconda Kickstart, cloud-init, and CoreOS ignition are among the suported alternatives. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.
 
-The Image Builder service in RHEL is not designed for remote clients, and it does not support creating system images, or *composes*, for operating systems different than the one it is running on. For example, you cannot use the Image Builder service from RHEL 9 to build a RHEL 8 nor a CentOS 9 Stream system image. Most likely, you will be running Image Builder in a VM and using SSH or Cockpit to interact with Image Builder on that VM.
+Cloud customizations and edge customizations are not exclusive: Image Builder can generate an edge image, which is an image-based system, for a cloud edge platform, such as AWS Outposts. That image will use the cloud service formats, for example AWS AMI, and support cloud provider agents, such as AWS System Manager, and also cloud provider configuration services, for example cloud-init for AWS.
 
-You provide to Image Builder a blueprint using the https://toml.io/en/[TOML] syntax, which is very similar to INI files from Windows and Samba. A blueprint defines characteriscs of the system image, such as installed packages and enabled system services. It also enables customization of users, networking, and other system configurations, and not all of them are supported for edge images. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
+== Image Builder Clients
 
-An Image Builder blueprint should be independent of the target environment where you deploy the image. When you build a compose, Image Builder adds hardcoded customizations which depend on the image type. For example, if you build an Amazon Machine Image (AMI), Image Builder enables the Cloud-Init service and also adds the AWS Systems Manager client. You could use the same blueprint to build different types of composes, for example ISO images to boot a physical system and Qcow2 images for OpenStack private clouds.
+There are three ways of interacting with the Image Builder service:
 
-The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of different target platforms such as cloud providers and hypevisors. It ensures your image contains all recommended settings and system services for working whell on each platform.
+* Using its command-line client, the `composer-cli` command.
 
-All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to build composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual systems. As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take AWS API credentials as input and upload AMI images to AWS S3 so you can use them to create AWS EC2 instances.
+* Using the web UI of the Composer Cockpit module.
 
-Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of those images, for example Anaconda Kickstart files and Cloud-init. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.
+* Using the osbuild Ansible collection.
 
-== Edge Images Versus Package-based Systems
+[ Move to here here the constrains on same OS release and advice of running in a VM ]
 
-Regular compose types from Image Builder work the same as if you deploy RHEL from its installation media: they are package-based systems. After you install a physical system or boot a VM from these images, you manage it exactly the same way as if you installed the system from RHEL installation media.
+== Edge Device Updates with RPM-OSTree
 
-Edge compose types, in contrast, are image-based systems. They assume most customizations are predefined in the system image, and that software updates are performed by installing another system image.
+We already learned that the Image Builder service uses RPM-OSTree to build edge system images from RPM packages. We also learned that an edge system image is an OSTree commit, which can be stored on the edge device itself, on bootable media, and also on OSTree repositories in remote web servers. 
 
-Consider the scenario of updating a system to mitigate a CVE vulnerability with the Apache Web Server. You would act differently on image-based systemas compared to traditional package-based systems:
+Edge devices use RPM-OSTree to download system image updates, as new OSTree commits, and deploy them as the active system image for the next boot. You either log in manually on each edge device to command RPM-OSTree to fetch and deploy updates or you update that process using Ansible.
 
-* On regular RHEL, which is a package-based system, you would SSH into the system and use `dnf` to update the `httpd-server` package and its dependencies.
+As you would expect, all edge system images produced by Image Builder are hardcoded to include the RPM-OSTree tooling, so that edge devices can be updated.
 
-* On RHEL for Edge, which is an image-based system, you would use Image Build to build a new system image that includes the updated `httpd-server` package and dependencies, and them deploy the new system image on the system.
+Once you build a new system image with the Image Builder service, you must publish the new image, that is, the new OSTree commit, on a remote OSTree repository, so that edge devices can fetch it. You either use OSTree repository management commands to copy (or push) the OSTree commit, or you automate that process publishing edge images using Ansible.
 
-Installing and updating RHEL for Edge systems requires different approaches from the RHEL systems you are used to, while preserving compatibility with applications and hardware. You can develop and test applications using "regular RHEL" and later depeloy them in RHEL for Edge systems. 
+Your devopment system, which you use to build and test edge system images with RHEL for Edge, must include the OSTree tooling, so you can publish images and updates to remote OSTree repositories, in addition to the Image Builder service and its clients.
 
-== Edge Images and RPM-OSTree
-
-Edge images from Image Builder are based on the OSTree technology, which configures the root filesystem as read-only. Well, not the true root file system, it's actually a chroot, but you learn those details later in this course. In an OSTree-based system, you cannot change a system file, not even as root, except by deploying a new system image an rebooting into the new image.
-
-OSTree can keep multiple system images side-by-side in a system, so downloading updates does not affect a running system -- constrast that with RPM package updates, which can alter files which are in use by running processes and produce unpredictable results.
-
-The OSTree technology is not designed to be usable by itself, but to be infrastructure under higher-level Linux distribution tooling. In RHEL, the higher level infrastructure is RPM-OSTree, which builds OSTree system images from RPM packages.
-
-Image Builder users do not interact with the RPM-OSTree and OSTree tooling directly, at least not to build edge images. But they must interact with RPM-OSTree to distribute and apply updates to edge systems. [NOT TRUE]
-
-== Edge Image Types
-
-The only indispensable type of edge image (or edge compose) from Image Builder is the *edge commit image*. It provides an OSTree image, called a *OSTree commit*, as a single compressed archive.
-
-That OSTree commit can be pushed into an OSTree repository, and then consumed by a RHEL installation image, with a custom Kickstart file, to deploy into a physical system or virtual machine. This is a suggested workflow for developer testing and CI/CD pipelines.
-
-You can also use Image Builder to take an OSTree commit and build one of the following kinds of derived edge composes:
-
-Edge installer images::
-
-They include a RHEL installer and an OSTree commit, so you can boot a physical system and install the system image, instead of using the RHEL installation media.
-
-Edge cloud images::
-
-They are directly bootable by cloud or hypervisor platforms and include an already deployed OSTree commit.
-
-Both types of derived edge composes can install an edge system without network access to an OSTree repository, and you can use either the standard RHEL installation image or an edge installer image to install edge systems from network boot instead of booting from local media.
-
-[ figure of RHEL ISO + remote OSTree commit and edge installer image with embeded OSTree commit ]
-
-Whatever the boot method and compose type you use for installing an edge system, it requires access to a remote OSTree repository to fetch and deploy system updates. Image Builder cannot build anyhing similar to an "edge update image", which would boot from local media or network boot and apply a system update. Such feature is currently in development, as part of the Red Hat In Veichle Operating System (RHIVOS), but it is not supported yet by Image Builder on RHEL.
-
-In fact, all bootable types of edge composers supported by Image Builder are preconfigured with an OSTree remote, which points to an OSTree repository server, except for the *edge container image*. This is a special type of compose designed to run as a Linux container which serves an OSTree commit over HTTP. It is intended as a quick way for a developer to provision a remote OSTree repository to build and test edge installer images, but it is not designed for long term usage nor for serving system updates.
-
-In this course, you will NOT use edge container composes, you will instead learn how to configure and manage remote OSTree repositories so you can provide system updates to edge devices.
-
-== Naming Blueprints and Composes
-
-Image Builder allows you to give human-readable names to blueprints, but it allways identifies images or composes using UUIDs. A compose refers to a specific build of a blueprint, so there could me multiple composes for the same blueprint. For example, you could build a new compose from an existing blueprint to create a new image with RPM package updates from RHEL.
-
-Image Builder maintains not only the image data for a compose, but also metadata such as package lists and build logs. Using the compose metadata, it is easy to compare two composes from the same blueprint and see what changed in the resulting image.
-
-[ Need more -- concepts. docs/upstream links, or maybe just more highlight as heading or def lists -- to blueprints and composes. Trying to postpone details to RHDE-2-4 ]
-
-== The Composer CLI client
-
-The `composer-cli` command provides the Image Builder command-line client. It sumbits requests to the Image Builder service through the `/run/weldr/api.socket` UNIX socket, wich is accessible to the `weldr` group. So, any user that is member of the `weldr` group can build RHEL for Edge images using the Image Builder service.
-
-The general syntax of Image Builder CLI client commands consists of an _object_ and a _verb_, where object is an entity mangaged by Image Builder, such as `blueprints`, `compose`, and `projects`, and verb is an action to perform on the entity or set of entities.
-
-[source,subs="verbatim,quotes"]
---
-composer-cli _object_ _verb_ [_options_] [_arguments_]
---
-
-Not all commands start with an object, sometimes there's just a verb.
-
-NOTE:: The `compose` object is singular, while most other objects, such as `blueprints` and `projects`, are plural.
-
-For example, the following command lists all blueprints known to Image Builder:
-
-[source,subs="verbatim,quotes"]
---
-$ *composer-cli blueprints list*
---
-
-And the following command lists the types of composes that Image Builder recognizes:
-
-[source,subs="verbatim,quotes"]
---
-$ *composer-cli compose types*
---
-
-You can use the `--help` option with any object or verb, and you can also use the `help` command, so all the following are examples ways of getting online help from the Image Builder CLI:
-
-[source,subs="verbatim,quotes"]
---
-$ *composer-cli help*
-$ *composer-cli --help*
-$ *composer-cli help blueprints*
-$ *composer-cli blueprints --help*
-$ *composer-cli help blueprints list*
-$ *composer-cli blueprints list --help*
---
-
-// gropmod weldr -a -U student
-
-Take your time to study the on-line help of the Image Builder CLI. There are some operations there which are not available from the Cockpit module.
-
-== The Composer Cockplit Module
-
-The Composer Cockpit module provives the Image Builder web user interface. It adds an *Image Builder* item to the left navigation pane of the Cockpit user interface with three tabs:
-
-Blueprints::
-
-Manages blueprints and creates images from blueprints.
-
-Images::
-
-Manages images and access the build logs from creating an image.
-
-Sources::
-
-Manages package repositories used to download RPM packages from RHEL and third-party applications.
-
-.The Composer Cockpit module in the blueprints page.
-image::cockpit-image-builder.png[]
-
-Notice that the Image Builder CLI uses the `compose` command to refer to images, while the Image Builder web UI uses the term "image" to refer to composes.
-
-.The Composer Cockpit module in the images page, which lists composes.
-image::cockpit-image-builder-images.png[]
-
-Notice that the Image Builder web UI is designed for large monitors and requires wide horizontal resolution, else headings and data may be truncated in the images page.
-
+Once you automate provision and updates of edge devices using Ansible, it makes sense to also update edge image creation using Ansible, so that you have an end-to-end, automated process, for building and deploying edge system images. Ideally, you would integrate that automation with the CI/CD system that builds applications you run on your edge devices.
 
 == Next Steps
 
-Now that you was introduced to the essential concepts of RHEL for Edge, a series of hands-on activties install and configure Image Builder in a test system and build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use new system images.
+Now that you was introduced to the essential concepts of RHEL for Edge, a series of hands-on activties install and configure Image Builder in a development system, which you use to build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use newer system images.
