@@ -4,4 +4,3 @@
 ** xref:s4-install-lab.adoc[]
 ** xref:s5-blueprint-lab.adoc[]
 ** xref:s6-compose-lab.adoc[]
-** xref:s7-ostree-lab.adoc[]

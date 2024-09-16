@@ -1,0 +1,10 @@
+= Publish Operating System Images for Edge Devices
+
+Goal:: 
+Publish RHEL for Edge images in remote OSTree repositories.
+
+== Introduction
+
+This chapter introduces OSTree repository management and OSTree concepts such as commits and remotes.
+
+After explaining these concepts, this chapter starts a series of hands-on activities which configure a web server to provide OSTree repositories and publish operating system images for edge device on those repositories, which they can be used later to provision devices in edge locations.
