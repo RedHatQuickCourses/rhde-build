@@ -179,8 +179,11 @@ Work In Progress
 <div class="paragraph">
 <p>The Image Builder service is the main tool to create RHEL for Edge system images, which it calls edge images. There are multiple ways of using those images to provision and update edge devices, and the following figure gives an overview of the general workflow:</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/imagebuilder-ostree-device.png" alt="Edge device provision and update workflow"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s3-images-fig-1.svg" alt="s3 images fig 1">
+</div>
+<div class="title">Figure 1. Edge device installation and update workflow</div>
 </div>
 <div class="paragraph">
 <p>Image Builder takes as input a blueprint, which describes the operating system and application components to include in the system image, such as RPM packages from RHEL, RHEL packages from third-party DNF repositories, and container images.</p>
