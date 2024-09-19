@@ -18,7 +18,7 @@ The Image Builder service is the main tool to create RHEL for Edge system images
 
 // The figure from slide #24 https://docs.google.com/presentation/d/1h9eEpeSgUTAWVxi3gSjbereypMQEuoTE3I5dPtY_DeQ/edit#slide=id.g2c32966f6af_0_1664 and the blog post https://www.redhat.com/en/blog/how-to-create-a-fully-self-contained-os-image-that-includes-your-kubernetes-workload are variations of each other. IMHO the one from the blog is better. IMHO both figures are incorrect to mention "files" as input. I cannot just add a random file, not packaged as an RPM, at least not to edge images.
 
-image:imagebuilder-ostree-device.png[Edge device provision and update workflow]
+image::s3-images-fig-1.svg[title="Edge device installation and update workflow"]
 
 Image Builder takes as input a blueprint, which describes the operating system and application components to include in the system image, such as RPM packages from RHEL, RHEL packages from third-party DNF repositories, and container images.
 
