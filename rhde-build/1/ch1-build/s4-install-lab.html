@@ -146,7 +146,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>7 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -174,7 +174,7 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable device images.</p>
+<p>You need a development machine running RHEL, to which you have unrestricted sudo and also access to Red Hat Enterprise Linux package repositories. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable installation images.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -190,7 +190,7 @@ Work In Progress
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Install the packages for the Image Buider service and its clients.</p>
+<p>Install the packages for the Image Buider service and its clients on your development machine.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -231,7 +231,7 @@ $ <strong>sudo systemctl start osbuild-composer</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Enable and activiate the Cockpit service, if not already enabled on your test machine.</p>
+<p>Enable and activiate the Cockpit service, if not already enabled on your development machine.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable cockpit</strong>
@@ -241,7 +241,7 @@ $ <strong>sudo systemctl start cockpit</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Enable remote access to the Cockpit service, if not already enabled on your test machine.</p>
+<p>Enable remote access to the Cockpit service, if not already enabled on your development machine.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo firewall-cmd --add-service=cockpit --permanent</strong>
@@ -300,7 +300,7 @@ blueprints  compose     distros     help        modules     projects    sources 
 </div>
 </li>
 <li>
-<p>List compose types known to the Image Builder service. The list varies depending on the RHEL release.</p>
+<p>List image types known to the Image Builder service. The list varies depending on the RHEL release.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose types</strong>
@@ -361,7 +361,7 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
 <li>
 <p>Configure Image Builder to access package repositories from the local network.</p>
 <div class="paragraph">
-<p>This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization&#8217;s policies. If you have local mirrors of RHEL package repositories, it is best to use then for better performance and to conserve internet bandwidth.</p>
+<p>This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization&#8217;s policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.</p>
 </div>
 <div class="paragraph">
 <p>[ Needs updates for the RHEL 9.4 classroom! ]</p>
@@ -456,7 +456,7 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
 </div>
 </li>
 <li>
-<p>You cannot configure repositoy overides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
+<p>You cannot configure repositoy overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
 <div class="paragraph">
 <p>Enter the <strong>Image Builder</strong> item in Cockpit and click <strong>Sources</strong>. Then, for both the <strong>BaseOS</strong> and the <strong>AppStreams</strong> channels, click the arrow (<strong>&gt;</strong>) to expand the URL and verify it matches your configuration overide.</p>
 </div>
