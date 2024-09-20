@@ -1,4 +1,4 @@
-:time_estimate: 5
+:time_estimate: 7
 
 = Lab: Install Image Builder on a Development VM
 
@@ -12,7 +12,7 @@ WARNING: Work In Progress
 
 == Before you Begin
 
-You need a RHEL machine with either the root password or unrestricted sudo, and also access to Red Hat Enterprise Linux package repositories, to install any missing packages. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable device images.
+You need a development machine running RHEL, to which you have unrestricted sudo and also access to Red Hat Enterprise Linux package repositories. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable installation images.
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
@@ -20,7 +20,7 @@ If you are using the course classroom, you will log in on the `workstation` VM a
 
 == Instructions
 
-1. Install the packages for the Image Buider service and its clients.
+1. Install the packages for the Image Buider service and its clients on your development machine.
 
 .. Install the RPM packages for the ImageBuilder service and its CLI.
 +
@@ -51,7 +51,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.ser
 $ *sudo systemctl start osbuild-composer*
 --
 
-.. Enable and activiate the Cockpit service, if not already enabled on your test machine.
+.. Enable and activiate the Cockpit service, if not already enabled on your development machine.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -60,7 +60,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → 
 $ *sudo systemctl start cockpit*
 --
 
-.. Enable remote access to the Cockpit service, if not already enabled on your test machine.
+.. Enable remote access to the Cockpit service, if not already enabled on your development machine.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -104,7 +104,7 @@ $ *composer-cli [TAB][TAB]*
 blueprints  compose     distros     help        modules     projects    sources     upload
 --
 
-.. List compose types known to the Image Builder service. The list varies depending on the RHEL release.
+.. List image types known to the Image Builder service. The list varies depending on the RHEL release.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -143,7 +143,7 @@ image::s4-cockpit-error.png[]
 
 6. Configure Image Builder to access package repositories from the local network.
 +
-This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization's policies. If you have local mirrors of RHEL package repositories, it is best to use then for better performance and to conserve internet bandwidth.
+This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization's policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.
 +
 [ Needs updates for the RHEL 9.4 classroom! ]
 
@@ -222,7 +222,7 @@ type = "yum-baseurl"
 url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"
 --
 
-.. You cannot configure repositoy overides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
+.. You cannot configure repositoy overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
 +
 Enter the *Image Builder* item in Cockpit and click *Sources*. Then, for both the *BaseOS* and the *AppStreams* channels, click the arrow (*>*) to expand the URL and verify it matches your configuration overide.
 +
