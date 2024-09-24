@@ -65,7 +65,7 @@
     <a class="nav-link" href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s7-compose.html">Create and Manage Edge Images as Image Builder Composes</a>
+    <a class="nav-link" href="s7-compose.html">Create Edge Images as Image Builder Composes</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
@@ -146,7 +146,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>6 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -174,10 +174,10 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You also need the blueprint that was created and uploaded to the Image Builder Service by the <a href="#s5-blueprint-lab.adoc" class="xref unresolved">previous lab</a>.</p>
+<p>You also need the blueprint that was created and uploaded to the Image Builder service by the <a href="#s5-blueprint-lab.adoc" class="xref unresolved">previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -486,12 +486,12 @@ object fsck of 1 commits completed successfully - no errors found.</code></pre>
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The next activity pushes the edge commit image to an OSTree repository, making it available to edge systems.</p>
+<p>The next activity, in the next chapter, pushes the edge commit image to an OSTree repository, making it available to edge systems, and them you provision a local virtual machine, as a stand in for an edge device, from that OSTree repository.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="s7-compose.html">Create and Manage Edge Images as Image Builder Composes</a></span>
+  <span class="prev"><a href="s7-compose.html">Create Edge Images as Image Builder Composes</a></span>
   <span class="next"><a href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a></span>
 </nav>
 </article>
