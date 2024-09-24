@@ -174,7 +174,7 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
+<p>You need a development manchine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -190,7 +190,7 @@ Work In Progress
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Verify that the Image Builder service is active and that the current Linux user can submit requests to it.</p>
+<p>Verify that the Image Builder service is active and your Linux user can submit requests to it.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli status show</strong>
@@ -390,7 +390,7 @@ ERROR: BlueprintsError: 400 Bad Request: The browser (or proxy) sent a request t
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The next activity builds an edge commit image from the blueprint you just created.</p>
+<p>The next activity builds an edge commit image from the blueprint you just created, and later in this course you will use that image to provision virtual edge devices.</p>
 </div>
 </div>
 </div>

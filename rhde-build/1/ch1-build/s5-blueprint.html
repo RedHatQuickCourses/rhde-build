@@ -146,7 +146,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>8 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -174,28 +174,28 @@ Work In Progress
 <h2 id="_image_builder_blueprints_and_composes"><a class="anchor" href="#_image_builder_blueprints_and_composes"></a>Image Builder Blueprints and Composes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>[ Reminder of the build/publish process, and where we are in it ]</p>
+<p>Creating a blueprint is the first step in the process of building an edge system image, which can be published into an OSTree repository, and optionally embeded into installation media to provision edge devices.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s5-blueprint-fig-1.svg" alt="s5 blueprint fig 1">
+</div>
+<div class="title">Figure 1. Blueprints in an edge device installation and update workflow</div>
 </div>
 <div class="paragraph">
-<p>Operation of the Image Builder service is based on the concepts of blueprints and composes.</p>
+<p>Before detailing the structure and usage of blueprints, we must understanbd a few concepts about Image Builder, in special the concepts of blueprints and composes.</p>
 </div>
 <div class="paragraph">
-<p>You provide to Image Builder a <em>blueprint</em> that defines characteriscs of the system image, such as installed packages and enabled system services. It also defines customization such as predefined users, enabled sytem services, and open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.</p>
+<p>You provide to Image Builder a <em>blueprint</em> that defines characteriscs of the system image, such as installed packages and enabled system services. It also defines customizations such as predefined users, enabled sytem services, and open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.</p>
 </div>
 <div class="paragraph">
-<p>Using blueprint as input, Image Builder runs a <em>compose</em>, which a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.</p>
+<p>Using blueprint as input, Image Builder runs a <em>compose</em>, which is a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances of images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.</p>
 </div>
 <div class="paragraph">
-<p>An Image Builder blueprint should be independent of the target environment where you deploy the image. When you build a compose, Image Builder adds hardcoded customizations which depend on the image type. For example, if you build an Amazon Machine Image (AMI), Image Builder enables the Cloud-Init service and also adds the AWS Systems Manager client. You could use the same blueprint to build different types of composes, for example ISO images to boot a physical system and Qcow2 images for OpenStack private clouds.</p>
+<p>All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to create composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual edge systems.</p>
 </div>
 <div class="paragraph">
-<p>The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of different target platforms such as cloud providers and hypevisors. It ensures your image contains all recommended settings and system services for working whell on each platform.</p>
-</div>
-<div class="paragraph">
-<p>All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to create composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual systems. As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take AWS API credentials as input and upload AMI images to AWS S3 so you can use them to create AWS EC2 instances.</p>
-</div>
-<div class="paragraph">
-<p>Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of those images, for example Anaconda Kickstart files and Cloud-init. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.</p>
+<p>As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take AWS API credentials as input and upload AMI images to AWS S3 so you can use them to create AWS EC2 instances.</p>
 </div>
 <div class="paragraph">
 <p>The remaining of this section focuses on blueprints, and the next section focuses on composes.</p>
@@ -217,32 +217,60 @@ Work In Progress
 </div>
 </div>
 <div class="sect1">
-<h2 id="_general_blueprint_syntax"><a class="anchor" href="#_general_blueprint_syntax"></a>General Blueprint Syntax</h2>
+<h2 id="_introduction_to_blueprint_syntax"><a class="anchor" href="#_introduction_to_blueprint_syntax"></a>Introduction to Blueprint Syntax</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Lorem ipsum.</p>
+<p>A blueprint starts with a few metadata attributes, which specify the name, version, and provide a description of the blueprint itself. These attributes are simple <code>name = value</code> pairs, for example:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">name = "test-blueprint"
+description = "My first test blueprint for RHEL Image Builder"
+version = "1.0.0"
+distro = "rhel-92"</code></pre>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_naming_blueprints_and_composes"><a class="anchor" href="#_naming_blueprints_and_composes"></a>Naming Blueprints and Composes</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Image Builder allows you to give human-readable names to blueprints, but it allways identifies images or composes using UUIDs. A compose refers to a specific build of a blueprint, so there could me multiple composes for the same blueprint. For example, you could build a new compose from an existing blueprint to create a new image with RPM package updates from RHEL.</p>
-</div>
-<div class="paragraph">
-<p>Image Builder maintains not only the image data for a compose, but also metadata such as package lists and build logs. Using the compose metadata, it is easy to compare two composes from the same blueprint and see what changed in the resulting image.</p>
 </div>
 <div class="paragraph">
-<p>[ Need more&#8201;&#8212;&#8201;concepts. docs/upstream links, or maybe just more highlight as heading or def lists&#8201;&#8212;&#8201;to blueprints and composes. Trying to postpone details to RHDE-2-4 ]</p>
+<p>The <code>distro</code> attribute enables using a newer RHEL release to build images using kernels and packages from older RHEL releases, for example using a RHEL 9.4 machine to build a RHEL 9.2 image. You can use the image Builder service from a RHEL 9 machine to build a RHEL 8 image, if you need.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_general_syntax_of_a_blueprint"><a class="anchor" href="#_general_syntax_of_a_blueprint"></a>General Syntax of a Blueprint</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Lorem ipsum</p>
+<p>Sections named with double square brackets, such as <code>[[section]]</code>, enable listing packages, package groups, and container images to include in the image, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[[packages]]
+name = "httpd"
+version= "2.4.*"
+
+[[packages]]
+name = "mysql"
+version= "8.0.*"
+
+[[packages]]
+name = "mysql-server"
+version= "8.0.*"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that you can have multiple sections of the same name and you can use UNIX glob syntax to specifi a partial version number for packages.</p>
+</div>
+<div class="paragraph">
+<p>Finally, you can provide a number of customizations, that specicy system settings such as predefined users, firewall settings, and SSH keys, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[customizations.firewall]
+ports = ["22:tcp", "80:tcp"]
+
+[customizations.services]
+enabled = ["sshd", "cockpit.socket", "httpd"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that not all customizations are valid for all types of composes. Also, when you build derived images, such as an edger installer image, it does not make sense to specify packages and package groups, because these are already provided by a pre-existing edge image and its OSTree commit.</p>
+</div>
+<div class="paragraph">
+<p>You can review more details about blueprint syntax in the <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_a_customized_rhel_system_image/creating-system-images-with-composer-command-line-interface_composing-a-customized-rhel-system-image#composer-blueprint-format_creating-system-images-with-composer-command-line-interface">RHEL product documentation</a> and the <a href="https://osbuild.org/docs/user-guide/blueprint-reference/">upstream documentation</a> of Image Builder. The <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_installing_and_managing_rhel_for_edge_images/composing-a-rhel-for-edge-image-using-image-builder-command-line_composing-installing-managing-rhel-for-edge-images#image-customizations_composing-a-rhel-for-edge-image-using-image-builder-command-line">RHEL for Edge product documentation</a> describes which customizations are valid for edge composes.</p>
 </div>
 </div>
 </div>
@@ -331,7 +359,7 @@ $ <strong>composer-cli blueprints list --help</strong></code></pre>
 <div class="content">
 <img src="_images/cockpit-image-builder.png" alt="cockpit image builder">
 </div>
-<div class="title">Figure 1. The Composer Cockpit module in the blueprints page.</div>
+<div class="title">Figure 2. The Composer Cockpit module in the blueprints page.</div>
 </div>
 <div class="paragraph">
 <p>Notice that the Image Builder CLI uses the <code>compose</code> command to refer to images, while the Image Builder web UI uses the term "image" to refer to composes.</p>
@@ -340,7 +368,7 @@ $ <strong>composer-cli blueprints list --help</strong></code></pre>
 <div class="content">
 <img src="_images/cockpit-image-builder-images.png" alt="cockpit image builder images">
 </div>
-<div class="title">Figure 2. The Composer Cockpit module in the images page, which lists composes.</div>
+<div class="title">Figure 3. The Composer Cockpit module in the images page, which lists composes.</div>
 </div>
 <div class="paragraph">
 <p>Notice that the Image Builder web UI is designed for large monitors and requires wide horizontal resolution, else headings and data may be truncated in the images page.</p>
@@ -351,10 +379,7 @@ $ <strong>composer-cli blueprints list --help</strong></code></pre>
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>REWRITE</p>
-</div>
-<div class="paragraph">
-<p>Now that you was introduced to the essential concepts of RHEL for Edge, a series of hands-on activties install and configure Image Builder in a test system and build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use new system images.</p>
+<p>Now that you know the Image Builder blueprint syntax and its client tools, you can create, push, and validate a blueprint that you will, later in this course, use to generate images to provision and update edge devices.</p>
 </div>
 </div>
 </div>
