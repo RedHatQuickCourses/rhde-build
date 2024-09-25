@@ -40,9 +40,9 @@ The only indispensable type of edge image (or edge compose) from Image Builder i
 
 image::s7-compose-fig-2.svg[title="Edge device installation and update Workflow using an edge commit image"]
 
-That OSTree commit can be pushed into an OSTree repository, and then consumed by a standard RHEL installation media, by means of a custom Kickstart file, to deploy into a physical system or virtual machine. This is a suggested workflow for developer testing and CI/CD pipelines and the first one we will perform in activities of this course.
+You can push the OSTree commit from an edge commit image to a remote OSTree repository, and then edge devices can consume that OSTree commit using thestandard RHEL installation media, by means of a custom Kickstart file. This is a suggested workflow for developer testing and CI/CD pipelines and the first one we will perform in activities of this course.
 
-You can also use Image Builder to take an OSTree commit and build one of the following kinds of derived edge composes:
+You can also use Image Builder to take an OSTree commit as input and build one of the following kinds of derived edge composes:
 
 Edge installer images::
 
@@ -80,10 +80,16 @@ Image Builder maintains not only the image data for a compose, but also metadata
 
 == Managing Composes
 
-Because a compose is a build job, you want monitor its status to check if it's completed or failed. You can also cancel running composes and fetch build logs and other metadata from either running, finished, or failed composes.
+Because a compose is a build job, it takes a few minutes to complete, and you want monitor its status to check if it completed successfuly or failed. You can also cancel running composes and fetch its build logs and other metadata from either running, finished, or failed composes.
 
-As you run multiple composes, from the same blueprint, to build update system images, you probably want to delete older composes to conserve disk space in the system running Image Builder. Also consider that image builder may store multiple variants of the same edge system image, for example as part of a compose that builds an edge commit image and as part of another compose that builds an edge installer image.
+As you create multiple composes, from the same blueprint or different blueprints, sooner or later you will need to delete older composes to conserve disk space in the system running Image Builder. Consider that Image Builder may store multiple copies of the same edge system image, for example as part of a compose that builds an edge commit image and as part of another compose that builds an edge installer image.
+
+== The RPM-OSTree and OSTree Command-Line Tools
+
+RHEL does not provide any Cockpit module or GUI tool to manage OSTree repositories and to update RPM-OSTree systems. These activities must be performed from the command line, using the `rpm-ostree` and `ostree` commands. 
+
+For now, you will use those commands just to inspect the OSTree commit inside an edge commit image and verify it is complete and consistent. Later in this course you will learn about OSTree repository management and we will present those commands in more detail. Then, after you have OSTree repositories configured and populated, you will learn how to create and use edge installer images.
 
 == Next Steps
 
-Now that you know about Image Builder composer and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.
+Now that you know about Image Builder composes and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.
