@@ -202,11 +202,11 @@ Work In Progress
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Install the packages for the Image Buider service and its clients on your development machine.</p>
+<p>Install the packages for the Image Builder service and its clients on your development machine.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Install the RPM packages for the ImageBuilder service and its CLI.</p>
+<p>Install the RPM packages for the Image Builder service and its CLI.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install osbuild-composer composer-cli cockpit-composer</strong>
@@ -216,7 +216,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Install the RPM packages for the Cockpit service and its Composer modue.</p>
+<p>Install the RPM packages for the Cockpit service and its Composer module.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install cockpit-composer</strong>
@@ -233,7 +233,7 @@ Complete!</code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Enable and activiate the Image Builder service.</p>
+<p>Enable and activate the Image Builder service.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable osbuild-composer</strong>
@@ -243,7 +243,7 @@ $ <strong>sudo systemctl start osbuild-composer</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Enable and activiate the Cockpit service, if not already enabled on your development machine.</p>
+<p>Enable and activate the Cockpit service, if not already enabled on your development machine.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable cockpit</strong>
@@ -267,7 +267,7 @@ success</code></pre>
 </div>
 </li>
 <li>
-<p>Grant an unprivilaged user access to Image Builder.</p>
+<p>Grant an unprivileged user access to Image Builder.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -344,7 +344,7 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Open a web browser and go to <a href="https://127.0.0.1:9090" class="bare">https://127.0.0.1:9090</a>. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivigeded user that you configured in previous steps.</p>
+<p>Open a web browser and go to <a href="https://127.0.0.1:9090" class="bare">https://127.0.0.1:9090</a>. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivileged user that you configured in previous steps.</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/s4-cockpit-login.png" alt="s4 cockpit login">
@@ -442,7 +442,7 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Verify that the repository overides are in effect, using the Image Builder CLI.</p>
+<p>Verify that the repository overrides are in effect, using the Image Builder CLI.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli sources list</strong>
@@ -468,7 +468,7 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
 </div>
 </li>
 <li>
-<p>You cannot configure repositoy overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
+<p>You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
 <div class="paragraph">
 <p>Enter the <strong>Image Builder</strong> item in Cockpit and click <strong>Sources</strong>. Then, for both the <strong>BaseOS</strong> and the <strong>AppStreams</strong> channels, click the arrow (<strong>&gt;</strong>) to expand the URL and verify it matches your configuration overide.</p>
 </div>

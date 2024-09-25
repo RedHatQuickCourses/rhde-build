@@ -201,7 +201,7 @@ Work In Progress
 <p>Image Builder outputs a system image which, in the case of an edge system image, is an <strong>OSTree commit</strong> produced by RPM-OSTree.</p>
 </div>
 <div class="paragraph">
-<p>You can use the OSTree commit as-is, and copy (or push) it to a remote OSTree repository in a standard web server. Then the standard RHEL instaler, with a custom kickstart file, can download and deploy the OSTree commit into an edge device.</p>
+<p>You can use the OSTree commit as-is, and copy (or push) it to a remote OSTree repository in a standard web server. Then the standard RHEL installer, with a custom kickstart file, can download and deploy the OSTree commit into an edge device.</p>
 </div>
 <div class="paragraph">
 <p>Alternatively, you can provide a second blueprint to Image Builder, which refers to the OSTree repository, to build a bootable installation image which embeds the OSTree commit. That custom installation image is self-sufficient to boot and install an edge device without access to a remote web server.</p>
@@ -218,19 +218,19 @@ Work In Progress
 <h2 id="_the_rhel_image_builder_service"><a class="anchor" href="#_the_rhel_image_builder_service"></a>The RHEL Image Builder Service</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Image Builder runs as a system service in RHEL, named <strong>osbuild-composer</strong>. Image Builder needs elevated system privileges to manipulate SELinux labels and other attributes in files that belong to a system image, but unprivileged users can interact with it safely using one of its clients. You don&#8217;t need root privilege to build sustem images with the Image Builder service. You only need file system access to its UNIX socket file, which is allowed to the <code>weldr</code> group.</p>
+<p>The Image Builder runs as a system service in RHEL, named <strong>osbuild-composer</strong>. Image Builder needs elevated system privileges to manipulate SELinux labels and other attributes in files that belong to a system image, but unprivileged users can interact with it safely using one of its clients. You don&#8217;t need root privilege to build system images with the Image Builder service. You only need file system access to its UNIX socket file, which is allowed to the <code>weldr</code> group.</p>
 </div>
 <div class="paragraph">
-<p>Unlike other similar services, such as the Docker daemon, Image Builder has a limited scope of operations, which ensures that access to the Image Builder service does not allow its users to circunvent system security to perform privileged operations. Access to Image Builder does <strong>not</strong> make a user a "root equivalent" and does not create any significant security risks.</p>
+<p>Unlike other similar services, such as the Docker daemon, Image Builder has a limited scope of operations, which ensures that access to the Image Builder service does not allow its users to circumvent system security to perform privileged operations. Access to Image Builder does <strong>not</strong> make a user a "root equivalent" and does not create any significant security risks.</p>
 </div>
 <div class="paragraph">
-<p>The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of multiple target platforms such as cloud providers and hypevisors. It ensures your image contains all recommended settings and system services for working well on each platform. That applies to both traditional, package-based images and edge images.</p>
+<p>The biggest benefit of using Image Builder, compared to generic Anaconda or Ansible automation, is the built-in knowledge about the needs of multiple target platforms such as cloud providers and hypervisors. It ensures your image contains all recommended settings and system services for working well on each platform. That applies to both traditional, package-based images and edge images.</p>
 </div>
 <div class="paragraph">
-<p>Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of new systems, for device or site-specific configurations. Anaconda Kickstart and CoreOS Ignition are among the suported alternatives. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.</p>
+<p>Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of new systems, for device or site-specific configurations. Anaconda Kickstart and CoreOS Ignition are among the supported alternatives. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.</p>
 </div>
 <div class="paragraph">
-<p>Image Builder can also generate edge images for cloud edge platform such as AWS Outposts. Those images are still based on RPM-OSTree image but use the cloud service formats, for example AWS AMI; they support cloud provider agents, such as AWS System Manager; and also cloud provider configuration services, for example Cloud-init for AWS.</p>
+<p>Image Builder can also generate edge images for cloud edge platform such as AWS Outposts. Those images are still based on RPM-OSTree image but use the cloud service formats, for example AWS AMI; they support cloud provider agents, such as AWS System Manager; and also cloud provider configuration services, for example Cloud-Init for AWS.</p>
 </div>
 </div>
 </div>
@@ -268,7 +268,7 @@ Work In Progress
 <p>Edge devices use RPM-OSTree to download system image updates, as new OSTree commits, and deploy them as the active system image for the next boot. System administrators must log in manually on each edge device and use the RPM-OSTree tooling, more specifically the <code>rpm-ostree</code> command, to fetch and deploy updates or to rollback an update and return to the previous system system image, or automate those operations using Ansible.</p>
 </div>
 <div class="paragraph">
-<p>As you would expect, all edge system images produced by Image Builder are hardcoded to include the RPM-OSTree tooling, so that edge devices can be updated.</p>
+<p>As you would expect, all edge system images produced by Image Builder are hard-coded to include the RPM-OSTree tooling, so that edge devices can be updated.</p>
 </div>
 </div>
 </div>
@@ -293,7 +293,7 @@ Work In Progress
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that you was introduced to the essential concepts and tools of RHEL for Edge, a series of hands-on activties install and configure Image Builder, RPM-OStree, and OSTree in a development system, which you use to build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use newer system images.</p>
+<p>Now that you was introduced to the essential concepts and tools of RHEL for Edge, a series of hands-on activities install and configure Image Builder, RPM-OStree, and OSTree in a development system, which you use to build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use newer system images.</p>
 </div>
 </div>
 </div>
