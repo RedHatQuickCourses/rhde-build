@@ -226,10 +226,10 @@ Work In Progress
 <div class="title">Figure 2. Edge device installation and update Workflow using an edge commit image</div>
 </div>
 <div class="paragraph">
-<p>That OSTree commit can be pushed into an OSTree repository, and then consumed by a standard RHEL installation media, by means of a custom Kickstart file, to deploy into a physical system or virtual machine. This is a suggested workflow for developer testing and CI/CD pipelines and the first one we will perform in activities of this course.</p>
+<p>You can push the OSTree commit from an edge commit image to a remote OSTree repository, and then edge devices can consume that OSTree commit using thestandard RHEL installation media, by means of a custom Kickstart file. This is a suggested workflow for developer testing and CI/CD pipelines and the first one we will perform in activities of this course.</p>
 </div>
 <div class="paragraph">
-<p>You can also use Image Builder to take an OSTree commit and build one of the following kinds of derived edge composes:</p>
+<p>You can also use Image Builder to take an OSTree commit as input and build one of the following kinds of derived edge composes:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -296,10 +296,21 @@ Work In Progress
 <h2 id="_managing_composes"><a class="anchor" href="#_managing_composes"></a>Managing Composes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Because a compose is a build job, you want monitor its status to check if it&#8217;s completed or failed. You can also cancel running composes and fetch build logs and other metadata from either running, finished, or failed composes.</p>
+<p>Because a compose is a build job, it takes a few minutes to complete, and you want monitor its status to check if it completed successfuly or failed. You can also cancel running composes and fetch its build logs and other metadata from either running, finished, or failed composes.</p>
 </div>
 <div class="paragraph">
-<p>As you run multiple composes, from the same blueprint, to build update system images, you probably want to delete older composes to conserve disk space in the system running Image Builder. Also consider that image builder may store multiple variants of the same edge system image, for example as part of a compose that builds an edge commit image and as part of another compose that builds an edge installer image.</p>
+<p>As you create multiple composes, from the same blueprint or different blueprints, sooner or later you will need to delete older composes to conserve disk space in the system running Image Builder. Consider that Image Builder may store multiple copies of the same edge system image, for example as part of a compose that builds an edge commit image and as part of another compose that builds an edge installer image.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_rpm_ostree_and_ostree_command_line_tools"><a class="anchor" href="#_the_rpm_ostree_and_ostree_command_line_tools"></a>The RPM-OSTree and OSTree Command-Line Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RHEL does not provide any Cockpit module or GUI tool to manage OSTree repositories and to update RPM-OSTree systems. These activities must be performed from the command line, using the <code>rpm-ostree</code> and <code>ostree</code> commands.</p>
+</div>
+<div class="paragraph">
+<p>For now, you will use those commands just to inspect the OSTree commit inside an edge commit image and verify it is complete and consistent. Later in this course you will learn about OSTree repository management and we will present those commands in more detail. Then, after you have OSTree repositories configured and populated, you will learn how to create and use edge installer images.</p>
 </div>
 </div>
 </div>
@@ -307,7 +318,7 @@ Work In Progress
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that you know about Image Builder composer and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.</p>
+<p>Now that you know about Image Builder composes and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.</p>
 </div>
 </div>
 </div>
