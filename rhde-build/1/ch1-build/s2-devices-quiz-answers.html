@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Answers to the Quiz :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s2-devices-quiz.html">
+    <link rel="next" href="s3-images.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="s2-devices-quiz-answers.html">Answers to the Quiz</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Validate initial deployment of RHEL for Edge images in local VMs using virsh and cockpit</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Build Operating System Images for Edge Devices</a></li>
+    <li><a href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a></li>
+    <li><a href="s2-devices-quiz-answers.html">Answers to the Quiz</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Answers to the Quiz</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>4 minutes</strong>.</em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_cases_for_edge_devices_and_rhel_for_edge"><a class="anchor" href="#_use_cases_for_edge_devices_and_rhel_for_edge"></a>Use Cases for Edge Devices and RHEL for Edge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Assess if a compute device or application is likely to be a case for Red Hat Device Edge or if its more likely to be a case for traditional RHEL.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Pending review.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_answers"><a class="anchor" href="#_answers"></a>Answers</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A manager&#8217;s workstation in a retail store, to run text processors, spreadsheets, email clients, and also access multiple corporate systems.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> <strong>Traditional RHEL</strong><br>
+<em>Correct: This is a general-purpose workstation which likely runs a popular desktop operating system, such as Windows and MacOS. <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/workstations">RHEL for Workstations</a> and the community supported <a href="https://fedoraproject.org">Fedora Linux</a> are also good choices for this kind of user workstation.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge<br>
+<em>Incorrect: RHEL for Edge is designed for single-purpose devices instead of general purpose workstations.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them<br>
+<em>Incorrect: A general-purpose workstation is a clear case for a traditional desktop operating system.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A kiosk machine in a large department store, that enables customers to query the price and other information of a product, such as nutrients and potential alergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL<br>
+<em>Incorrect: As a single-purpose machine which should run with minimal maintenance, this is not a case for a heavier operating system.</em></p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> <strong>RHEL for Edge</strong><br>
+<em>Correct: This is an appliance-like device, which should be just turned on and be available to customers in different parts of the store.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them<br>
+<em>Incorrect: though kiosk machines have been configured from standard desktop operating systems, they become high-maintenance and even potencial sources of embarassment if customers can get access to other applications on the device.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different busines processes that happen in the store itself.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> <strong>Traditional RHEL</strong><br>
+<em>Correct: This is likely a server-class machine locked in a server room, and possibily a member of a high-availability cluster with other similar machines in the store.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge<br>
+<em>Incorrect: This server machine is probably too powerful for the Red Hat Device Edge subscription, but a smaller and single-purpose database server could be deployed and managed as an edge device.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them<br>
+<em>Incorrect: This server is likely managed by corporate IT like any other departamental server in branch offices.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and eletronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL<br>
+<em>Incorrect: These computers are likely close to the security access devices, multiple of them are deployed in different parts of the building or campus, and they should be resistant to tampering, which makes them better suited for image-based deployments than to traditional package-based deployments.</em></p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> <strong>RHEL for Edge</strong><br>
+<em>Correct: In addition to the considerations in the previous answer, these computers are likely rugged for exposure to climate or heat, and should be quick to replace in case of hardware failures.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them<br>
+<em>Incorrect: While it is true that such system have been designed from standard desktop and server operating systems in the past, they would be high maintenance. They are likely provided as appliances by the security equipment vendor, instead of managed by corporate IT as other LOB servers.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>An image recognition application, which monitors goods at multiple states of an assembly line and flags defective ones, reducing the need for human inspection of samples from each batch of goods.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL<br>
+<em>Incorrect: as a single-purpose appliance, this is better suited to be deployed and managed as an image-based system.</em></p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge<br>
+<em>Incorrect: as an AI model which might require more memory, CPU power, and GPU capacity, than available in typical edge devices, this may not meet the criteria for Red Hat Device Edge subscriptions.</em></p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> <strong>Either of them</strong><br>
+<em>Correct: Depending on the hardware requirements of its AI model, this might be entitled as a traditional RHEL subscription, but deployed and managed using RHEL for Edge technologies, on a hardware device which is rugged for factory floor conditions but provides compute capacity of a data center server; or it could be entitled using Red Hat Device Edge Subscriptions, if using a leaner AI model which runs in edge systems with a single CPU core and reduced memory but with GPU or another kind of hardware acellerator.</em></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a></span>
+  <span class="next"><a href="s3-images.html">Design, Build, and Publish Edge Images</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

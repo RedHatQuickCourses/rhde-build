@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Summary :: Building Red Hat Device Edge Images</title>
-    <link rel="prev" href="s8-compose-lab.html">
-    <link rel="next" href="../ch2-publish/index.html">
+    <title>Quiz: Use Cases for Edge Devices and RHEL for Edge :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s1-devices.html">
+    <link rel="next" href="s2-devices-quiz-answers.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
 <ul class="nav-list">
@@ -79,7 +79,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s9-summary.html">Summary</a>
   </li>
 </ul>
@@ -145,7 +145,7 @@
   <ul>
     <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
     <li><a href="index.html">Build Operating System Images for Edge Devices</a></li>
-    <li><a href="s9-summary.html">Summary</a></li>
+    <li><a href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a></li>
   </ul>
 </nav>
 </div>
@@ -154,35 +154,134 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Summary</h1>
+<h1 class="page">Quiz: Use Cases for Edge Devices and RHEL for Edge</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>In this chapter, you learned:</p>
+<p><em>Estimated reading time: <strong>2 minutes</strong>.</em></p>
 </div>
-<div class="ulist">
-<ul>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Assess if a compute device or application is likely to be a suitabler case for Red Hat Device Edge or if its more likely to be a case for traditional RHEL.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Pending review.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_questions"><a class="anchor" href="#_questions"></a>Questions</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>Red Hat Device Edge offers a way to subscribe and entitle edge systems to use RHEL, MicroShift, and Ansible that is more adequate to scale and requirements of edge devices, as opposed to data center servers and office workstations.</p>
+<p>A manager&#8217;s workstation in a retail store, to run text processors, spreadsheets, email clients, and also access multiple corporate systems.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
 </li>
 <li>
-<p>RHEL for Edge is a feature designed to provision and maintain edge systems as image-based systems, using the RHEL Image Builder and RPM-OSTree technologies.</p>
+<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
 </li>
 <li>
-<p>Image Builder accepts blueprints which describe packages and customizations to include in edge system images.</p>
-</li>
-<li>
-<p>Image Builder composes can create different kinds of edge images, and the most important kind is the edge commit image which contains an OSTree commit to publish in an OSTree repository.</p>
-</li>
-<li>
-<p>Image Builder composes that produce edge installer and edge cloud images, for provisioning edge devices, require an OSTree commit and an OSTree repository.</p>
-</li>
-<li>
-<p>OSTree commits must be published on remote OSTree repositories so edge devices can fetch system updates.</p>
+<p><i class="fa fa-square-o"></i> Either of them</p>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p>A kiosk machine in a retail store, that enables customers to query the price and other information of a product, such as nutrients and potential alergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different busines processes that happen in the store itself.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and eletronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>An image recognition application, which monitors goods at multiple states of an assembly line and flags defective ones, reducing the need for human inspection of samples from each batch of goods.</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> Either of them</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_whats_next"><a class="anchor" href="#_whats_next"></a>What&#8217;s Next</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you have the context of typical uses of edge devices, you will learn about the techologies and features of RHEL for Edge, especially Image Builder, and how to use them to provision and maintain edge devices.</p>
+</div>
+</div>
+</div>
 <nav class="pagination">
-  <span class="prev"><a href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a></span>
-  <span class="next"><a href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a></span>
+  <span class="prev"><a href="s1-devices.html">Introduction to Red Hat Device Edge</a></span>
+  <span class="next"><a href="s2-devices-quiz-answers.html">Answers to the Quiz</a></span>
 </nav>
 </article>
   </div>
