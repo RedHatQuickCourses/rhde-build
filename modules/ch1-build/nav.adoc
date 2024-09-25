@@ -6,3 +6,4 @@
 ** xref:s6-blueprint-lab.adoc[]
 ** xref:s7-compose.adoc[]
 ** xref:s8-compose-lab.adoc[]
+** xref:s9-summary.adoc[]
