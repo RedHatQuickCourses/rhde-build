@@ -58,7 +58,7 @@ name = "httpd"*
 
 2. Build an OSTree commit from the blueprint, but cancel it before its finished.
 
-.. Start an OSTree compose from the bueprint.
+.. Start an OSTree compose from the blueprint.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -98,7 +98,7 @@ If you took too long to cancel the compose, you can start another one and cancel
 
 3. Build another OSTree commit from the same blueprint, but this time let it finish.
 
-.. Start a new OSTree compose from the bueprint.
+.. Start a new OSTree compose from the blueprint.
 +
 [source,subs="verbatim,quotes"]
 --

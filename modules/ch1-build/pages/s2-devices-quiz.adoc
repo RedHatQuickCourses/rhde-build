@@ -6,7 +6,7 @@ _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Assess if a compute device or application is likely to be a suitabler case for Red Hat Device Edge or if its more likely to be a case for traditional RHEL.
+Assess if a compute device or application is likely to be a suitable case for Red Hat Device Edge or if its more likely to be a case for traditional RHEL.
 
 WARNING: Pending review.
 
@@ -18,19 +18,19 @@ WARNING: Pending review.
 * [ ] RHEL for Edge
 * [ ] Either of them
 
-2. A kiosk machine in a retail store, that enables customers to query the price and other information of a product, such as nutrients and potential alergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.
+2. A kiosk machine in a retail store, that enables customers to query the price and other information of a product, such as nutrients and potential allergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
 * [ ] Either of them
 
-3. A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different busines processes that happen in the store itself.
+3. A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different business processes that happen in the store itself.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
 * [ ] Either of them
 
-4. A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and eletronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.
+4. A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and electronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
@@ -44,4 +44,4 @@ WARNING: Pending review.
 
 == What's Next
 
-Now that you have the context of typical uses of edge devices, you will learn about the techologies and features of RHEL for Edge, especially Image Builder, and how to use them to provision and maintain edge devices.
+Now that you have the context of typical uses of edge devices, you will learn about the technologies and features of RHEL for Edge, especially Image Builder, and how to use them to provision and maintain edge devices.

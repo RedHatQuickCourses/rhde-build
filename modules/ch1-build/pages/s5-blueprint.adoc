@@ -12,13 +12,13 @@ WARNING: Work In Progress
 
 == Image Builder Blueprints and Composes
 
-Creating a blueprint is the first step in the process of building an edge system image, which can be published into an OSTree repository, and optionally embeded into installation media to provision edge devices.
+Creating a blueprint is the first step in the process of building an edge system image, which can be published into an OSTree repository, and optionally embedded into installation media to provision edge devices.
 
 image::s5-blueprint-fig-1.svg[title="Blueprints in an edge device installation and update workflow"]
 
-Before detailing the structure and usage of blueprints, we must understanbd a few concepts about Image Builder, in special the concepts of blueprints and composes.
+Before detailing the structure and usage of blueprints, we must understand a few concepts about Image Builder, in special the concepts of blueprints and composes.
 
-You provide to Image Builder a _blueprint_ that defines characteriscs of the system image, such as installed packages and enabled system services. It also defines customizations such as predefined users, enabled sytem services, and open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
+You provide to Image Builder a _blueprint_ that defines characteristics of the system image, such as installed packages and enabled system services. It also defines customizations such as predefined users, enabled system services, and open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
 
 Using blueprint as input, Image Builder runs a _compose_, which is a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances of images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.
 
@@ -34,7 +34,7 @@ A Blueprint is a text file using the https://toml.io/en/[TOML] syntax, which is 
 
 You upload the TOML file to the Image Builder service, and the copy in Image Builder storage serves as input for composes. If you change a blueprint file, you must upload the changed file to Image Builder to be able to run new composes with the changes.
 
-Once you upload (or push) a blueprint to Image Builder, it's file name is fogotten. You must refer to the blueprint by its `name` attribute.
+Once you upload (or push) a blueprint to Image Builder, it's file name is forgotten. You must refer to the blueprint by its `name` attribute.
 
 == Introduction to Blueprint Syntax
 
@@ -67,9 +67,9 @@ name = "mysql-server"
 version= "8.0.*"
 --
 
-Notice that you can have multiple sections of the same name and you can use UNIX glob syntax to specifi a partial version number for packages.
+Notice that you can have multiple sections of the same name and you can use UNIX glob syntax to specify a partial version number for packages.
 
-Finally, you can provide a number of customizations, that specicy system settings such as predefined users, firewall settings, and SSH keys, for example:
+Finally, you can provide a number of customizations, that specify system settings such as predefined users, firewall settings, and SSH keys, for example:
 
 [source,subs="verbatim"]
 --
@@ -80,15 +80,15 @@ ports = ["22:tcp", "80:tcp"]
 enabled = ["sshd", "cockpit.socket", "httpd"]
 --
 
-Notice that not all customizations are valid for all types of composes. Also, when you build derived images, such as an edger installer image, it does not make sense to specify packages and package groups, because these are already provided by a pre-existing edge image and its OSTree commit.
+Notice that not all customizations are valid for all types of composes. Also, when you build derived images, such as an edger installer image, it does not make sense to specify packages and package groups, because these are already provided by a preexisting edge image and its OSTree commit.
 
 You can review more details about blueprint syntax in the https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_a_customized_rhel_system_image/creating-system-images-with-composer-command-line-interface_composing-a-customized-rhel-system-image#composer-blueprint-format_creating-system-images-with-composer-command-line-interface[RHEL product documentation] and the https://osbuild.org/docs/user-guide/blueprint-reference/[upstream documentation] of Image Builder. The https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_installing_and_managing_rhel_for_edge_images/composing-a-rhel-for-edge-image-using-image-builder-command-line_composing-installing-managing-rhel-for-edge-images#image-customizations_composing-a-rhel-for-edge-image-using-image-builder-command-line[RHEL for Edge product documentation] describes which customizations are valid for edge composes.
 
 == The Composer CLI client
 
-The `composer-cli` command provides the Image Builder command-line client. It sumbits requests to the Image Builder service through the `/run/weldr/api.socket` UNIX socket, wich is accessible to the `weldr` group. So, any user that is member of the `weldr` group can build RHEL for Edge images using the Image Builder service.
+The `composer-cli` command provides the Image Builder command-line client. It submits requests to the Image Builder service through the `/run/weldr/api.socket` UNIX socket, wich is accessible to the `weldr` group. So, any user that is member of the `weldr` group can build RHEL for Edge images using the Image Builder service.
 
-The general syntax of Image Builder CLI client commands consists of an _object_ and a _verb_, where object is an entity mangaged by Image Builder, such as `blueprints`, `compose`, and `projects`, and verb is an action to perform on the entity or set of entities.
+The general syntax of Image Builder CLI client commands consists of an _object_ and a _verb_, where object is an entity managed by Image Builder, such as `blueprints`, `compose`, and `projects`, and verb is an action to perform on the entity or set of entities.
 
 [source,subs="verbatim,quotes"]
 --
@@ -127,9 +127,9 @@ $ *composer-cli blueprints list --help*
 
 Take your time to study the on-line help of the Image Builder CLI. There are some operations there which are not available from the Cockpit module.
 
-== The Composer Cockplit Module
+== The Composer Cockpit Module
 
-The Composer Cockpit module provives the Image Builder web user interface. It adds an *Image Builder* item to the left navigation pane of the Cockpit user interface with three tabs:
+The Composer Cockpit module provides the Image Builder web user interface. It adds an *Image Builder* item to the left navigation pane of the Cockpit user interface with three tabs:
 
 Blueprints::
 

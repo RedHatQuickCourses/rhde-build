@@ -12,7 +12,7 @@ WARNING: Work In Progress
 
 == Before you Begin
 
-You need a development manchine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[previous lab].
+You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[previous lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
@@ -64,7 +64,7 @@ You can download the https://github.com/RedHatQuickCourses/rhde-build-samples/bl
 $ *composer-cli blueprints push rhel9-edge.toml*
 --
 
-.. Verify that the blueprint exists in the Image Builder service storage. Notice that it has no record of the original file name, you identify blueprints by ther `name` attributes.
+.. Verify that the blueprint exists in the Image Builder service storage. Notice that it has no record of the original file name, you identify blueprints by their `name` attributes.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -111,7 +111,7 @@ $ *composer-cli blueprints save rhel9-edge --filename rhel9-httpd.toml*
 +
 IMPORTANT: Red Hat does NOT recommend that you use Image Builder as the source of truth for blueprints, but only as a temporary storage. Red Hat recommends that you keep your blueprints under version control, using Git or similar software.
 
-.. Use your preferred text editor to change the `rhel9-httpd.toml` file as follows. Make sure you do NOT change its `name` atribute!
+.. Use your preferred text editor to change the `rhel9-httpd.toml` file as follows. Make sure you do NOT change its `name` attribute!
 +
 Add Services and Firewall customizations, so the service is readily available on the device?
 +
@@ -134,7 +134,7 @@ You can download the https://github.com/RedHatQuickCourses/rhde-build-samples/bl
 
 5. Upload and validate the changed blueprint. It is not sufficient to make changes to the local file copy of the blueprint, you must send the changes to Image Builder so you can create images with your changes.
 
-.. First, verify that the current blueprit in the Image Builder service does NOT include the Apache Web Server packages.
+.. First, verify that the current blueprint in the Image Builder service does NOT include the Apache Web Server packages.
 +
 [source,subs="verbatim,quotes"]
 --

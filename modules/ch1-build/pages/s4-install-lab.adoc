@@ -20,9 +20,9 @@ If you are using the course classroom, you will log in on the `workstation` VM a
 
 == Instructions
 
-1. Install the packages for the Image Buider service and its clients on your development machine.
+1. Install the packages for the Image Builder service and its clients on your development machine.
 
-.. Install the RPM packages for the ImageBuilder service and its CLI.
+.. Install the RPM packages for the Image Builder service and its CLI.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -31,7 +31,7 @@ $ *sudo dnf install osbuild-composer composer-cli cockpit-composer*
 Complete!
 --
 
-.. Install the RPM packages for the Cockpit service and its Composer modue.
+.. Install the RPM packages for the Cockpit service and its Composer module.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -42,7 +42,7 @@ Complete!
 
 2. Enable the Image Builder and Cockpit services.
 
-.. Enable and activiate the Image Builder service.
+.. Enable and activate the Image Builder service.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -51,7 +51,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.ser
 $ *sudo systemctl start osbuild-composer*
 --
 
-.. Enable and activiate the Cockpit service, if not already enabled on your development machine.
+.. Enable and activate the Cockpit service, if not already enabled on your development machine.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -70,7 +70,7 @@ $ *sudo firewall-cmd --reload*
 success
 --
 
-3. Grant an unprivilaged user access to Image Builder.
+3. Grant an unprivileged user access to Image Builder.
 
 .. Add the `student` user to the `weldr` group so it can submit requests to the Image Builder service.
 +
@@ -129,7 +129,7 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
 
 5. Verify that an unprivileged user can access the Image Builder service from Cockpit.
 
-.. Open a web browser and go to https://127.0.0.1:9090. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivigeded user that you configured in previous steps.
+.. Open a web browser and go to https://127.0.0.1:9090. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivileged user that you configured in previous steps.
 +
 image::s4-cockpit-login.png[]
 
@@ -197,7 +197,7 @@ $ *sudo systemctl restart osbuild-composer*
 
 7. Check that the Image Builder service is using your RHEL repository overides.
 
-.. Verify that the repository overides are in effect, using the Image Builder CLI.
+.. Verify that the repository overrides are in effect, using the Image Builder CLI.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -222,7 +222,7 @@ type = "yum-baseurl"
 url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"
 --
 
-.. You cannot configure repositoy overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
+.. You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
 +
 Enter the *Image Builder* item in Cockpit and click *Sources*. Then, for both the *BaseOS* and the *AppStreams* channels, click the arrow (*>*) to expand the URL and verify it matches your configuration overide.
 +

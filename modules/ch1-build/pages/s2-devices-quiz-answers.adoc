@@ -24,7 +24,7 @@ _Incorrect: RHEL for Edge is designed for single-purpose devices instead of gene
 * [ ] Either of them +
 _Incorrect: A general-purpose workstation is a clear case for a traditional desktop operating system._
 
-2. A kiosk machine in a large department store, that enables customers to query the price and other information of a product, such as nutrients and potential alergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.
+2. A kiosk machine in a large department store, that enables customers to query the price and other information of a product, such as nutrients and potential allergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.
 
 * [ ] Traditional RHEL +
 _Incorrect: As a single-purpose machine which should run with minimal maintenance, this is not a case for a heavier operating system._
@@ -33,20 +33,20 @@ _Incorrect: As a single-purpose machine which should run with minimal maintenanc
 _Correct: This is an appliance-like device, which should be just turned on and be available to customers in different parts of the store._
 
 * [ ] Either of them +
-_Incorrect: though kiosk machines have been configured from standard desktop operating systems, they become high-maintenance and even potencial sources of embarassment if customers can get access to other applications on the device._
+_Incorrect: though kiosk machines have been configured from standard desktop operating systems, they become high-maintenance and even potential sources of embarrassment if customers can get access to other applications on the device._
 
-3. A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different busines processes that happen in the store itself.
+3. A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different business processes that happen in the store itself.
 
 * [x] *Traditional RHEL* +
-_Correct: This is likely a server-class machine locked in a server room, and possibily a member of a high-availability cluster with other similar machines in the store._
+_Correct: This is likely a server-class machine locked in a server room, and possibly a member of a high-availability cluster with other similar machines in the store._
 
 * [ ] RHEL for Edge +
 _Incorrect: This server machine is probably too powerful for the Red Hat Device Edge subscription, but a smaller and single-purpose database server could be deployed and managed as an edge device._
 
 * [ ] Either of them +
-_Incorrect: This server is likely managed by corporate IT like any other departamental server in branch offices._
+_Incorrect: This server is likely managed by corporate IT like any other departmental server in branch offices._
 
-4. A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and eletronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.
+4. A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and electronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.
 
 * [ ] Traditional RHEL +
 _Incorrect: These computers are likely close to the security access devices, multiple of them are deployed in different parts of the building or campus, and they should be resistant to tampering, which makes them better suited for image-based deployments than to traditional package-based deployments._
@@ -66,6 +66,6 @@ _Incorrect: as a single-purpose appliance, this is better suited to be deployed 
 _Incorrect: as an AI model which might require more memory, CPU power, and GPU capacity, than available in typical edge devices, this may not meet the criteria for Red Hat Device Edge subscriptions._
 
 * [x] *Either of them* +
-_Correct: Depending on the hardware requirements of its AI model, this might be entitled as a traditional RHEL subscription, but deployed and managed using RHEL for Edge technologies, on a hardware device which is rugged for factory floor conditions but provides compute capacity of a data center server; or it could be entitled using Red Hat Device Edge Subscriptions, if using a leaner AI model which runs in edge systems with a single CPU core and reduced memory but with GPU or another kind of hardware acellerator._
+_Correct: Depending on the hardware requirements of its AI model, this might be entitled as a traditional RHEL subscription, but deployed and managed using RHEL for Edge technologies, on a hardware device which is rugged for factory floor conditions but provides compute capacity of a data center server; or it could be entitled using Red Hat Device Edge Subscriptions, if using a leaner AI model which runs in edge systems with a single CPU core and reduced memory but with GPU or another kind of hardware accelerator._
 
 
