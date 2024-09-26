@@ -313,7 +313,40 @@ mode=archive-z2
 
 Now you have a web server configured to serve an OSTree repository and you have an edge system image stored on that OSTree repository.
 
+// Do I need to specify the remote (--url) during an "compose start-ostree" command? Is it required to preconfigure the remote for updates?
+
 //TODO create a second edge commit image, and publish it to a different branch of the same repo, to demonstrate ostree pull-local
+
+////
+
+$ composer-cli compose start-ostree rhel9-mysql edge-commit --ref rhel/9/x86_64/db
+
+download commit image (tarball) from compose 
+
+scp commit image to servera
+
+extract commit image on server a
+
+$ sudo ostree pull-local --repo=/var/www/html/repo repo
+
+Now I have two edge images (two branches) on the same remote OSTree repo :-)
+$ ostree refs --repo=/var/www/html/repo
+rhel/9/x86_64/edge
+rhel/9/x86_64/db
+
+$ virt-install --name edge-db-1 --os-variant rhel9.2 \
+ --memory 4096 --vcpus 2 --disk size=40 \
+--location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
+--graphics=none \
+--extra-args inst.ks=http://servera.lab.example.com/rhel9-mysql.ks \
+--extra-arg console=ttyS0 -v
+
+TODO include a firstboot script to configure the database? Is this the best approach? Or a good approach?
+
+TODO check the remotes in devices provisioned from those commits/branches
+
+////
+
 
 == Next Steps
 

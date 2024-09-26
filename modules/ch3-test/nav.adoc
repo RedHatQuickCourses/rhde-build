@@ -1,2 +1,3 @@
 * xref:index.adoc[]
+** xref:s1-boot.adoc[]
 ** xref:s2-boot-lab.adoc[]

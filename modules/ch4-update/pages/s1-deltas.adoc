@@ -1,3 +1,65 @@
-= Section 1
+:time_estimate: 5
 
-This is _Section 1_ of _Chapter 3_ in the *hello* quick course....
+= Pull, Apply, and Rollback Updates to Edge Devices
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Understand how OSTree repositories represent operating system images
+
+WARNING: Work In Progress
+
+== Device Updates
+
+Lorem ipsum
+
+image::s1-deltas-fig-1.svg[title="End of an edge device update workflow"]
+
+Lorem ipsum
+
+== OSTree Static Deltas
+
+Unlike Git, OSTree is designed to be able to easily and cleanly discard history, on the assumption that all operating system binaries in a commit can be recreated from their source code. An OSTree repository is not intended for long-term change tracking and auditing: these are best done on the source code rather than on the derived binaries.
+
+OSTree repositories can include OSTree commits with no change history between them, and are nonetheless able to deduplicate file contents between commits on both on local and remote repositories. OSTree also optimizes network traffic by sending only deltas between repositories. So you can build many OSTree commits in a development system, using its local repository, and only promote for production usage, in a remote repository, a few commits which passed unit tests and functional tests.
+
+But, as Git users know, computing deltas and transfering them on-demand, one file at a time, is not the most efficient method. I requires multiple network transactions and incurrs in lots of protocol overhead. OSTree offers the possibility of precomputing and storing static deltas between two commits as part of an OSTree repository.
+
+OSTree clients will discover and use these precomputed deltas, called *static deltas*, transparently, saving network bandwidth and reducing the time to download updates. The savings are even more noticeable in high-latency networks.
+
+[ figure of multiple commits and deltas, and clients downloading either a commit or a delta ]
+
+Having static deltas also reduces the memory and CPU requirements of both clients and servers when updating systems. If you consider that an OSTree server has a potentially large population of client edge devices, compared to the population of developers using a Git repository, the efficiency gains can be large, not to mention a lower cloud bill for running your OSTree servers.
+
+Precomputed static deltas also saves CPU from smaller edge devices while downloading and deploy system updates. The gains are wellcome by edge devices, which have slower CPUs and less memory than data center servers. This is also significant because edge devices are expected to contine performing their regular tasks while downloading (or staging) system updates.
+
+== The RPM-OSTree tooling
+
+The `rpm-ostree` command fetches and deploys system image updates from a remote OSTree repository, including performing any bootloader and kernel changes required by the new image.
+
+
+The `rpm-ostree` command also builds OSTree commits from DNF repositories, but this not a functionality directly
+
+A system image is downloaded and staged without affecting the running system. The new system image is only effective after a reboot.
+
+RPM-OSTree keeps the previous system image unchanged on disk and can rollback to it, which also requires a reboot.
+
+You can query the RPM database on the current system image, but you cannot install and update packages using `yum` and `dnf` commands. You must use the `rpm-ostree` command to first enable an overlay layer to record changes to the system, and them install new packages or update packages from the current system images.
+
+It is possible ot update the system image and keep the overlay, as long as the overlay does not include packages with releases olde than the new system image.
+
+In this course, we will not teach the use of overlays and managing packages on RHEL for Edge. We focus on building and updating system images.
+
+
+== The OSTree tooling
+
+Lorem Ipsum
+
+[ Either add an introduction to the syntax of the rpm-ostree command, or move this heading to another topic ]
+
+[ Do we need to introduce the ostree command? For example, can I check the integrity of an ostree commit (or edte commit image) from rpm-ostree aline? ]
+
+== Next Steps
+
+Now that you was introduced to the essential concepts of RPM-OSTree, a series of hands-on activties install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course you will test those edge images using local VMs, and them update those VMs to use new system images.

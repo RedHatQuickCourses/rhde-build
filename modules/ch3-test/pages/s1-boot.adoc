@@ -1,0 +1,29 @@
+:time_estimate: 5
+
+= Developer Testing of Edge Images
+
+_Estimated reading time: *{time_estimate} minutes*._
+
+Objective::
+
+Understand how to provision edge devices from OSTree repositories or edge instaler images.
+
+WARNING: Work In Progress
+
+== Provisioning Edge Devices
+
+Publishing an OSTree commit on a remote OSTree repository is the final step before you can provision edge systems.
+
+You could use the standard RHEL installation media, together with a small custom kickstart file, to provision edge systems directly from a remote OSTree repository:
+
+image::s1-boot-fig-1.svg[title="End of an edge device installation workflow the standard RHEL installation media"]
+
+As an alternative, you could use the Image Builder service to create an edge installer image, based on an OSTree commit in a remote OSTree repository, and copy the generated edge installer image to an USB media or a network boot server, and them provision edge systems using the edge installer image.
+
+image::s1-boot-fig-2.svg[title="End of an edge device installation workflow an edge installer image and custom boot media"]
+
+Lorem Ipsum
+
+== Next Steps
+
+Lorem Ipsum
