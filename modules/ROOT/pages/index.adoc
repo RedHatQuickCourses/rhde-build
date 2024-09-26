@@ -31,7 +31,17 @@ For initial testing and development, use the https://role.rhu.redhat.com/rol-rhu
 
 == Other Sources of Information About Red Hat Device Edge
 
-TBD
+The main product documentation of Red Hat Device Edge is an https://docs.redhat.com/en/documentation/red_hat_device_edge/4/html/overview/index[overview document], which points to the product documentation of RHEL, OpenShift, and Ansible.
+
+For the scope of this course, the main product documentation of RHEL for Edge is https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_installing_and_managing_rhel_for_edge_images/index[Composing, installing, and managing RHEL for Edge images].
+
+More extensive documentation about RHEL Image Builder is on https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_a_customized_rhel_system_image/index[Composing a customized RHEL system image].
+
+We also recommend the community upstream documentation of the technologies in RHEL for Edge that we use in the activities of this course:
+
+* https://osbuild.org/docs/user-guide/introduction/[Image Builder (osbuild)].
+* https://coreos.github.io/rpm-ostree/[RPM-OSTree]
+* https://ostreedev.github.io/ostree/[OSTree (libostree)].
 
 == Author
 
