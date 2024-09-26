@@ -176,7 +176,7 @@
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Pending review.
+Pending SME Review &amp; Proofreading
 </td>
 </tr>
 </table>
@@ -194,15 +194,11 @@ Pending review.
 <ul class="checklist">
 <li>
 <p><i class="fa fa-check-square-o"></i> <strong>Traditional RHEL</strong><br>
-<em>Correct: This is a general-purpose workstation which likely runs a popular desktop operating system, such as Windows and MacOS. <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/workstations">RHEL for Workstations</a> and the community supported <a href="https://fedoraproject.org">Fedora Linux</a> are also good choices for this kind of user workstation.</em></p>
+<em>Correct: This is a general-purpose workstation which likely runs a popular desktop operating system, such as Windows and MacOS. <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/workstations">RHEL for Workstations</a>, <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/red-hat-enterprise-linux-for-developers">RHEL for Developers</a>, and the community supported <a href="https://fedoraproject.org">Fedora Linux</a> are also good choices for this kind of user workstation.</em></p>
 </li>
 <li>
 <p><i class="fa fa-square-o"></i> RHEL for Edge<br>
 <em>Incorrect: RHEL for Edge is designed for single-purpose devices instead of general purpose workstations.</em></p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> Either of them<br>
-<em>Incorrect: A general-purpose workstation is a clear case for a traditional desktop operating system.</em></p>
 </li>
 </ul>
 </div>
@@ -213,15 +209,11 @@ Pending review.
 <ul class="checklist">
 <li>
 <p><i class="fa fa-square-o"></i> Traditional RHEL<br>
-<em>Incorrect: As a single-purpose machine which should run with minimal maintenance, this is not a case for a heavier operating system.</em></p>
+<em>Incorrect: though kiosk machines have been frequently configured from standard desktop operating systems, they become high-maintenance and even potential sources of embarrassment if customers can get access to other applications on the device. A lower maintenance approach, such as the one from image-based systems, fits better this scenario.</em></p>
 </li>
 <li>
 <p><i class="fa fa-check-square-o"></i> <strong>RHEL for Edge</strong><br>
-<em>Correct: This is an appliance-like device, which should be just turned on and be available to customers in different parts of the store.</em></p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> Either of them<br>
-<em>Incorrect: though kiosk machines have been configured from standard desktop operating systems, they become high-maintenance and even potential sources of embarrassment if customers can get access to other applications on the device.</em></p>
+<em>Correct: This is an appliance-like device, which should be just turned on and be available to customers in different parts of the store, requiring minimal maintenance.</em></p>
 </li>
 </ul>
 </div>
@@ -232,15 +224,11 @@ Pending review.
 <ul class="checklist">
 <li>
 <p><i class="fa fa-check-square-o"></i> <strong>Traditional RHEL</strong><br>
-<em>Correct: This is likely a server-class machine locked in a server room, and possibly a member of a high-availability cluster with other similar machines in the store.</em></p>
+<em>Correct: This is likely a server-class machine locked in a server room, and possibly a member of a high-availability (HA) cluster with other similar machines in the store. Even if not HA it is likely managed by corporate IT like any other departmental server in branch offices.</em></p>
 </li>
 <li>
 <p><i class="fa fa-square-o"></i> RHEL for Edge<br>
 <em>Incorrect: This server machine is probably too powerful for the Red Hat Device Edge subscription, but a smaller and single-purpose database server could be deployed and managed as an edge device.</em></p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> Either of them<br>
-<em>Incorrect: This server is likely managed by corporate IT like any other departmental server in branch offices.</em></p>
 </li>
 </ul>
 </div>
@@ -255,11 +243,7 @@ Pending review.
 </li>
 <li>
 <p><i class="fa fa-check-square-o"></i> <strong>RHEL for Edge</strong><br>
-<em>Correct: In addition to the considerations in the previous answer, these computers are likely rugged for exposure to climate or heat, and should be quick to replace in case of hardware failures.</em></p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> Either of them<br>
-<em>Incorrect: While it is true that such system have been designed from standard desktop and server operating systems in the past, they would be high maintenance. They are likely provided as appliances by the security equipment vendor, instead of managed by corporate IT as other LOB servers.</em></p>
+<em>Correct: In addition to the considerations in the previous answer, these computers are likely rugged for outdoor conditions, and must be quick to replace in case of hardware failures. Besides, they are likely provided as appliances by the security equipment vendor, instead of managed by corporate IT as other LOB servers.</em></p>
 </li>
 </ul>
 </div>
@@ -269,16 +253,12 @@ Pending review.
 <div class="ulist checklist">
 <ul class="checklist">
 <li>
-<p><i class="fa fa-square-o"></i> Traditional RHEL<br>
-<em>Incorrect: as a single-purpose appliance, this is better suited to be deployed and managed as an image-based system.</em></p>
+<p><i class="fa fa-check-square-o"></i> <strong>Traditional RHEL</strong><br>
+<em>Correct: Depending on the hardware requirements of its AI model, this might require entitlements from a traditional RHEL subscription, but be deployed and managed using RHEL for Edge technologies. It could use compute device which is rugged for factory floor conditions and provides compute capacity similar to a data center server, as opposed to a leaner edge device, and may not meet the criteria for Red Hat Device Edge subscriptions.</em></p>
 </li>
 <li>
-<p><i class="fa fa-square-o"></i> RHEL for Edge<br>
-<em>Incorrect: as an AI model which might require more memory, CPU power, and GPU capacity, than available in typical edge devices, this may not meet the criteria for Red Hat Device Edge subscriptions.</em></p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> <strong>Either of them</strong><br>
-<em>Correct: Depending on the hardware requirements of its AI model, this might be entitled as a traditional RHEL subscription, but deployed and managed using RHEL for Edge technologies, on a hardware device which is rugged for factory floor conditions but provides compute capacity of a data center server; or it could be entitled using Red Hat Device Edge Subscriptions, if using a leaner AI model which runs in edge systems with a single CPU core and reduced memory but with GPU or another kind of hardware accelerator.</em></p>
+<p><i class="fa fa-check-square-o"></i> <strong>RHEL for Edge</strong><br>
+<em>Correct: As a single-purpose appliance, this is better suited to be deployed and managed as an image-based system. Beware that, to be entitled using Red Hat Device Edge Subscriptions, it must use a leaner AI model which runs in edge systems with a single CPU core and reduced memory. Some of those devices do offer GPUs and other kinds of hardware accelerators suitable for optimized AI models. In fact, the <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/ai">RHEL AI</a> subscription is an image-based operating system and its technologies support both data center and edge deployments.</em></p>
 </li>
 </ul>
 </div>
