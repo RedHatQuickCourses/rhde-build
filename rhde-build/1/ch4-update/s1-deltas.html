@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Section 1 :: Building Red Hat Device Edge Images</title>
+    <title>Pull, Apply, and Rollback Updates to Edge Devices :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="index.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -107,6 +108,9 @@
     <a class="nav-link" href="../ch3-test/index.html">Validate Edge Device Images</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Developer Testing of Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a>
   </li>
 </ul>
@@ -116,7 +120,13 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Update Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s1-deltas.html">Pull, Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -149,7 +159,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
-    <li><a href="s1-deltas.html">Section 1</a></li>
+    <li><a href="index.html">Update Edge Devices</a></li>
+    <li><a href="s1-deltas.html">Pull, Apply, and Rollback Updates to Edge Devices</a></li>
   </ul>
 </nav>
 </div>
@@ -158,10 +169,128 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Section 1</h1>
+<h1 class="page">Pull, Apply, and Rollback Updates to Edge Devices</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>This is <em>Section 1</em> of <em>Chapter 3</em> in the <strong>hello</strong> quick course&#8230;&#8203;.</p>
+<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Understand how OSTree repositories represent operating system images</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Work In Progress
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_device_updates"><a class="anchor" href="#_device_updates"></a>Device Updates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lorem ipsum</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-deltas-fig-1.svg" alt="s1 deltas fig 1">
+</div>
+<div class="title">Figure 1. End of an edge device update workflow</div>
+</div>
+<div class="paragraph">
+<p>Lorem ipsum</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ostree_static_deltas"><a class="anchor" href="#_ostree_static_deltas"></a>OSTree Static Deltas</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unlike Git, OSTree is designed to be able to easily and cleanly discard history, on the assumption that all operating system binaries in a commit can be recreated from their source code. An OSTree repository is not intended for long-term change tracking and auditing: these are best done on the source code rather than on the derived binaries.</p>
+</div>
+<div class="paragraph">
+<p>OSTree repositories can include OSTree commits with no change history between them, and are nonetheless able to deduplicate file contents between commits on both on local and remote repositories. OSTree also optimizes network traffic by sending only deltas between repositories. So you can build many OSTree commits in a development system, using its local repository, and only promote for production usage, in a remote repository, a few commits which passed unit tests and functional tests.</p>
+</div>
+<div class="paragraph">
+<p>But, as Git users know, computing deltas and transfering them on-demand, one file at a time, is not the most efficient method. I requires multiple network transactions and incurrs in lots of protocol overhead. OSTree offers the possibility of precomputing and storing static deltas between two commits as part of an OSTree repository.</p>
+</div>
+<div class="paragraph">
+<p>OSTree clients will discover and use these precomputed deltas, called <strong>static deltas</strong>, transparently, saving network bandwidth and reducing the time to download updates. The savings are even more noticeable in high-latency networks.</p>
+</div>
+<div class="paragraph">
+<p>[ figure of multiple commits and deltas, and clients downloading either a commit or a delta ]</p>
+</div>
+<div class="paragraph">
+<p>Having static deltas also reduces the memory and CPU requirements of both clients and servers when updating systems. If you consider that an OSTree server has a potentially large population of client edge devices, compared to the population of developers using a Git repository, the efficiency gains can be large, not to mention a lower cloud bill for running your OSTree servers.</p>
+</div>
+<div class="paragraph">
+<p>Precomputed static deltas also saves CPU from smaller edge devices while downloading and deploy system updates. The gains are wellcome by edge devices, which have slower CPUs and less memory than data center servers. This is also significant because edge devices are expected to contine performing their regular tasks while downloading (or staging) system updates.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_rpm_ostree_tooling"><a class="anchor" href="#_the_rpm_ostree_tooling"></a>The RPM-OSTree tooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>rpm-ostree</code> command fetches and deploys system image updates from a remote OSTree repository, including performing any bootloader and kernel changes required by the new image.</p>
+</div>
+<div class="paragraph">
+<p>The <code>rpm-ostree</code> command also builds OSTree commits from DNF repositories, but this not a functionality directly</p>
+</div>
+<div class="paragraph">
+<p>A system image is downloaded and staged without affecting the running system. The new system image is only effective after a reboot.</p>
+</div>
+<div class="paragraph">
+<p>RPM-OSTree keeps the previous system image unchanged on disk and can rollback to it, which also requires a reboot.</p>
+</div>
+<div class="paragraph">
+<p>You can query the RPM database on the current system image, but you cannot install and update packages using <code>yum</code> and <code>dnf</code> commands. You must use the <code>rpm-ostree</code> command to first enable an overlay layer to record changes to the system, and them install new packages or update packages from the current system images.</p>
+</div>
+<div class="paragraph">
+<p>It is possible ot update the system image and keep the overlay, as long as the overlay does not include packages with releases olde than the new system image.</p>
+</div>
+<div class="paragraph">
+<p>In this course, we will not teach the use of overlays and managing packages on RHEL for Edge. We focus on building and updating system images.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_ostree_tooling"><a class="anchor" href="#_the_ostree_tooling"></a>The OSTree tooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lorem Ipsum</p>
+</div>
+<div class="paragraph">
+<p>[ Either add an introduction to the syntax of the rpm-ostree command, or move this heading to another topic ]</p>
+</div>
+<div class="paragraph">
+<p>[ Do we need to introduce the ostree command? For example, can I check the integrity of an ostree commit (or edte commit image) from rpm-ostree aline? ]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you was introduced to the essential concepts of RPM-OSTree, a series of hands-on activties install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course you will test those edge images using local VMs, and them update those VMs to use new system images.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Update Edge Devices</a></span>
+</nav>
 </article>
   </div>
 </main>
