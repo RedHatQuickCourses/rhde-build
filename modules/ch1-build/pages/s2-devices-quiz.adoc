@@ -12,7 +12,9 @@ WARNING: Pending SME Review & Proofreading
 
 NOTE: Make your notes of what you believe are the right answers for each question. This is a static web page so the check boxes are not clickable.
 
-== Questions (Multiple Choice)
+== Questions
+
+For each of the following scenarios, which favor of RHEL would be most adequate? There could be more than one right answer.
 
 1. A manager's workstation in a retail store, to run text processors, spreadsheets, email clients, and also access multiple corporate systems.
 
