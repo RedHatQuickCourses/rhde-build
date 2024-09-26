@@ -8,7 +8,7 @@ Objective::
 
 Install and configure Image Builder in a RHEL machine for creating edge images.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 

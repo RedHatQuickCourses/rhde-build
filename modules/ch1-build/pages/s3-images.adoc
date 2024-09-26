@@ -8,7 +8,7 @@ Objective::
 
 Understand the generic workflows for building and publishing RHEL for Edge system images.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Provision and Update Edge Devices with Image Builder and RPM-OSTree
 

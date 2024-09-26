@@ -8,7 +8,7 @@ Objective::
 
 Create, validate, and update Image Builder blueprints for building edge images.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 
