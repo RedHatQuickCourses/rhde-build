@@ -193,13 +193,13 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="#s4-install-lab.adoc" class="xref unresolved">first lab</a>.</p>
+<p>You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="#s4-install-lab.adoc" class="xref unresolved">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.</p>
 </div>
 <div class="paragraph">
-<p>You could run the web server in the same machine you use to run the Image Builder service, and that would match development and CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
+<p>You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
 </div>
 <div class="paragraph">
 <p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="#s6-compose-lab.adoc" class="xref unresolved">previous lab</a>.</p>
@@ -210,27 +210,21 @@ Work In Progress
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
-<div class="paragraph">
-<p>[ rename "test machine" everywhere to "developement manchine"? It&#8217;s not like real "developers" would use image builder ]</p>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>[ could use a worflow diagram of the entire process, which spans multiple labs (and chapters!) ]</p>
-</div>
-<div class="paragraph">
 <p>[ switch everyhere to use the hostname in the prompt? ]</p>
 </div>
 <div class="paragraph">
-<p>[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and comment about SSH keys ]</p>
+<p>[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>On your test machine, verify that you have the prerequisites from previous labs.</p>
+<p>On your development machine, verify that you have the prerequisites from previous labs.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -263,6 +257,84 @@ API server status:
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em></strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you deleted the temporary directory from the previous lab, extract the image contents again to a temporary directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
+$ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check the integrity of your edge commit image by inspecting its OSTree repository.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>COMMIT=$(jq -r '.["ostree-commit"]' &lt; delete-me/compose.json)</strong>
+$ <strong>echo $COMMIT</strong>
+4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.</p>
+</div>
+</li>
+<li>
+<p>Get the branch reference from the compose metadata and store it in a shell variable.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>REF=$(jq -r '.["ref"]' &lt; delete-me/compose.json)</strong>
+$ <strong>echo $REF</strong>
+rhel/9/x86_64/edge</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.</p>
+</div>
+</li>
+<li>
+<p>List the commits available on your OSTree repository. There should be only one commit which matches the compose metadata.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo log $REF</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
+Date:  2024-09-06 22:07:45 +0000
+Version: 9.2
+(no subject)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>List the branches available on your OSTree repository. There should be only one branch which matches the compose metadata.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo refs</strong>
+rhel/9/x86_64/edge</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Peform an integrity check of the OSTree repository.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo fsck</strong>
+Validating refs...
+Validating refs in collections...
+Enumerating commits...
+Verifying content integrity of 1 commit objects...
+fsck objects (28670/28670) [=============] 100%
+object fsck of 1 commits completed successfully - no errors found.</code></pre>
 </div>
 </div>
 </li>
@@ -343,7 +415,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>On your test machine, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="#s6-compose-lab.adoc" class="xref unresolved">previous lab</a>, to the web server.</p>
+<p>On your development machine, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="#s6-compose-lab.adoc" class="xref unresolved">previous lab</a>, to the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -373,7 +445,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Still on your test manchine, create an Anacond Kickstart file that points to the OSTree repository on the web server.</p>
+<p>Still on your development manchine, create an Anacond Kickstart file that points to the OSTree repository on the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -445,14 +517,14 @@ $ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Extracting an edge commit image only works for initializing a new OSTree repository with a single commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the <code>ostree pull-local</code> command. This command will be presented in a later chapter of this course, when we teach how to publish and apply updates.
+Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the <code>ostree pull-local</code> command. This command will be presented in a later chapter of this course, when we teach how to publish and apply updates.
 </td>
 </tr>
 </table>
 </div>
 </li>
 <li>
-<p>Ensure the OSTree repository contents are acessiblee to the <code>apache</code> user and have correct SELinux labels.</p>
+<p>Ensure the OSTree repository contents are acessible to the <code>apache</code> user and have correct SELinux labels.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -lZ /var/www/html</strong>
@@ -484,7 +556,7 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Back to your test machine, verify that a remote client can access the kickstart file and the remote OSTree repository.</p>
+<p>Back to your development machine, verify that a remote client can access the kickstart file and the remote OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -519,7 +591,7 @@ mode=archive-z2</code></pre>
 </ol>
 </div>
 <div class="paragraph">
-<p>Conclusion statement.</p>
+<p>Now you have a web server configured to serve an OSTree repository and you have an edge system image stored on that OSTree repository.</p>
 </div>
 </div>
 </div>

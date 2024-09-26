@@ -193,7 +193,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You also need the blueprint that was created and uploaded to the Image Builder service by the <a href="#s5-blueprint-lab.adoc" class="xref unresolved">previous lab</a>.</p>
@@ -382,14 +382,14 @@ libgcc-11.3.1-4.3.el9.x86_64
 <ol class="loweralpha" type="a">
 <li>
 <p>Download the image to your home directory.</p>
-<div class="paragraph">
-<p>Mention --filename</p>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID</strong>
 575d8ddc-2902-4de3-a0d5-82f5f194f5d8-commit.tar</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You could use the <code>--filename</code> option to specify a name for the image file, instead of using the default generated name based on the UUID of its compose.</p>
 </div>
 </li>
 <li>
@@ -418,76 +418,7 @@ ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1
 </div>
 </li>
 <li>
-<p>If you wish, you can perform additional integrity check of your edge commit image using the lower level OSTree tooling.</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>COMMIT=$(jq -r '.["ostree-commit"]' &lt; delete-me/compose.json)</strong>
-$ <strong>echo $COMMIT</strong>
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.</p>
-</div>
-</li>
-<li>
-<p>Get the branch reference from the compose metadata and store it in a shell variable.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>REF=$(jq -r '.["ref"]' &lt; delete-me/compose.json)</strong>
-$ <strong>echo $REF</strong>
-rhel/9/x86_64/edge</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.</p>
-</div>
-</li>
-<li>
-<p>List the commits available on your OSTree repository. There should be only one commit which matches the compose metadata.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo log $REF</strong>
-commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
-ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
-Date:  2024-09-06 22:07:45 +0000
-Version: 9.2
-(no subject)</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>List the branches available on your OSTree repository. There should be only one branch which matches the compose metadata.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo refs</strong>
-rhel/9/x86_64/edge</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Peform an integrity check in the OSTree repository.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo fsck</strong>
-Validating refs...
-Validating refs in collections...
-Enumerating commits...
-Verifying content integrity of 1 commit objects...
-fsck objects (28670/28670) [=============] 100%
-object fsck of 1 commits completed successfully - no errors found.</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>You can now delete the temporary directory.</p>
+<p>You can now delete the temporary directory, or leave it around for the next activity</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rm -rf delete-me</strong></code></pre>
