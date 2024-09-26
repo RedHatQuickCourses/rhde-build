@@ -12,19 +12,13 @@ WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 
-You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
+You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
 
 You also need the blueprint that was created and uploaded to the Image Builder service by the xref:s5-blueprint-lab.adoc[previous lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`. If not, please adapt the instructions to your test environment.
-
-
-// Is there any customization worth of showcasing right now? Timezone, keyboard, networking?
-
-//$ ARCH=$(uname -i)
-
 
 == Instructions
 
@@ -164,13 +158,13 @@ libgcc-11.3.1-4.3.el9.x86_64
 
 .. Download the image to your home directory.
 +
-Mention --filename
-+
 [source,subs="verbatim,quotes"]
 --
 $ *composer-cli compose image $UUID*
 575d8ddc-2902-4de3-a0d5-82f5f194f5d8-commit.tar
 --
++
+You could use the `--filename` option to specify a name for the image file, instead of using the default generated name based on the UUID of its compose.
 
 .. Extract the image contents to a temporary directory.
 +
@@ -192,64 +186,7 @@ ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1
 ...
 --
 
-6. If you wish, you can perform additional integrity check of your edge commit image using the lower level OSTree tooling.
-
-.. Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.
-+
-[source,subs="verbatim,quotes"]
---
-$ *COMMIT=$(jq -r '.["ostree-commit"]' < delete-me/compose.json)*
-$ *echo $COMMIT*
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
---
-+
-You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.
-
-.. Get the branch reference from the compose metadata and store it in a shell variable.
-+
-[source,subs="verbatim,quotes"]
---
-$ *REF=$(jq -r '.["ref"]' < delete-me/compose.json)*
-$ *echo $REF*
-rhel/9/x86_64/edge
---
-+
-You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.
-
-.. List the commits available on your OSTree repository. There should be only one commit which matches the compose metadata.
-+
-[source,subs="verbatim,quotes"]
---
-$ *ostree --repo=delete-me/repo log $REF*
-commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
-ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
-Date:  2024-09-06 22:07:45 +0000
-Version: 9.2
-(no subject)
---
-
-.. List the branches available on your OSTree repository. There should be only one branch which matches the compose metadata.
-+
-[source,subs="verbatim,quotes"]
---
-$ *ostree --repo=delete-me/repo refs*
-rhel/9/x86_64/edge
---
-
-.. Peform an integrity check in the OSTree repository.
-+
-[source,subs="verbatim,quotes"]
---
-$ *ostree --repo=delete-me/repo fsck*
-Validating refs...
-Validating refs in collections...
-Enumerating commits...
-Verifying content integrity of 1 commit objects...
-fsck objects (28670/28670) [=============] 100%
-object fsck of 1 commits completed successfully - no errors found.
---
-
-7. You can now delete the temporary directory.
+6. You can now delete the temporary directory, or leave it around for the next activity
 +
 [source,subs="verbatim,quotes"]
 --
