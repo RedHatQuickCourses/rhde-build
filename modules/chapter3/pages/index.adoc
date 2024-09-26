@@ -1,3 +1,0 @@
-= Chapter 3
-
-This is the home page of _Chapter 3_ in the *hello* quick course....
