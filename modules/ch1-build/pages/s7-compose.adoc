@@ -90,6 +90,8 @@ RHEL does not provide any Cockpit module or GUI tool to manage OSTree repositori
 
 For now, you will use those commands just to inspect the OSTree commit inside an edge commit image and verify it is complete and consistent. Later in this course you will learn about OSTree repository management and we will present those commands in more detail. Then, after you have OSTree repositories configured and populated, you will learn how to create and use edge installer images.
 
+Both the `rpm-ostree` and `ostree` commands follow a similar syntax. For now, you can use the `--help` option with either of them, and their subcommands, to explore their possibilities.
+
 == Next Steps
 
 Now that you know about Image Builder composes and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.
