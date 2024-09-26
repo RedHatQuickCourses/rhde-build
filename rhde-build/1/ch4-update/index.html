@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Publish Operating System Images for Edge Devices :: Building Red Hat Device Edge Images</title>
-    <link rel="prev" href="../ch1-build/s9-summary.html">
-    <link rel="next" href="s1-ostree.html">
+    <title>Update Edge Devices :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="../ch3-test/s2-boot-lab.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -88,15 +87,15 @@
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Publish Operating System Images for Edge Devices</a>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s1-ostree.html">Introduction to OSTree Technology</a>
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s2-ostree-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
   </li>
 </ul>
   </li>
@@ -117,8 +116,8 @@
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices</a>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="index.html">Update Edge Devices</a>
   </li>
 </ul>
   </li>
@@ -151,7 +150,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
-    <li><a href="index.html">Publish Operating System Images for Edge Devices</a></li>
+    <li><a href="index.html">Update Edge Devices</a></li>
   </ul>
 </nav>
 </div>
@@ -160,14 +159,14 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Publish Operating System Images for Edge Devices</h1>
+<h1 class="page">Update Edge Devices</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Goal</dt>
 <dd>
-<p>Publish RHEL for Edge images in remote OSTree repositories.</p>
+<p>Publish and Validate updates of RHEL for Edge images using OSTree deltas in local VMs.</p>
 </dd>
 </dl>
 </div>
@@ -189,16 +188,18 @@ Work In Progress
 <h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This chapter introduces OSTree repository management and OSTree concepts such as commits and remotes.</p>
+<p>This chapter explains how to use RPM-OStree technoly from RHEL to apply and test edge device updates, as part of a development or CI/CD workflow.</p>
 </div>
 <div class="paragraph">
-<p>After explaining these concepts, this chapter presents a series of hands-on activities which configure a web server to provide OSTree repositories and publish edge commmit images from Image Builder on those repositories. The next chapters use those OSTree repositories to provision devices in edge locations, and delivering updates to edge devices.</p>
+<p>This chapter presents a series of hands-on activities which update the operating system in VMs using OSTree repositories, and optimize those system updates by building static deltas.</p>
+</div>
+<div class="paragraph">
+<p>This is the final chapter of this course. Stay tuned for future courses which teach othr features included in Red Hat Device Edge, such as MicroShift and Green Boot.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="../ch1-build/s9-summary.html">Summary</a></span>
-  <span class="next"><a href="s1-ostree.html">Introduction to OSTree Technology</a></span>
+  <span class="prev"><a href="../ch3-test/s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a></span>
 </nav>
 </article>
   </div>
