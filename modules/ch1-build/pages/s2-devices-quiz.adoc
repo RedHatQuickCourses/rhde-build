@@ -8,39 +8,36 @@ Objective::
 
 Assess if a compute device or application is likely to be a suitable case for Red Hat Device Edge or if its more likely to be a case for traditional RHEL.
 
-WARNING: Pending review.
+WARNING: Pending SME Review & Proofreading
 
-== Questions
+NOTE: Make your notes of what you believe are the right answers for each question. This is a static web page so the check boxes are not clickable.
+
+== Questions (Multiple Choice)
 
 1. A manager's workstation in a retail store, to run text processors, spreadsheets, email clients, and also access multiple corporate systems.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
-* [ ] Either of them
 
 2. A kiosk machine in a retail store, that enables customers to query the price and other information of a product, such as nutrients and potential allergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
-* [ ] Either of them
 
 3. A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different business processes that happen in the store itself.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
-* [ ] Either of them
 
 4. A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and electronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
-* [ ] Either of them
 
-5. An image recognition application, which monitors goods at multiple states of an assembly line and flags defective ones, reducing the need for human inspection of samples from each batch of goods.
+5. An image recognition application, which monitors goods at multiple stages of an assembly line and flags defective ones, reducing the need for human inspection of samples from each batch of goods.
 
 * [ ] Traditional RHEL
 * [ ] RHEL for Edge
-* [ ] Either of them
 
 == What's Next
 
