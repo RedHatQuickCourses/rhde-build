@@ -1,6 +1,6 @@
 :time_estimate: 5
 
-= Pull, Apply, and Rollback Updates to Edge Devices
+= Apply, and Rollback Updates to Edge Devices
 
 _Estimated reading time: *{time_estimate} minutes*._
 
