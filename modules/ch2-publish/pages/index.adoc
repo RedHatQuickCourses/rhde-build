@@ -1,7 +1,7 @@
 = Publish Operating System Images for Edge Devices
 
 Goal:: 
-Publish RHEL for Edge images in remote OSTree repositories.
+Publish RHEL for Edge images on remote OSTree repositories.
 
 WARNING: Work In Progress
 

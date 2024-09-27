@@ -1,4 +1,4 @@
-:time_estimate: 5
+:time_estimate: 7
 
 = Lab: Create a Remote OSTree Repository
 
@@ -14,7 +14,7 @@ WARNING: Work In Progress
 
 You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
-You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.
+You need a second machine to run a web server, on which you have unrestricted sudo access to install packages and configure system services.
 
 You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations. 
 
@@ -27,10 +27,6 @@ If you are using the course classroom, you will log in on the `workstation` VM a
 == Instructions
 
 [ switch everyhere to use the hostname in the prompt? ]
-
-[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]
-
-[ creating a kickstart file doesn't really belong here, you'll use the kickstart only later, to provision an edge device ]
 
 1. On your development machine, verify that you have the prerequisites from previous labs.
 
@@ -49,7 +45,7 @@ API server status:
 ...
 --
 
-.. Verify that you have a tar file named `_uuid_-compose.tar` that contains the edge commit image from the xref:s6-compose-lab.adoc[previous lab]. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.
+.. Verify that you have a tar file named `_uuid_-compose.tar` that contains the edge commit image from the xref:ch1-build:s8-compose-lab.adoc[previous lab]. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -75,27 +71,19 @@ $ *tar xf $UUID-commit.tar -C delete-me*
 
 2. Check the integrity of your edge commit image by inspecting its OSTree repository.
 
-.. Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.
+.. Get the commit ID and branch name from the compose metadata and store them in a shell variable. You will get a different ID than the one shown here.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *COMMIT=$(jq -r '.["ostree-commit"]' < delete-me/compose.json)*
 $ *echo $COMMIT*
 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
---
-+
-You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.
-
-.. Get the branch reference from the compose metadata and store it in a shell variable.
-+
-[source,subs="verbatim,quotes"]
---
 $ *REF=$(jq -r '.["ref"]' < delete-me/compose.json)*
 $ *echo $REF*
 rhel/9/x86_64/edge
 --
 +
-You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.
+NOTE: You would not need the commit ID nor branch name for an OSTree repository with a single commit, as the one you got from your only edge commit image. But as you build more edge images, or update existing images, you will need to be able to differentiate between multiple edge images, that is, multiple OSTree commits, in the same OSTree repository.
 
 .. List the commits available on your OSTree repository. There should be only one commit which matches the compose metadata.
 +
@@ -174,7 +162,7 @@ $ *sudo firewall-cmd --reload*
 success
 --
 
-.. Install the RPM-OSTree and the lower level OSTree tooling on the web server machine, just in case you need to perform maintenance on the OSTree repositories you will store on it.
+.. Install the RPM-OSTree and the lower level OSTree tooling on the web server machine, because you will need to perform maintenance on the OSTree repositories you store on it.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -183,7 +171,7 @@ $ *sudo yum install -y rpm-ostree ostree*
 Complete!
 --
 
-4. On your development machine, check that you have access to the web server machine and copy the edge commit image, generated in the xref:s6-compose-lab.adoc[previous lab], to the web server.
+4. On your development machine, check that you have access to the web server machine and copy the edge commit image, generated in the xref:ch1-build:s8-compose-lab.adoc[previous lab], to the web server.
 
 .. Use a web browser or any web client to access the default welcome page from the Apache Web Server.
 +
@@ -206,61 +194,18 @@ $ *scp $UUID-commit.tar servera.lab.example.com:~*
 ...
 --
 
-5. Still on your development manchine, create an Anacond Kickstart file that points to the OSTree repository on the web server.
-
-.. Using your preferred text editor, create a file named `rhel9-httpd.ks` with the following contents:
-+
-[source,subs="verbatim,quotes"]
---
-lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --utc
-text
-
-zerombr
-clearpart --all --initlabel
-autopart --type=plain
-rootpw --lock
-user --name=core --group=wheel --password=redhat123
-
-reboot
-
-network --bootproto=dhcp 
-ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
---
-+
-You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks[kickstart file] from sample applications repository in GitHub.
-+
-Most lines on that kickstart file can be changed according to needs, and real-world deployments would include items such as SSH keys for remote login and remote management. The important piece is the `ostreesetup` command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.
-
-.. Copy the Kickstart file to your home directory on the web server machine.
-+
-[source,subs="verbatim,quotes"]
---
-$ *scp rhel9-httpd.ks servera.lab.example.com:~*
-...
---
-
-6. Switch to your web sever machine and publish the kickstart file and the OSTree commit in the web server content directory.
-
-.. Copy the kickstart file to the web server content directory.
-+
-[source,subs="verbatim,quotes"]
---
-$ *ls -1*
-_575d8ddc-2902-4de3-a0d5-82f5f194f5d8_-commit.tar
-rhel9-httpd.ks
-$ *sudo cp rhel9-httpd.ks /var/ww/html*
---
+5. Switch to your web sever machine and publish the OSTree commit in the web server content directory.
 
 .. Extract the OSTree commit to the web server content directory.
 +
 [source,subs="verbatim,quotes"]
 --
+$ *ls -1*
+_575d8ddc-2902-4de3-a0d5-82f5f194f5d8_-commit.tar
 $ *sudo tar xf ~/$UUID-commit.tar -C /var/www/html*
 --
 +
-IMPORTANT: Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the `ostree pull-local` command. This command will be presented in a later chapter of this course, when we teach how to publish and apply updates.
+IMPORTANT: Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the `ostree init` and `ostree pull-local` commands.
 
 .. Ensure the OSTree repository contents are acessible to the `apache` user and have correct SELinux labels.
 +
@@ -270,7 +215,6 @@ $ *ls -lZ /var/www/html*
 total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
 drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
--rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel9-httpd.ks
 --
 
 .. If you need, change file permissions and SELinux labels.
@@ -285,23 +229,12 @@ $ *sudo restorecon -R /var/www/html*
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo rm compose.json*
+$ *sudo rm /var/www/html/compose.json*
 --
 
-7. Back to your development machine, verify that a remote client can access the kickstart file and the remote OSTree repository.
-
-.. Check that a remote client can read the kickstart file over HTTP.
+6. Back to your development machine, verify that a remote client can access the remote OSTree repository.
 +
-[source,subs="verbatim,quotes"]
---
-$ *curl http://servera.lab.example.com/rhel9-httpd.ks*
-lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --isUtc
-...
---
-
-.. Check that a remote client can read the OSTree repository configuration file. This way, you don't need to setup a local OSTree repository just to check access to the remode repository.
+Check that a remote client can read the OSTree repository configuration file. This way, you don't need to setup a local OSTree repository, on the development machine. that connects to the web server as its remote repository.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -311,7 +244,7 @@ repo_version=1
 mode=archive-z2
 --
 
-8. If you wish, you can now close the SSH connection to the web server machine and its terminal.
+7. If you wish, you can now close the SSH connection to the web server machine and its terminal.
 
 Now you have a web server configured to serve an OSTree repository and you have an edge system image stored on that OSTree repository.
 
