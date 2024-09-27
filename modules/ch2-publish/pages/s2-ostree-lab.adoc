@@ -1,6 +1,6 @@
 :time_estimate: 5
 
-= Lab: Publish Edge Images on Remote OSTree Repositories
+= Lab: Create a Remote OSTree Repository
 
 _Estimated reading time: *{time_estimate} minutes*._
 
@@ -12,13 +12,13 @@ WARNING: Work In Progress
 
 == Before you Begin
 
-You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
+You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
 You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.
 
 You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations. 
 
-You also need the edge commit image that was created and downloaded to your user home directory by the xref:s6-compose-lab.adoc[previous lab].
+You also need the edge commit image that was created and downloaded to your user home directory by the xref:ch1-build:s8-compose-lab.adoc[previous lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
@@ -29,6 +29,8 @@ If you are using the course classroom, you will log in on the `workstation` VM a
 [ switch everyhere to use the hostname in the prompt? ]
 
 [ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]
+
+[ creating a kickstart file doesn't really belong here, you'll use the kickstart only later, to provision an edge device ]
 
 1. On your development machine, verify that you have the prerequisites from previous labs.
 
@@ -313,42 +315,9 @@ mode=archive-z2
 
 Now you have a web server configured to serve an OSTree repository and you have an edge system image stored on that OSTree repository.
 
-// Do I need to specify the remote (--url) during an "compose start-ostree" command? Is it required to preconfigure the remote for updates?
-
-//TODO create a second edge commit image, and publish it to a different branch of the same repo, to demonstrate ostree pull-local
-
-////
-
-$ composer-cli compose start-ostree rhel9-mysql edge-commit --ref rhel/9/x86_64/db
-
-download commit image (tarball) from compose 
-
-scp commit image to servera
-
-extract commit image on server a
-
-$ sudo ostree pull-local --repo=/var/www/html/repo repo
-
-Now I have two edge images (two branches) on the same remote OSTree repo :-)
-$ ostree refs --repo=/var/www/html/repo
-rhel/9/x86_64/edge
-rhel/9/x86_64/db
-
-$ virt-install --name edge-db-1 --os-variant rhel9.2 \
- --memory 4096 --vcpus 2 --disk size=40 \
---location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
---graphics=none \
---extra-args inst.ks=http://servera.lab.example.com/rhel9-mysql.ks \
---extra-arg console=ttyS0 -v
-
-TODO include a firstboot script to configure the database? Is this the best approach? Or a good approach?
-
-TODO check the remotes in devices provisioned from those commits/branches
-
-////
-
+[ Do I need to specify the remote (--url) during an "compose start-ostree" command? Is it required to preconfigure the remote for updates? ]
 
 == Next Steps
 
-Before proceeding to test the edge image using a virtual machine, the next activity demonstates using Red Hat Ansible Automation Platform to automate building and publishing edge images.
+Before proceeding to test the edge image using a virtual machine, the next activity demonstates how to pushish additional edge images to the remote OSTree repository we just created.
 

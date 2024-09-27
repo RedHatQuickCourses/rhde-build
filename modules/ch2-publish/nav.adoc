@@ -1,3 +1,4 @@
 * xref:index.adoc[]
 ** xref:s1-ostree.adoc[]
 ** xref:s2-ostree-lab.adoc[]
+** xref:s3-pull-local-lab.adoc[]
