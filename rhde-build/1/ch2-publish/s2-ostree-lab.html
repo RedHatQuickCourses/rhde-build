@@ -177,7 +177,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>7 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -208,7 +208,7 @@ Work In Progress
 <p>You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You need a second machine to run a web server, to which you have unrestricted sudo access to install packages and configure system services.</p>
+<p>You need a second machine to run a web server, on which you have unrestricted sudo access to install packages and configure system services.</p>
 </div>
 <div class="paragraph">
 <p>You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
@@ -229,12 +229,6 @@ Work In Progress
 <div class="sectionbody">
 <div class="paragraph">
 <p>[ switch everyhere to use the hostname in the prompt? ]</p>
-</div>
-<div class="paragraph">
-<p>[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]</p>
-</div>
-<div class="paragraph">
-<p>[ creating a kickstart file doesn&#8217;t really belong here, you&#8217;ll use the kickstart only later, to provision an edge device ]</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -259,7 +253,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Verify that you have a tar file named <code><em>uuid</em>-compose.tar</code> that contains the edge commit image from the <a href="#s6-compose-lab.adoc" class="xref unresolved">previous lab</a>. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.</p>
+<p>Verify that you have a tar file named <code><em>uuid</em>-compose.tar</code> that contains the edge commit image from the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>. Its file name will be different from the following output because Image Builder generates new UUIDs for every compose.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls *commit.tar</strong>
@@ -292,29 +286,28 @@ $ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Get the commit ID from the compose metadata and store it in a shell variable. You will get a different ID than the one shown here.</p>
+<p>Get the commit ID and branch name from the compose metadata and store them in a shell variable. You will get a different ID than the one shown here.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>COMMIT=$(jq -r '.["ostree-commit"]' &lt; delete-me/compose.json)</strong>
 $ <strong>echo $COMMIT</strong>
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You would not need the commit ID for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, or update existing images, you will need to differentiate between multiple commits in the same OSTree repository.</p>
-</div>
-</li>
-<li>
-<p>Get the branch reference from the compose metadata and store it in a shell variable.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>REF=$(jq -r '.["ref"]' &lt; delete-me/compose.json)</strong>
+4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+$ <strong>REF=$(jq -r '.["ref"]' &lt; delete-me/compose.json)</strong>
 $ <strong>echo $REF</strong>
 rhel/9/x86_64/edge</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>You would not need the branch reference for an OSTree repository with a single commit, as the one you got from your only edge commit image, but as you build more edge images, you will need to assign each a different branch name, so you can publish all of them on the same OSTree repository.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You would not need the commit ID nor branch name for an OSTree repository with a single commit, as the one you got from your only edge commit image. But as you build more edge images, or update existing images, you will need to be able to differentiate between multiple edge images, that is, multiple OSTree commits, in the same OSTree repository.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
@@ -417,7 +410,7 @@ success</code></pre>
 </div>
 </li>
 <li>
-<p>Install the RPM-OSTree and the lower level OSTree tooling on the web server machine, just in case you need to perform maintenance on the OSTree repositories you will store on it.</p>
+<p>Install the RPM-OSTree and the lower level OSTree tooling on the web server machine, because you will need to perform maintenance on the OSTree repositories you store on it.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo yum install -y rpm-ostree ostree</strong>
@@ -430,7 +423,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>On your development machine, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="#s6-compose-lab.adoc" class="xref unresolved">previous lab</a>, to the web server.</p>
+<p>On your development machine, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>, to the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -460,69 +453,16 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Still on your development manchine, create an Anacond Kickstart file that points to the OSTree repository on the web server.</p>
+<p>Switch to your web sever machine and publish the OSTree commit in the web server content directory.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
-<li>
-<p>Using your preferred text editor, create a file named <code>rhel9-httpd.ks</code> with the following contents:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --utc
-text
-
-zerombr
-clearpart --all --initlabel
-autopart --type=plain
-rootpw --lock
-user --name=core --group=wheel --password=redhat123
-
-reboot
-
-network --bootproto=dhcp
-ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can also downlod the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks">kickstart file</a> from sample applications repository in GitHub.</p>
-</div>
-<div class="paragraph">
-<p>Most lines on that kickstart file can be changed according to needs, and real-world deployments would include items such as SSH keys for remote login and remote management. The important piece is the <code>ostreesetup</code> command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.</p>
-</div>
-</li>
-<li>
-<p>Copy the Kickstart file to your home directory on the web server machine.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>scp rhel9-httpd.ks servera.lab.example.com:~</strong>
-...</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Switch to your web sever machine and publish the kickstart file and the OSTree commit in the web server content directory.</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Copy the kickstart file to the web server content directory.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -1</strong>
-<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em>-commit.tar
-rhel9-httpd.ks
-$ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
-</div>
-</div>
-</li>
 <li>
 <p>Extract the OSTree commit to the web server content directory.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo tar xf ~/$UUID-commit.tar -C /var/www/html</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -1</strong>
+<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em>-commit.tar
+$ <strong>sudo tar xf ~/$UUID-commit.tar -C /var/www/html</strong></code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -532,7 +472,7 @@ $ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the <code>ostree pull-local</code> command. This command will be presented in a later chapter of this course, when we teach how to publish and apply updates.
+Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the <code>ostree init</code> and <code>ostree pull-local</code> commands.
 </td>
 </tr>
 </table>
@@ -545,8 +485,7 @@ Extracting an edge commit image only works for initializing a new OSTree reposit
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -lZ /var/www/html</strong>
 total 5
 -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 553 Sep  6 18:07 compose.json
-drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo
--rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 317 Sep  6 18:07 rhel9-httpd.ks</code></pre>
+drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 18:07 repo</code></pre>
 </div>
 </div>
 </li>
@@ -563,7 +502,7 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 <p>Remove the compose metadata, because you do not need it to serve OSTree content.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo rm compose.json</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo rm /var/www/html/compose.json</strong></code></pre>
 </div>
 </div>
 </li>
@@ -571,23 +510,10 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Back to your development machine, verify that a remote client can access the kickstart file and the remote OSTree repository.</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Check that a remote client can read the kickstart file over HTTP.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/rhel9-httpd.ks</strong>
-lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --isUtc
-...</code></pre>
+<p>Back to your development machine, verify that a remote client can access the remote OSTree repository.</p>
+<div class="paragraph">
+<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to setup a local OSTree repository, on the development machine. that connects to the web server as its remote repository.</p>
 </div>
-</div>
-</li>
-<li>
-<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to setup a local OSTree repository just to check access to the remode repository.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/config</strong>
@@ -595,9 +521,6 @@ timezone Etc/UTC --isUtc
 repo_version=1
 mode=archive-z2</code></pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 </li>
 <li>

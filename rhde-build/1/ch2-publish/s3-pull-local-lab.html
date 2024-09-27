@@ -177,7 +177,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>7 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -208,7 +208,7 @@ Work In Progress
 <p>You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You need a second machine to run a web server, which serves an OSTree repository. Make sure you web server was configured and verified by following the instructions from the <a href="#s2-pull-local-lab.adoc" class="xref unresolved">previous lab</a></p>
+<p>You need a second machine to run a web server, which serves an OSTree repository. Make sure you web server was configured and verified by following the instructions from the <a href="s2-ostree-lab.html" class="xref page">previous lab</a></p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -225,7 +225,7 @@ Work In Progress
 <p>[ switch everyhere to use the hostname in the prompt? ]</p>
 </div>
 <div class="paragraph">
-<p>[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]</p>
+<p>[ it seems silly having to extrat the tar before pull-local but I didn&#8217;t find a better way ]</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -261,7 +261,7 @@ mode=archive-z2</code></pre>
 </div>
 </li>
 <li>
-<p>Open a web browser and navigate to the path <code>/repo/refs/heads</code> of the web server, this lists all branches of its OSTree repository. You should a branch with the path <code>rhel/9/x86_64/edge</code>.</p>
+<p>Open a web browser and navigate to the path <code>/repo/refs/heads</code> of the web server. This directory tree this lists all branches of an OSTree repository. You should see a branch with the path <code>rhel/9/x86_64/edge</code>.</p>
 <div class="paragraph">
 <p>Alternatively, fetch the current commit ID of that branch from the command line. Your will get a different ID:</p>
 </div>
@@ -272,7 +272,7 @@ mode=archive-z2</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Remember that the commit ID of an edge image in its OSTRee repo does <strong>not</strong> match its UUID in the Image Builder service.</p>
+<p>Remember that the commit ID of an edge image in an OSTree repo does <strong>not</strong> match its UUID in the Image Builder service.</p>
 </div>
 </li>
 </ol>
@@ -283,7 +283,7 @@ mode=archive-z2</code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Download the <code>rhel9-mysql.toml</code> blueprint file from the course samples git repository.</p>
+<p>Download the <code>rhel9-mysql.toml</code> blueprint file from the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/tree/main">course samples</a> git repository.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-mysql.toml</strong></code></pre>
@@ -324,7 +324,7 @@ rhel9-mysql</code></pre>
 <p>Create a compose from the second blueprint, but specify a different OSTree branch name for this compose, using the <code>--ref</code> option, else it will be considered by edge devices just another version of the first image, instead of a different image.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ composer-cli compose start-ostree rhel9-mysql edge-commit --ref rhel/9/x86_64/db
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-mysql edge-commit --ref rhel/9/x86_64/db</strong>
 Compose ff15f8cd-21da-489a-87d0-bb39df4b79ad added to the queue</code></pre>
 </div>
 </div>
@@ -341,16 +341,17 @@ Compose ff15f8cd-21da-489a-87d0-bb39df4b79ad added to the queue</code></pre>
 </div>
 </li>
 <li>
-<p>Wait until your compose has finished sucessfully.</p>
+<p>Wait until your compose has finished sucessfully. You may need to repeat the following command multiple times.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list</strong>
 ID                                     Status     Blueprint         Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   RUNNING    rhel9-edge        0.0.1     edge-commit
+ff15f8cd-21da-489a-87d0-bb39df4b79ad   RUNNING    rhel9-mysql       0.0.1     edge-commit
 ...
 $ <strong>composer-cli compose list</strong>
 ID                                     Status     Blueprint         Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit</code></pre>
+ff15f8cd-21da-489a-87d0-bb39df4b79ad   FINISHED   rhel9-mysql       0.0.1     edge-commit
+...</code></pre>
 </div>
 </div>
 </li>
@@ -359,7 +360,7 @@ ID                                     Status     Blueprint         Version   Ty
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID</strong>
-01f3796b-85fd-4383-bbe8-eefc9550acdc-commit.tar</code></pre>
+ff15f8cd-21da-489a-87d0-bb39df4b79ad-commit.tar</code></pre>
 </div>
 </div>
 </li>
@@ -380,15 +381,16 @@ ID                                     Status     Blueprint         Version   Ty
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Copy and paste the UUID shell variable from the terminal on your development machine to the terminal on the web server machine:</p>
+<p>On another terminal, start an SSH session on your web server machine (<code>servera</code>), and copy the shell variable from the first terminal.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>ff15f8cd-21da-489a-87d0-bb39df4b79ad</em></strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ssh servera</strong>
+$ <strong>UUID=<em>ff15f8cd-21da-489a-87d0-bb39df4b79ad</em></strong></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Extract the edge commit image to a temporary content directory.</p>
+<p>Extract the edge commit image to a temporary directory.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
@@ -412,7 +414,7 @@ rhel/9/x86_64/edge</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo ostree pull-local --repo=/var/www/html/repo delete-me/repo</strong>
-[ GRAB OUTPUT ]</code></pre>
+446 metadata, 1574 content objects imported; 0 bytes content written</code></pre>
 </div>
 </div>
 </li>
@@ -427,7 +429,7 @@ rhel/9/x86_64/db</code></pre>
 </div>
 </li>
 <li>
-<p>You can now delete the temporary directory;</p>
+<p>You can now delete the temporary directory.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rm -rf delete-me</strong></code></pre>
@@ -438,7 +440,7 @@ rhel/9/x86_64/db</code></pre>
 </div>
 </li>
 <li>
-<p>Back to your development machine, verify that a remote client can get the new edge commit image from the web server by checking you get the commit ID of the new OSTree branch.</p>
+<p>Back to your development machine, verify that a remote client can getch the new edge commit image from the web server by checking that you get the commit ID of the new OSTree branch.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db</strong>
