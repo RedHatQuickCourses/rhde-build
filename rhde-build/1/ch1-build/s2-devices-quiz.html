@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Quiz: Use Cases for Edge Devices and RHEL for Edge :: Building Red Hat Device Edge Images</title>
     <link rel="prev" href="s1-devices.html">
-    <link rel="next" href="s2-devices-quiz-answers.html">
+    <link rel="next" href="s3-images.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -53,13 +53,7 @@
     <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="s2-devices-quiz-answers.html">Answers to the Quiz</a>
-  </li>
-</ul>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
@@ -180,7 +174,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>2 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>4 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -226,84 +220,106 @@ Make your notes of what you believe are the right answers for each question. Thi
 <ol class="arabic">
 <li>
 <p>A manager&#8217;s workstation in a retail store, to run text processors, spreadsheets, email clients, and also access multiple corporate systems.</p>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
-</li>
-</ul>
+<details>
+<summary class="title">❑ Traditional RHEL</summary>
+<div class="content">
+<div class="paragraph">
+<p>✔ <strong>Correct: This is a general-purpose workstation which likely runs a popular desktop operating system, such as Windows and MacOS. <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/workstations">RHEL for Workstations</a>, <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/red-hat-enterprise-linux-for-developers">RHEL for Developers</a>, and the community supported <a href="https://fedoraproject.org">Fedora Linux</a> are also good choices for this kind of user workstation.</strong></p>
 </div>
-</li>
-<li>
-<p>A kiosk machine in a retail store, that enables customers to query the price and other information of a product, such as nutrients and potential allergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.</p>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
-</li>
-</ul>
 </div>
+</details>
+<details>
+<summary class="title">❑ RHEL for Edge</summary>
+<div class="content">
+<div class="paragraph">
+<p>✘ <em>Incorrect: RHEL for Edge is designed for single-purpose devices instead of general purpose workstations.</em></p>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>A kiosk machine in a large department store, that enables customers to query the price and other information of a product, such as nutrients and potential allergens of food products, or warranty terms and technical specifications of electronics, using a bar code reader and a touch screen.</p>
+<details>
+<summary class="title">❑ Traditional RHEL</summary>
+<div class="content">
+<div class="paragraph">
+<p>✘ <em>Incorrect: though kiosk machines have been frequently configured from standard desktop operating systems, they become high-maintenance and even potential sources of embarrassment if customers can get access to other applications on the device. A lower maintenance approach, such as the one from image-based systems, fits better this scenario.</em></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">❑ RHEL for Edge</summary>
+<div class="content">
+<div class="paragraph">
+<p>✔ <strong>Correct: This is an appliance-like device, which should be just turned on and be available to customers in different parts of the store, requiring minimal maintenance.</strong></p>
+</div>
+</div>
+</details>
 </li>
 <li>
 <p>A database server, which stores inventory levels and regional prices of goods in a large retail store, among other data required by multiple client devices for different business processes that happen in the store itself.</p>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
-</li>
-</ul>
+<details>
+<summary class="title">❑ Traditional RHEL</summary>
+<div class="content">
+<div class="paragraph">
+<p>✔ <strong>Correct: This is likely a server-class machine locked in a server room, and possibly a member of a high-availability (HA) cluster with other similar machines in the store. Even if not HA it is likely managed by corporate IT like any other departmental server in branch offices.</strong></p>
 </div>
+</div>
+</details>
+<details>
+<summary class="title">❑ RHEL for Edge</summary>
+<div class="content">
+<div class="paragraph">
+<p>✘ <em>Incorrect: This server machine is probably too powerful for the Red Hat Device Edge subscription, but a smaller and single-purpose database server could be deployed and managed as an edge device.</em></p>
+</div>
+</div>
+</details>
 </li>
 <li>
 <p>A controller for security access devices, such as card readers, face recognition cameras, fingerprint readers, and electronic locks in access doors, which connects either to the corporate identity management and human resources databases or to a local replica of those database on the building or campus.</p>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
-</li>
-</ul>
+<details>
+<summary class="title">❑ Traditional RHEL</summary>
+<div class="content">
+<div class="paragraph">
+<p>✘ <em>Incorrect: These computers are likely close to the security access devices, multiple of them are deployed in different parts of the building or campus, and they should be resistant to tampering, which makes them better suited for image-based deployments than to traditional package-based deployments.</em></p>
 </div>
-</li>
-<li>
-<p>An image recognition application, which monitors goods at multiple stages of an assembly line and flags defective ones, reducing the need for human inspection of samples from each batch of goods.</p>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-square-o"></i> Traditional RHEL</p>
-</li>
-<li>
-<p><i class="fa fa-square-o"></i> RHEL for Edge</p>
-</li>
-</ul>
 </div>
+</details>
+<details>
+<summary class="title">❑ RHEL for Edge</summary>
+<div class="content">
+<div class="paragraph">
+<p>✔ <strong>Correct: In addition to the considerations in the previous answer, these computers are likely rugged for outdoor conditions, and must be quick to replace in case of hardware failures. Besides, they are likely provided as appliances by the security equipment vendor, instead of managed by corporate IT as other LOB servers.</strong></p>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>An image recognition application, which monitors goods at multiple states of an assembly line and flags defective ones, reducing the need for human inspection of samples from each batch of goods.</p>
+<details>
+<summary class="title">❑ Traditional RHEL</summary>
+<div class="content">
+<div class="paragraph">
+<p>✔ <strong>Correct: Depending on the hardware requirements of its AI model, this might require entitlements from a traditional RHEL subscription, but be deployed and managed using RHEL for Edge technologies. It could use compute device which is rugged for factory floor conditions and provides compute capacity similar to a data center server, as opposed to a leaner edge device, and may not meet the criteria for Red Hat Device Edge subscriptions.</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">❑ RHEL for Edge.</summary>
+<div class="content">
+<div class="paragraph">
+<p>✔ <strong>Correct: As a single-purpose appliance, this is better suited to be deployed and managed as an image-based system. Beware that, to be entitled using Red Hat Device Edge Subscriptions, it must use a leaner AI model which runs in edge systems with a single CPU core and reduced memory. Some of those devices do offer GPUs and other kinds of hardware accelerators suitable for optimized AI models. In fact, the <a href="https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/ai">RHEL AI</a> subscription is an image-based operating system and its technologies support both data center and edge deployments.</strong></p>
+</div>
+</div>
+</details>
 </li>
 </ol>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_whats_next"><a class="anchor" href="#_whats_next"></a>What&#8217;s Next</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Now that you have the context of typical uses of edge devices, you will learn about the technologies and features of RHEL for Edge, especially Image Builder, and how to use them to provision and maintain edge devices.</p>
-</div>
-</div>
-</div>
 <nav class="pagination">
   <span class="prev"><a href="s1-devices.html">Introduction to Red Hat Device Edge</a></span>
-  <span class="next"><a href="s2-devices-quiz-answers.html">Answers to the Quiz</a></span>
+  <span class="next"><a href="s3-images.html">Design, Build, and Publish Edge Images</a></span>
 </nav>
 </article>
   </div>
