@@ -99,6 +99,10 @@ The following table compares edge devices with more traditional computers to hel
 | desktop or laptop PC
 | rack-mounted or blade enclosure
 
+.^a| image::edge-device.png[]
+.^a| image::pc.png[]
+.^a| image::rack-server.png[]
+
 | 1 CPU socket, 1 or 2 CPU cores
 | 1 or 2 CPU sockets, 4 to 16 CPU cores each
 | 2 to many CPU sockets, from dozens to hundreds of CPU cores

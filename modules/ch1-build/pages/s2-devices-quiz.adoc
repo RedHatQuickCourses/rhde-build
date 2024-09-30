@@ -85,3 +85,42 @@ For each of the following scenarios, which favor of RHEL would be most adequate?
 ====
 ✔ *Correct: As a single-purpose appliance, this is better suited to be deployed and managed as an image-based system. Beware that, to be entitled using Red Hat Device Edge Subscriptions, it must use a leaner AI model which runs in edge systems with a single CPU core and reduced memory. Some of those devices do offer GPUs and other kinds of hardware accelerators suitable for optimized AI models. In fact, the https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/ai[RHEL AI] subscription is an image-based operating system and its technologies support both data center and edge deployments.*
 ====
+
+////
+
+Didn't find a way of using interactive checkmarks and collapsible blocks together. :-()
+
+6. Question
++
+[options="interactive"]
+* [ ] Answer1
+* [ ] Answer2
+
+7. Question
++
+[options="interactive"]
+* [ ] Answer 1
++
+.Feedback
+[%collapsible]
+====
+*Correct: explain*
+====
++
+* [ ] Answer 2
++
+.Feedback
+[%collapsible]
+====
+_Incorrect: explain_
+====
+
+8. Question
++
+[options="interactive"]
+* [ ] Answer 1 +
+*Correct: explain*
+* [ ] Answer 2 +
+_Incorrect: explain_
+
+ ////
