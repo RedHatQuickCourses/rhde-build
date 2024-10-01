@@ -8,7 +8,7 @@ Objective::
 
 Publish an Image Builder edge commit image in an existing remote OSTree repository so it is available to edge devices.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 

@@ -8,7 +8,7 @@ Objective::
 
 Understand how OSTree repositories represent operating system images
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == OSTree Commits and Edge Images
 

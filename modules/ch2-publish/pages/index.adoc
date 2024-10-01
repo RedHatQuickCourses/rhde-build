@@ -3,10 +3,10 @@
 Goal:: 
 Publish RHEL for Edge images on remote OSTree repositories.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Introduction
 
 This chapter introduces OSTree repository management and OSTree concepts such as commits and remotes.
 
-After explaining these concepts, this chapter presents a series of hands-on activities which configure a web server to provide OSTree repositories and publish edge commmit images from Image Builder on those repositories. The next chapters use those OSTree repositories to provision devices in edge locations, and delivering updates to edge devices.
+After explaining these concepts, this chapter presents a series of hands-on activities which configure a web server to provide OSTree repositories and publish edge commit images from Image Builder on those repositories. The next chapters use those OSTree repositories to provision devices in edge locations, and delivering updates to edge devices.
