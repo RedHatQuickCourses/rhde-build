@@ -1,4 +1,4 @@
-:time_estimate: 5
+:time_estimate: 6
 
 = Introduction to OSTree Technology
 
@@ -16,78 +16,44 @@ Publishing an OSTree commit on a remote OSTree repository is the final step befo
 
 image::s1-ostree-fig1.svg[title="OSTree commits in an edge device installation and update workflow"]
 
-The contents of an edge commit image produced by the Image Builder is a single OSTree commit, packaged as a TAR archice. That OSTree commit is, by itself, a valid as an OSTree repository, but it will likely be published in a larger OSTree repository, which contains multiple edge images and multiple versions of each edtge image. 
+The contents of an edge commit image produced by the Image Builder is single OSTree commit, packaged as a TAR archive. That OSTree commit is, by itself, a valid OSTree repository, but it will likely be published in a larger OSTree repository, which contains multiple edge images and multiple versions of each edge image. 
 
-The RPM-OSTree technology is used by the Image Builder service to build OSTree commits and is also the technology used by edge devices to download and apply system updates. But RPM-OSTree does not provide capabilities for OSTree repository management, which is the focus of this section.
+The RPM-OSTree technology is used by the Image Builder service to build OSTree commits and is also the technology used by edge devices deploy OSTree commits as the bootable system images and to download and apply system updates. But RPM-OSTree alone does not provide capabilities for OSTree repository management, which is the focus of this section.
 
-== File System Layout of Edge Images
+The OSTree technology is used by more than RPM-OSTree and RHEL for Edge. It is a core technology of many innovative community projects, such as https://fedoraproject.org/iot/[Fedora IoT] and https://flatpak.org/[Flatpack]. It is also a core technology of https://docs.openshift.com/container-platform/4.16/architecture/architecture-rhcos.html[RHEL CoreOS] which powers cluster nodes of Red Hat OpenShift 4.
 
-[ Move most of this heading to somewhere else, as we can only see this after we provision an edge system? ]
+== Introduction to OSTree Repositories
 
-[ We need to mention the three-way merge of /etc as part of ostree commit deployment, and then we need something here about file system layout ]
+OSTree is, conceptually, very similar to Git: both are designed to manage the state of file trees as atomic units, providing transactional management, including updates and rollbacks, of those trees. Both are designed to manage multiple concurrent branches and to be efficient on both disk space and network bandwidth when handling deltas between two states (or two commits) of the same file tree.
 
-RPM-OSTree configures the root filesystem as read-only, as required by its underlying OSTree technology. Well, not the true root file system, it's actually a chroot, but you learn those details later in this course. In an OSTree-based system, you cannot change a system file, not even as root, except by deploying a new system image an rebooting into the new image.
+image::s1-ostree-fig-2.svg[title="OSTree repostory, branches, commits, and remotes"]
 
-OSTree keeps multiple system images side-by-side in a system, and only switches from the current to the new system image with a reboot -- constrast that with RPM package updates, which alter files which are in use by running processes and may produce unpredictable results.
+If OSTree and Git are so similar, Why not just using Git? Because OSTree adds the following features, which are required to manage bootable Linux file systems but are not needed to manage application source code:
 
-You can reboot an RPM-OSTree system into any of the available system images, making it trivial to rollback a system update to a previous known good image -- constrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, which depend on the kernel version.
+* Recording SELinux labels and POSIX extended attributes
+* Installing boot loaders, Linux Kernels, and initial RAM disks
 
-RPM-OSTree allows writes to only `/etc` and `/var`, which are treated in different ways:
-
-*  Files in `/var` are only touched at first boot, when they're copied from the system image to the writable file system, but updates keep the contents in `/var` unchanged.
-
-* Files in `/etc` are updated with a three-way merge process: the current `/etc` contents are compared with the original system image, differences are applied a copy of the contents of `/etc` from the new system image, and the result saved to the writable file system.
-
-The goal is, on one side, to preserve application data in `/var` across system updates, while enabling applications to include initial data in a system image; and on the other side, enable new system images to bring new configuration files and change configuration defaults, while preserving local customizations applied to the running system.
-
-You are not allowed to define a detailed filesystem layout, with multiple mount points for different disk devices, in an RPM-OSTree system. It requires complete control over all system binaries in `/`, system configurations in `/etc`, and application or system data in `/var`. The file system customizations of Image Builder blueprints are not allowed for edge compose types.
-
-RPM-OSTree also enables activating a write file system layer over `/` for local customizations, for example to install aditional RPM packages not included in the system image. It is not expected that edge systems abuse that feature of RPM-OSTreem but it can be handy during development and troubleshooting of edge images.
-
-== OSTree Repositories
-
-OSTree is, conceptually, very similar to Git: both are designed to manage the state of file trees as atomic units, providing transactional management, that is updates and rollbacks, of those trees. Both are designed to manage multiple concurrent branches and to be efficient on both disk space and network bandwidth when handling deltas between two states (or two commits) of the same file tree.
+Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files with Git. Which is consistent with its purpose: OSTree is designed to manage file system trees which contain operating system binaries, while Git is designed to manage file system trees which contain source code.
 
 With RPM-OSTree, each branch of an OSTree repository is a system image. Updating an image means updating a branch. If you store, in the same OSTree repository, multiple system images based on the same RHEL release, each image adding a different set of applications and configurations file, those images share the same files for the Linux kernel, system binaries, and system libraries, for efficient use of disk space.
 
-On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to a different set of packages from RHEL. OSTree branches are not required to share files, but will not store duplicate files. Users of an OSTree repository do not need to be aware of the banches from other users: deduplication of files happen automatically.
+On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to different sets of packages from RHEL. OSTree branches are not required to share files, but will not store duplicated files. Users of an OSTree repository do not need to be aware of the branches from other users: deduplication of files happen automatically.
 
-If OSTree and Git are so similar, Why not just using Git? OSTree adds the following features, which are required to manage bootable Linux file systems but are not needed to manage application source code:
+== OSTree Clients and Remote Repositories.
 
-* Recording SELinux labels and POSIX extended attributes
-* Installing booloaders, Linux Kernels, and initial ramdisks
+Similar to Git, a client OSTree system, such as an RPM-OSTree system, contains a copy (or a clone) of a remote OSTree repository, and it can pull changes from the remote repository. An OSTree repository records the URL of its remote repositories.
 
-Similar to Git, a client OSTree system, such as an RPM-OSTree system, contains a copy (or a clone) of a remote OSTree repository, and it can pull changes from the remote repository. Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files with Git.
+Another practical difference between OSTree and Git is the fact that OSTree provides no specialized server software: OSTree remote repositories are just files served by a standard HTTP server. All changes to an OSTree repository require using local file system access, and remote access over HTTP only works for downloading (pulling) updates from a remote repository to a local repository.
 
-Another practical difference between OSTree and Git is the fact that OSTree provides no specialized server software: OSTree repositories are just files serverd by a standard HTTP server. You manage OSTree repositories using local file system access, and remote access over HTTP only works for downloading (pulling) updates from a remote repository to a local repository.
+While this means that managing remote OSTree repositories requires more effort than with Git, it also means you don't need to learn how to deploy and manage special server software: you just need to learn how to use the client-side OSTree tools, in addition to managing any web server software.
 
-While this means that managing remote OSTree repositories requires more effort than with Git, it also means you don't need to learn how to deploy and manage special server software: you just need to learn how to use the client-side OSTree tools.
+== RPM-OSTree Deployments
 
-The OSTree technology is not just part of RPM-OSTree and RHEL for Edge. It is a core technology of many inovative community projects, such as https://fedoraproject.org/iot/[Fedora IoT] and https://flatpak.org/[Flatpack]. It is also a core techology of https://docs.openshift.com/container-platform/4.16/architecture/architecture-rhcos.html[RHEL CoreOS] which powers cluster nodes of Red Hat OpenShift 4.
+An edge device contains a local OSTree repository, which could contain multiple OSTree commits, but only one of those commits is active, or *deployed*. The deployed commit is similar to the active branch of a Git repository: you can read and write directly to its files, as in an exploded archive.
 
-== OSTree Deployments
-
-An edge device contains a local OSTree repository, which could contain multiple OSTree commits, but only one of those commits is active, or *deployed*. The deployed commit is similar to the active branch of a Git repository: you see its files in the system as regular files.
-
-An edge device can pull additional commits from a remote OSTree repository, and that's how it gets system updates. You can switch to, or deploy, a different OSTree commit present in the local OSTree repository of the device, which requires a reboot and performs the tree-way merge of `/etc`. The process is basically the same for applying updates or rolling back them.
-
-Deploying an OSTree commit with RPM-OSTree also installs the boot loader, kernel, and initrd from commit.
-
-When provisioning an edge system, OSTree deployment can happen in different moments:
-
-* At installation time, when using the standard RHEL installation media: the standard RHEL installer pulls an OSTree commit from a remote OSTree repository, copies it to the system boot disk, and deploys the commit;
-
-* At at installation, when using an edge installer image: the standard RHEL installer copies an OSTree commit from the installation media itself, copies it to the system boot disk, and deploys the commit.
-
-* At image build time, when using a simplified edge installer image: the simplified edge installer image contains a raw system image which an OSTree commit already deployed, and just copies that raw system image to the system boot disk, then it installs the boot loader, kernel, and initrd from the raw system image.
-
-Once a system is booted into an OSTree deployment, you can pull updates, as a new OSTree commit, from a remote OSTree repository to its local OSTree repository branch and deploy that new OSTree commit. The update process, which we see in details later in this course, does not depend on how the system was initially provisioned.
+Edge devices can pull many commits from a remote OSTree repository, and that's how they gets system updates. You can switch to, or deploy, a different OSTree commit present in the local OSTree repository of the device, which requires a reboot. The process is basically the same for applying updates and rolling back them.
 
 == The OSTree tooling
-
-// The next lab does not use ostree commands; it just extracts the edte commit image (tar) to a web server. The previous lab did use ostree commands, move them to the next lab?
-
-// add a second image to the same repo, to showcase the use of ostree commands?
 
 You must perform OSTree repository management from the command line, using the `ostree` command. Most of the OSTree commands are single-level, and each subcommand takes their own options and arguments, as in:
 
@@ -103,11 +69,11 @@ For example, the following command lists the commit history in a branch named `r
 $ *ostree log rhel/9/x86_64/edge*
 --
 
-The `ostree` command defaults to using the system OSTree repository at `/sysroot/ostree/repo`, which is the local repository of an RHEL for Edge system. In a development machine, such as the one where you run the Image Builder service, or in a web server which hosts remote OSTree repositories for edge devices, you must include the --repo option to specify the path to your OSTree repository, for example:
+The `ostree` command defaults to using the system OSTree repository at `/sysroot/ostree/repo`, which is the local repository of an RHEL for Edge system. In a development machine, such as the one where you run the Image Builder service, or in a web server which hosts remote OSTree repositories for edge devices, you must include the `--repo` option to specify the path to your OSTree repository, for example:
 
 [source,subs="verbatim,quotes"]
 --
-$ *ostree --repo=_/path/to/my_repo_ log rhel/9/x86_64/edge*
+$ *ostree --repo=_/path/to/my_repository_ log rhel/9/x86_64/edge*
 --
 
 A few commands, such as `ostree admin` have their own subcommands. For example, the following command shows the differences between the current configuration directory (`/etc`) in a live system and its OSTree commit, effectively showing what was changed after the commit was deployed:
@@ -130,4 +96,4 @@ $ *ostree admin config-diff --help*
 
 == Next Steps
 
-Now that you was introduced to the essential concepts of OSTree repositories, a series of hands-on activties install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course you will test those edge images using local VMs, and them update those VMs to use new system images.
+Now that you was introduced to the essential concepts of OSTree repositories, a series of hands-on activities install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course you will test those edge images using local VMs, and them update those VMs to use new system images.
