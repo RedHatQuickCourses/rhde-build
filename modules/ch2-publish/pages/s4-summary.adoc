@@ -1,0 +1,11 @@
+= Summary
+
+In this chapter, you learned:
+
+* RHEL for Edge stores system images in OSTree repositories. A system image is a branch, and a version of that system image is a commit.
+
+* OSTree repositories are similar to Git repositories, but optimized to handle binary files and capable of handling boot loaders.
+
+* OSTree does not provide special server software. You must use standard web servers to provide OSTree repositories to remote clients.
+
+* An edge commit image contains an OSTree repository with a single commit, packaged as a TAR file. You can extract it and pull into another OSTree repository to publish either new system images or updates to existing system images.
