@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Lab: Publish Edge Images on Remote OSTree Repositories :: Building Red Hat Device Edge Images</title>
     <link rel="prev" href="s2-ostree-lab.html">
-    <link rel="next" href="../ch3-test/index.html">
+    <link rel="next" href="s4-summary.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -94,6 +94,9 @@
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-summary.html">Summary</a>
   </li>
 </ul>
   </li>
@@ -191,7 +194,7 @@
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Work In Progress
+Pending SME Review &amp; Proofreading
 </td>
 </tr>
 </table>
@@ -202,32 +205,26 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You need a second machine to run a web server, which serves an OSTree repository. Make sure you web server was configured and verified by following the instructions from the <a href="s2-ostree-lab.html" class="xref page">previous lab</a></p>
+<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure you web server was configured and verified by following the instructions from the <a href="s2-ostree-lab.html" class="xref page">previous lab</a></p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
-<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
+<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you will start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>[ switch everyhere to use the hostname in the prompt? ]</p>
-</div>
-<div class="paragraph">
-<p>[ it seems silly having to extrat the tar before pull-local but I didn&#8217;t find a better way ]</p>
-</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>On your development machine, verify that you have the prerequisites from previous labs.</p>
+<p>On your <em>development machine</em>, verify that you have the prerequisites from previous labs.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -269,14 +266,14 @@ mode=archive-z2</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Remember that the commit ID of an edge image in an OSTree repo does <strong>not</strong> match its UUID in the Image Builder service.</p>
+<p>Remember that the commit ID of an edge image in an OSTree repository does <strong>not</strong> match its UUID in the Image Builder service.</p>
 </div>
 </li>
 </ol>
 </div>
 </li>
 <li>
-<p>Get a blueprint to build a second edge system image, running a different application than the image used in previous exercises. The first image run an Apache Web Server, this second image runs a MySQL database.</p>
+<p>Still on your <em>development machine</em>, get a blueprint to build a second edge system image, running a different application than the image used in previous exercises. The first image run an Apache Web Server, this second image runs a MySQL database.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -314,7 +311,7 @@ rhel9-mysql</code></pre>
 </div>
 </li>
 <li>
-<p>Build an edge commit image from the MySQL bluerprint.</p>
+<p>Again on your <em>development machine</em>, build an edge commit image from the MySQL bluerprint.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -338,7 +335,7 @@ Compose ff15f8cd-21da-489a-87d0-bb39df4b79ad added to the queue</code></pre>
 </div>
 </li>
 <li>
-<p>Wait until your compose has finished sucessfully. You may need to repeat the following command multiple times.</p>
+<p>Wait until your compose has finished successfully. You may need to repeat the following command multiple times.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list</strong>
@@ -353,7 +350,7 @@ ff15f8cd-21da-489a-87d0-bb39df4b79ad   FINISHED   rhel9-mysql       0.0.1     ed
 </div>
 </li>
 <li>
-<p>Download the edge comit image from your compose.</p>
+<p>Download the edge commit image from your compose.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID</strong>
@@ -374,7 +371,7 @@ ff15f8cd-21da-489a-87d0-bb39df4b79ad-commit.tar</code></pre>
 </div>
 </li>
 <li>
-<p>On the web sever machine, publish the edge commit image on its OSTree repository.</p>
+<p>Switch to your <em>web sever machine</em> and publish the edge commit image on its OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -401,7 +398,7 @@ $ <strong>sudo tar xf ~/$UUID-commit.tar -C delete-me</strong></code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo refs</strong>
 rhel/9/x86_64/db
-$ <strong>ostree --repo=/var/www/html/repo</strong>
+$ <strong>ostree --repo=/var/www/html/repo refs</strong>
 rhel/9/x86_64/edge</code></pre>
 </div>
 </div>
@@ -437,7 +434,7 @@ rhel/9/x86_64/db</code></pre>
 </div>
 </li>
 <li>
-<p>Back to your development machine, verify that a remote client can getch the new edge commit image from the web server by checking that you get the commit ID of the new OSTree branch.</p>
+<p>Back to your <em>development machine</em>, verify that a remote client can fetch the new edge commit image from the web server by checking that you can fetch the commit ID of the new OSTree branch.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db</strong>
@@ -454,7 +451,7 @@ rhel/9/x86_64/db</code></pre>
 </ol>
 </div>
 <div class="paragraph">
-<p>Now you have a web server configured to serve an OSTree repository with two different edge system images.</p>
+<p>Now you have a web server configured to serve an OSTree repository with contains two different edge system images.</p>
 </div>
 </div>
 </div>
@@ -464,14 +461,11 @@ rhel/9/x86_64/db</code></pre>
 <div class="paragraph">
 <p>The next activity will provision local VMs from the two edge system images, using either the standard RHEL installation media or a customized edge installer image.</p>
 </div>
-<div class="paragraph">
-<p>[ Tentative: Before proceeding to test the edge image using a virtual machine, the next activity demonstates using Red Hat Ansible Automation Platform to automate building and publishing edge images. ]</p>
-</div>
 </div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a></span>
-  <span class="next"><a href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a></span>
+  <span class="next"><a href="s4-summary.html">Summary</a></span>
 </nav>
 </article>
   </div>

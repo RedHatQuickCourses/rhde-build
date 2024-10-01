@@ -95,6 +95,9 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-summary.html">Summary</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -191,7 +194,7 @@
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Work In Progress
+Pending SME Review &amp; Proofreading
 </td>
 </tr>
 </table>
@@ -202,13 +205,13 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a develoment machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You need a second machine to run a web server, on which you have unrestricted sudo access to install packages and configure system services.</p>
+<p>You also need a second machine, the <em>web server machine</em>, to run a web server, on which you have unrestricted sudo access to install packages and configure system services.</p>
 </div>
 <div class="paragraph">
-<p>You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server acessible to remote edge devices in multiple locations.</p>
+<p>You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server accessible to remote edge devices in multiple locations.</p>
 </div>
 <div class="paragraph">
 <p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>.</p>
@@ -217,20 +220,17 @@ Work In Progress
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
-<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
+<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you will start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>[ switch everyhere to use the hostname in the prompt? ]</p>
-</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>On your development machine, verify that you have the prerequisites from previous labs.</p>
+<p>On your <em>development machine</em>, verify that you have the prerequisites from previous labs.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -279,11 +279,11 @@ $ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Check the integrity of your edge commit image by inspecting its OSTree repository.</p>
+<p>Still on your <em>development machine</em>, check the integrity of your edge commit image by inspecting its OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Get the commit ID and branch name from the compose metadata and store them in a shell variable. You will get a different ID than the one shown here.</p>
+<p>Get the commit ID and branch name from the compose metadata and store them in shell variables. You will get a different ID than the one shown here.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>COMMIT=$(jq -r '.["ostree-commit"]' &lt; delete-me/compose.json)</strong>
@@ -347,9 +347,9 @@ object fsck of 1 commits completed successfully - no errors found.</code></pre>
 </div>
 </li>
 <li>
-<p>On your web server machine, configure a web server dedicated to providing OSTree repositories.</p>
+<p>Switch to your <em>web server machine</em> and configure a web server dedicated to providing OSTree repositories.</p>
 <div class="paragraph">
-<p>The instructions bellow confingure an Apache Web Server as a system service on the <code>servera</code> machine. You could use the NGinx web server and run the web server as a container, among other variations.</p>
+<p>The instructions bellow configure an Apache Web Server as a system service on the <code>servera</code> machine. You could use the NGinx web server and run the web server as a container, among other variations.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -396,7 +396,7 @@ $ <strong>sudo systemctl start httpd</strong>
 </div>
 </li>
 <li>
-<p>Enable remote access to the Apache Web Server on the system&#8217;s firewall.</p>
+<p>Allow remote access to the Apache Web Server on the system&#8217;s firewall.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo firewall-cmd --add-service=http --permanent</strong>
@@ -420,7 +420,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>On your development machine, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>, to the web server.</p>
+<p>Back to your <em>development machine</em>, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>, to the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -450,7 +450,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Switch to your web sever machine and publish the OSTree commit in the web server content directory.</p>
+<p>Switch again to your <em>web sever machine</em> and publish the OSTree commit in the web server content directory.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -476,7 +476,7 @@ Extracting an edge commit image only works for initializing a new OSTree reposit
 </div>
 </li>
 <li>
-<p>Ensure the OSTree repository contents are acessible to the <code>apache</code> user and have correct SELinux labels.</p>
+<p>Ensure the OSTree repository contents are accessible to the <code>apache</code> user and have correct SELinux labels.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -lZ /var/www/html</strong>
@@ -507,9 +507,9 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Back to your development machine, verify that a remote client can access the remote OSTree repository.</p>
+<p>Back to your <em>development machine</em>, verify that a remote client can access the remote OSTree repository.</p>
 <div class="paragraph">
-<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to setup a local OSTree repository, on the development machine. that connects to the web server as its remote repository.</p>
+<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to setup a local OSTree repository on the development machine and configure it with a remote that points to the web server machine.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -528,16 +528,13 @@ mode=archive-z2</code></pre>
 <div class="paragraph">
 <p>Now you have a web server configured to serve an OSTree repository and you have an edge system image stored on that OSTree repository.</p>
 </div>
-<div class="paragraph">
-<p>[ Do I need to specify the remote (--url) during an "compose start-ostree" command? Is it required to preconfigure the remote for updates? ]</p>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before proceeding to test the edge image using a virtual machine, the next activity demonstates how to pushish additional edge images to the remote OSTree repository we just created.</p>
+<p>Before proceeding to test the edge image using a virtual machine, the next activity demonstrates how to publish additional edge images to the remote OSTree repository we just created.</p>
 </div>
 </div>
 </div>
