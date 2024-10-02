@@ -35,9 +35,9 @@ If OSTree and Git are so similar, Why not just using Git? Because OSTree adds th
 
 Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files with Git. Which is consistent with its purpose: OSTree is designed to manage file system trees which contain operating system binaries, while Git is designed to manage file system trees which contain source code.
 
-With RPM-OSTree, each branch of an OSTree repository is a system image. Updating an image means updating a branch. If you store, in the same OSTree repository, multiple system images based on the same RHEL release, each image adding a different set of applications and configurations file, those images share the same files for the Linux kernel, system binaries, and system libraries, for efficient use of disk space.
+With RPM-OSTree, each branch of an OSTree repository is a system image. Updating an image means adding a new commit to the head of a branch. If you store, in the same OSTree repository, multiple system images based on the same RHEL release, each image adding a different set of applications and configurations file, those images share the same files for the Linux kernel, system binaries, and system libraries, for efficient use of disk space.
 
-On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to different sets of packages from RHEL. OSTree branches are not required to share files, but will not store duplicated files. Users of an OSTree repository do not need to be aware of the branches from other users: deduplication of files happen automatically.
+On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to different sets of packages from RHEL. OSTree branches are not required to share files, but will not store duplicated files from other branches. Users of an OSTree repository do not need to be aware of the branches from other users: deduplication of files happen automatically.
 
 == OSTree Clients and Remote Repositories.
 
