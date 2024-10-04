@@ -1,6 +1,6 @@
 :time_estimate: 5
 
-= Lab: Boot Edge VMs from Edge Installer Images OSTree
+= Lab: Boot Test VMs from Edge Installer Images
 
 _Estimated reading time: *{time_estimate} minutes*._
 
@@ -12,21 +12,27 @@ WARNING: Work In Progress
 
 == Before you Begin
 
-You need a RHEL machine configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your developement machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
-You need a second machine to run a web server that serves OSTree repositories. Make sure that machine was configured and verified by following the instructions from xref:ch1-build:s7-ostree-lab.adoc[the previous lab].
+You also need a _web server machine_ which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
+
+Finally, you need the database image that you created and published in a xref:ch2-publish:s2-ostree-lab.adoc[another lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
+All steps in this lab are performed from your _development machine_. You have no need to log in on the _web server_ machine if it was prepared correctly by previous labs.
+
 == Instructions
 
 [ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]
 
-1. On your test machine, verify that you have the prerequisites from previous labs.
+[ See customizations.installer.kickstart in https://osbuild.org/docs/user-guide/blueprint-reference maybe I can embed the kick start on the blueprint, instead of altering the ISO after generation... if this is available on RHEL 9.2 or 9.4 ]
 
-.. Verify that TBD
+1. Verify that you have the prerequisites from previous labs.
+
+.. Verify that the Image Builder service is active and that the current Linux user can submit requests to it.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -41,134 +47,108 @@ API server status:
 ...
 --
 
-2. Install the libvirtd tools and its Cockpit module.
-
-.. Install the "Virtualization Host" package group to get the libvirtd, KVM, and Qemu daemons and tools.
+.. Check that a remote client can access the OSTree repository in the web server machine.
 +
 [source,subs="verbatim,quotes"]
 --
-$ sudo dnf group install -y "Virtualization Host"
-$ dnf install -y cockpit-machines
+$ *curl http://servera.lab.example.com/repo/config*
+[core]
+repo_version=1
+mode=archive-z2
 --
 
-.. Grant an unprivileged user with pemrission to create and manage virtual machines (MVs).
+.. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s4-pull-local-lab.adoc[a previous lab]. Your will get a different ID:
 +
 [source,subs="verbatim,quotes"]
 --
-$ sudo groupmod libvirt -a -U student
+$ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db*
+12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
 --
-
-3. Create a RHEL VM which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
 +
-*UPDATE:* second attempt now works, thanks to fixes to kickstart (autopart --type=plain). Now to find out how to put that entry on the kickstart for the installer image... and if I still need those for RHEL 9.4 and later.
+Pay attention to the final path element of the URL, which should be "db".
 
-.. 1st attempt, from product docs.
+.. Check that you can manage local VMs, and there's a VM left from the xref:s2-boot-lab:[previous lab].
 +
 [source,subs="verbatim,quotes"]
 --
-$ virt-install \
---name edge-test-1 \
---memory 2048 \
---vcpus 2 \
---disk path=edge-test-1.qcow2,format=qcow2,size=8 \
---os-variant rhel9.0 \
---cdrom /home/student/Downloads/rhel-9.4-x86_64-boot.iso
+$ *virsh list --all*
+ Id   Name          State
+---------------------------
+ 1    edge-test-1   shut-off
 --
 +
-Edit the kernel manually entry by appending:
+It's fine if your local VM displays an status of "running" instead of "shut off".
+
+2. Create an edge installer image.
+
+.. Use your preferred text editor to create a blueprint for the edge installer image, in the `mysql-installer.toml` file, with the following contents.
 +
 [source,subs="verbatim,quotes"]
 --
-inst.ks=http://servera.lab.example.com/rhel9-httpd.ks
---
-
-.. 2nd attempt, from HOL007.
-+
-[source,subs="verbatim,quotes"]
---
-$ virt-install \
---name edge-test-1 \
---memory 4096 \
---vcpus 2 \
---disk size=40 \
---os-variant rhel9.2 \
---location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
---graphics=none \
---extra-args inst.ks=http://servera.lab.example.com/rhel9-httpd.ks \
---extra-arg console=ttyS0 -v
---
-+
-If I use --cdrom instead of --location I get: ERROR    Kernel arguments are only supported with location or kernel installs.
-
-.. Both attempts at using a custom kickstart with an edge commit image result in VMs that, after reboot, stay forever on "A start job is running for…rhel-swap/rhel-boot".
-+
-They seem to deploy the ostree commit, from boot messages and the apache access log. I have no clue why they cannot finish installation. :-(
-
-4. Cleaning up test VMs up between each attempt.
-+
-[source,subs="verbatim,quotes"]
---
-$ virsh destroy edge-test-1
-Domain 'edge-test-1' destroyed
-$ virsh undefine edge-test-1
-Domain 'edge-test-1' has been undefined
---
-
-5. Create an edge installer image.
-+
-PENDING: Add a custom kickstart to the edge installer image, because the one from Image Builder does NOT work as-is.
-
-.. Create a blueprint for the edge installer image.
-+
-[source,subs="verbatim,quotes"]
---
-$ cat rhel9-installer.toml 
-name = "rhel9-installer"
-description = "blueprint-rhel9-installer"
+name = "mysql-installer"
+description = "blueprint-mysql-installer"
 version = "0.0.1"
+
+[customizations.installer]
+unattended = true
+sudo-nopasswd = ["core", "%wheel"]
 --
 +
-You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/rhel9-installer.toml[installer blueprint] from sample applications repository in GitHub.
+You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/mysql-installer.toml[installer blueprint] from sample applications repository in GitHub.
++
+[ Retry on newer RHEL, if I can use customizations.installer ... oops it was human error, wrong bp name ]
++
+[ Review previous labs, adding user customizations to the mysql edge commit image ]
++
+[ Looks like my customizations.installer are lost on rhel 9.2 ]
 
 
-.. Add a [customizations] installation_device, like for the simplified installer, so I don't need a custom kickstart? It didn't like those customizations. Not even just the install device, without adding users.
+.. Upload the blueprint to the Image Builder service.
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli blueprints push mysql-installer.toml*
+$ *composer-cli blueprints list*
+rhel9-edge
+rhel9-mysql
+mysql-installer
+--
+
+.. Build an edge installer image, using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a xref:ch2-publish:s4-pull-local-lab.adoc[previous lab].
++
+[source,subs="verbatim,quotes"]
+--
+$ *composer-cli compose start-ostree mysql-installer edge-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo/*
+Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue
+--
+
+.. If you use an invalid blueprint, that adds packages or defines invalid customizations to an edge installer image, you will get an error similar to the following:
 +
 [source,subs="verbatim,quotes"]
 --
 ERROR: ManifestCreationFailed: failed to create osbuild manifest: unsupported blueprint customizations found for boot ISO image type "edge-installer": (allowed: User, Group)
 --
 
-.. Upload the blueprint to the Image Builder service.
+.. Copy the UUID of your compose, from the previous command, to a shell variable.
 +
 [source,subs="verbatim,quotes"]
 --
-$ composer-cli blueprints push rhel9-installer.toml 
-$ composer-cli blueprints list
-rhel9-edge
-rhel9-installer
---
-
-.. Build an edge installer using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a xref:ch1-build:s7-ostree-lab.adoc[previous lab].
-+
-[source,subs="verbatim,quotes"]
---
-$ composer-cli compose start-ostree rhel9-installer edge-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo/
-Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue
+$ *UUID=7a5036e1-4037-4edc-82ff-4c632c0a84fc**
 --
 
 .. Wait until the compose finishes.
 +
 [source,subs="verbatim,quotes"]
 --
-$ composer-cli compose list
+$ *composer-cli compose list*
 ID                                     Status     Blueprint         Version   Type
-7a5036e1-4037-4edc-82ff-4c632c0a84fc   RUNNING    rhel9-installer   0.0.1     edge-installer
+7a5036e1-4037-4edc-82ff-4c632c0a84fc   RUNNING    mysql-installer   0.0.1     edge-installer
 01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
 575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
-$ composer-cli compose list
+$ *composer-cli compose list*
 ID                                     Status     Blueprint         Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
-7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
+7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   mysql-installer   0.0.1     edge-installer
+01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   mysql-edge        0.0.1     edge-commit
 575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
 --
 
@@ -176,245 +156,216 @@ ID                                     Status     Blueprint         Version   Ty
 +
 [source,subs="verbatim,quotes"]
 --
-$ composer-cli compose image 7a5036e1-4037-4edc-82ff-4c632c0a84fc
+$ *composer-cli compose image $UUID*
 7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso
 --
 
-6. Create a VM that boots from the edge installer image.
+3. Inspect your edge installer image.
 
-.. 1st attempt, it fails to process the kickstart embeded in the ISO. It should *not* display Anaconda screens for choosing packages, installation source, etc.
+.. Mount the ISO file in a temporary directory.
 +
 [source,subs="verbatim,quotes"]
 --
-$ virt-install \
---name edge-test-2 \
---memory 4096 \
---vcpus 2 \
---disk size=40 \
---os-variant rhel9.2 \
---location /home/student/7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso \
---graphics=none \
---extra-arg console=ttyS0 -v
+$ *mkdir temp-iso*
+$ *sudo mount -o loop,ro $UUID-installer.iso temp-iso*
 --
 
-.. 2nd attempt, it kinda works, but doesn't work unattended, as it would be expected. It enters anaconda UI stating that the kickstart is unsufficient and asking to enter the "Installation Destination" screen. I enter and accept the defaults of automatic partitioning. Then I can begin installation, it seems to deploy the OSTree commit, and complete the installation. But after rebooting, it stays forever on "A start job is running for…rhel-swap/rhel-root"... just like the previous attempts. :-(
-+
-Exactly like it did with the previous attempts, using a custom kickstart with the standard RHEL ISO and a remote OSTree repository.
+.. Check that the ISO contains a kickstart file and an OSTree repository.
 +
 [source,subs="verbatim,quotes"]
 --
-virt-install \
---name edge-test-2 \
---memory 4096 \
---vcpus 2 \
---disk size=40 \
---os-variant rhel9.2 \
---cdrom /home/student/7a5036e1-4037-4edc-82ff-4c632c0a84fc-installer.iso
+$ *ls temp-iso/*
+EFI  images  isolinux  osbuild.ks  ostree
+$ *ls temp-iso/ostree/repo/*
+config  extensions  objects  refs  state  tmp
+$ *cat temp-iso/osbuild.ks*
+ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/9/x86_64/db --nogpg
 --
 
-.. I verified the edge installer ISO, it looks good: I can see the osbuild.ks file (with just an ostreesetup command), the grub menus that refer to iso, and the local copy of OSTree repository.
-
-7. Create an edge simplified installer image.
-+
-This is just to record the test steps, before moving them to their proper place in this course. Previous tests also don't belong here.
-
-.. Need a blueprint which creates an user, else you cannot log in, and that specifies an instllation device (would that be useful for previous attempts?). Unlike other image types, there's no kickstart file to provide such customizations.
-
+.. Find the label of the ISO image, you will need it for the next step. Copy the argument of the `-l` option to a shell variable
 +
 [source,subs="verbatim,quotes"]
 --
-name = "rhel9-user"
-description = "blueprint-rhel9-user"
-version = "0.0.1"
-
-[customizations]
-installation_device = "/dev/vda"
-
-[[customizations.user]]
-name = "factory"
-password = "redhat123"
-groups = ["users", "wheel"]
+$  *grep search  temp-iso/EFI/BOOT/grub.cfg*
+search --no-floppy --set=root -l 'RHEL-9-2-0-BaseOS-x86_64'
+$ *LABEL=RHEL-9-2-0-BaseOS-x86_64*
 --
 
-.. Upload (and validate???) the blueprint
+.. Extract the ISO contents into another temporary directory
 +
 [source,subs="verbatim,quotes"]
 --
-$ composer-cli blueprints push rhel9-user.toml 
-[student@workstation ~]$ composer-cli blueprints list
-rhel9-edge
-rhel9-installer
-rhel9-user
-$ composer-cli blueprints depsolve rhel9-user
-blueprint: rhel9-user v0.0.1
-    acl-2.3.1-3.el9.x86_64
-    alternatives-1.20-2.el9.x86_64
+$ *mkdir new-iso*
+$ *sudo tar cf - -C temp-iso . | tar xf - -C new-iso*
+--
+
+.. Unmount the ISO.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo umount temp-iso*
+--
+
+4. PENDING: Add a custom kickstart to the edge installer image, because the one from Image Builder does NOT work as-is.
++
+https://access.redhat.com/solutions/60959
+
+.. Verify that you have the `mkisofs` command. If you don't, install the `xorriso` package. It's fine if have a different version than shown bellow.
++
+[source,subs="verbatim,quotes"]
+--
+$ *mkisofs --version*
+xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
 ...
 --
 
-.. Build the simplified installer image, notice it refers to a remote ostree repositor.
-+
-That makes no sense if my blueprint specifies different packages than that repo -- build first an ostree commit image from the same blueprint? Or use a blueprint without packages and other entries, like for the regular edge installer image? Then, doing a depsolve makes no sense.
+.. Create a kickstart file with uses the same `ostreesetup` command you see in the edge installer image, but adding other commands so it can run unattended.
+
+.. Copy your custom kickstart over the kickstart file on the edge installer image
 +
 [source,subs="verbatim,quotes"]
 --
-$ composer-cli compose start-ostree rhel9-user edge-simplified-installer \
---ref rhel/9/x86_64/edge \
---url http://servera.lab.example.com/repo
+$ *cp rhel9-mysql.ks new-iso/osbuild.ks*
 --
 
-.. Wait until the compose finishes
+.. Build a new iso [ really need -no-emul-boot twice? ]
 +
 [source,subs="verbatim,quotes"]
 --
-$ composer-cli compose list
-ID                                     Status     Blueprint         Version   Type
-3024992f-ecb1-4220-9e8b-0816a9480579   RUNNING    rhel9-user        0.0.2     edge-simplified-installer
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
-7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
---
-
-.. Failed. Why???
-+
-[source,subs="verbatim,quotes"]
---
-$ composer-cli compose list
-ID                                     Status     Blueprint         Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
-7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
-3024992f-ecb1-4220-9e8b-0816a9480579   FAILED     rhel9-user        0.0.2     edge-simplified-installer
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
---
-
-..  My blueprint specificed a group "users" which didn't exist, my bad, remember to not copy-and-paste without checking. ;-)
-+
-Among the many expected errors (how would a user know they're expected) there' an unexpected error from `useradd`.
-+
-[source,subs="verbatim,quotes"]
---
-$ composer-cli compose log 3024992f-ecb1-4220-9e8b-0816a9480579  | tail
-/usr/lib/tmpfiles.d/systemd.conf:25: Failed to replace specifiers in '/run/log/journal/%m': No such file or directory
-/usr/lib/tmpfiles.d/systemd.conf:26: Failed to replace specifiers in '/run/log/journal/%m/*.journal*': No such file or directory
-/usr/lib/tmpfiles.d/systemd.conf:29: Failed to replace specifiers in '/var/log/journal/%m': No such file or directory
-/usr/lib/tmpfiles.d/systemd.conf:30: Failed to replace specifiers in '/var/log/journal/%m/system.journal': No such file or directory
-/usr/lib/tmpfiles.d/systemd.conf:32: Failed to replace specifiers in '/var/log/journal/%m': No such file or directory
-/usr/lib/tmpfiles.d/systemd.conf:33: Failed to replace specifiers in '/var/log/journal/%m/system.journal': No such file or directory
-Failed to open file "/sys/fs/selinux/checkreqprot": Read-only file system
-*useradd: group 'users' does not exist*
-Traceback (most recent call last):
-  File "/run/osbuild/bin/org.osbuild.users", line 188, in <module>
-    r = main(args["tree"], args["options"])
-  File "/run/osbuild/bin/org.osbuild.users", line 177, in main
-    useradd(tree, name, uid, gid, groups, description, home, shell, password)
-  File "/run/osbuild/bin/org.osbuild.users", line 105, in useradd
-    subprocess.run(["chroot", root, "useradd", *arguments, name], check=True)
-  File "/usr/lib64/python3.9/subprocess.py", line 528, in run
-    raise CalledProcessError(retcode, process.args,
-subprocess.CalledProcessError: Command '['chroot', '/run/osbuild/tree', 'useradd', '--groups', 'users,wheel', '--password', '$6$9jXcx/TeyL5f49.M$7t6GrDWTMWNipVNWLPZxaQecsLlMNYyZMtNJgHH7PoqF0wbfyD37GVXYSbmNoypdgTTo63dVDks0YUPtqeHES0', 'factory']' returned non-zero exit status 6.
---
-
-.. Delete the compose, edit and upload the blueprint, and try again
-+
-[source,subs="verbatim,quotes"]
---
-$ composer-cli compose delete 3024992f-ecb1-4220-9e8b-0816a9480579
-$ composer-cli compose start-ostree rhel9-user edge-simplified-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo
-Compose 6da756ac-d8bf-4a58-9152-547f43c7a83b added to the queue
-$ composer-cli compose list
-ID                                     Status     Blueprint         Version   Type
-6da756ac-d8bf-4a58-9152-547f43c7a83b   RUNNING    rhel9-user        0.0.1     edge-simplified-installer
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
-7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
-$ composer-cli compose list
-ID                                     Status     Blueprint         Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FINISHED   rhel9-edge        0.0.1     edge-commit
-6da756ac-d8bf-4a58-9152-547f43c7a83b   FINISHED   rhel9-user        0.0.1     edge-simplified-installer
-7a5036e1-4037-4edc-82ff-4c632c0a84fc   FINISHED   rhel9-installer   0.0.1     edge-installer
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FAILED     rhel9-edge        0.0.1     edge-commit
---
-
-.. Download the image from the compose
-+
-[source,subs="verbatim,quotes"]
---
-$ composer-cli compose image 6da756ac-d8bf-4a58-9152-547f43c7a83b
-6da756ac-d8bf-4a58-9152-547f43c7a83b-simplified-installer.iso
---
-
-8. Crete a VM that boots from the edge simplified installer image
-
-.. 1st attempt
-+
-[source,subs="verbatim,quotes"]
---
-$ virt-install \
---name edge-test-3 \
---memory 4096 \
---vcpus 2 \
---disk size=40 \
---os-variant rhel9.2 \
---location /home/student/6da756ac-d8bf-4a58-9152-547f43c7a83b-simplified-installer.iso \
---graphics=none \
---extra-arg console=ttyS0 -v
---
-
-.. Got an error :-(
-+
-[source,subs="verbatim,quotes"]
---
-Starting install...
-ERROR    Couldn't find kernel for install tree.
-Domain installation does not appear to have been successful.
---
-+
-Google says the previous error was because of --location and I must use --cdrom (so need the ugly VNC console)
-
-
-.. 2nd attempt
-+
-[source,subs="verbatim,quotes"]
---
-$ virt-install \
---name edge-test-3 \
---memory 4096 \
---vcpus 2 \
---disk size=40 \
---os-variant rhel9.2 \
---boot uefi \
---cdrom /home/student/6da756ac-d8bf-4a58-9152-547f43c7a83b-simplified-installer.iso
---
-+
-It works well, with UEFI boot.
-
-.. 3rd attempt, seems too hack-ish to me
-+
-[source,subs="verbatim,quotes"]
---
-virt-install --name edge-test-3 --memory 4096 --vcpus 2 --disk size=40 --os-variant rhel9.2 --location /home/student/6da756ac-d8bf-4a58-9152-547f43c7a83b-simplified-installer.iso,kernel=images/pxeboot/vmlinuz,initrd=images/pxeboot/initrd.img --graphics=none --extra-arg console=ttyS0 -v
+$ *mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/boot.cat \
+-no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot \
+-graft-points -joliet-long -V "$LABEL" new-iso*
 ...
-[FAILED] Failed to start Switch Root.
+Writing to 'stdio:new-installer.iso' completed successfully.
 --
 
-.. 4th attempt, uefi does not solve it with --location, only with --cdrom (ignore screen shot of vm console, had a cmd typo). Boot stops with "Failed to start Switch Root.", just like the previous, after adding kernel and initrd to --locaiton. :-(
+.. Mount the new ISO and check that it contains the customized kickstart file.
 +
 [source,subs="verbatim,quotes"]
 --
-virt-install \
---name edge-test-4 \
---memory 4096 \
---vcpus 2 \
---disk size=40 \
---os-variant rhel9.2 \
---boot uefi \
---location /home/student/6da756ac-d8bf-4a58-9152-547f43c7a83b-simplified-installer.iso \
---graphics=none \
---extra-arg console=ttyS0 -v
+$ *sudo mount -o loop,ro new-installer.iso temp-iso*
+$ *cat temp-iso/osbuild.ks*
+lang en_US.UTF-8
+keyboard us
+timezone Etc/UTC --isUtc
+...
+$ *sudo umount temp-iso*
 --
 
-Conclusion statement.
+5. Create a a _db VM_ that boots from the edge installer image.
+
+.. Create a local VM, with a serial console, which edge installer image from previous steps.
++
+The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]
++
+If I can make customizations.installer to work with newer RHEL:
++
+[source,subs="verbatim,quotes"]
+--
+$ *virt-install --name edge-test-2 --os-variant rhel9.2 \
+--memory 4096 --vcpus 2 --disk size=40 --graphics=none \
+--location /home/student/$UUID-installer.iso
+--extra-arg console=ttyS0 -v*
+--
++
+Else, if have to hack the kickstart inside the iso: [ NOT WORKING --boot uefi made no difference ]
++
+[source,subs="verbatim,quotes"]
+--
+$ *virt-install --name edge-test-2 --os-variant rhel9.2 \
+--memory 4096 --vcpus 2 --disk size=40 --graphics=none \
+--location /home/student/new-installer.iso
+--extra-arg console=ttyS0 -v*
+--
++
+.. Gambiarra, getting ks from network [works... what I did wrong on iso hack? ]
++
+[source,subs="verbatim,quotes"]
+--
+virt-install --name edge-db-1 --os-variant rhel9.2  --memory 4096 --vcpus 2 --disk size=40 --location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 -v --extra-arg inst.ks=http://servera.lab.example.com/rhel9-mysql.ks
+--
++
+If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.
+
+.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `dba` with password `redhat123`. [ review for  RHEL 9.4 ]
++
+[source,subs="verbatim,quotes"]
+--
+Red Hat Enterprise Linux 9.2 (Plow)
+Kernel 5.14.0-284.11.1.el9_2.x86_64 on an x86_64
+
+edge-db login: *core*
+Password: 
+[core@edge-db ~]$ 
+--
+
+6. On the _test VM_, check it is an image-based system using RPM-OStree.
+
+.. Use the `rpm-ostree` command to see its deployed branch and commit.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge-db ~]$ *rpm-ostree status*
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/db
+                  Version: 9.2 (2024-09-06T22:07:45Z)
+                   Commit: 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
+--
++
+Notice that the commit ID you see matches the one from the `curl` command at the beginning of this lab.
+
+7. Verify that there is a MySQL database running in the VM
+
+.. Check that the `mysqld` Systemd service is enabled and active
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge-db ~]$ *systemctl is-active mysqld*
+active
+--
+
+.. Check that the MySQL database inside the VM containers only the standard system databases.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge-db ~]$ *sudo mysqlshow*
++--------------------+
+|     Databases      |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+--
++
+Later in this course you will update your database image to include a starter database.
+
+8. Return to your _developer machine_, and optionally stop your _db VM_.
+
+.. Dettach from the serial console of the VM by typing `Ctrl+]`.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge-db ~]$ *^]*
+$
+--
+
+.. Optionally, stop the _db VM_. You will still use that VM in a future lab, when we apply updates to edge images.
++
+[source,subs="verbatim,quotes"]
+--
+$ *virsh destroy edge-db-1*
+Domain 'edge-db-1' destroyed
+--
+
+.. If you had issues with booting or acessing your _db VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command.
+
+You just learned how to create an edge installer image and boot a test VM from an it. Notice that, unlike the xref:s2-boot-lab.adoc[previous lab], you only accessed the _web server machine_ to create the edge installer image but didn't need it to create a test VM.
 
 == Next Steps
 
-Lorem Ipsum.
+The final round of activities in this course will update the system images on both local VMs, to demonstrate how to build and apply system updates to edge devices.
+
+[ Could include a third Lab that uses a simplified edge installer image, but I don't see much value, it would perform the same steps with a slightly different bleprint. It would be more interesting if I had device or site customizations to apply with ignition or a sample application ]

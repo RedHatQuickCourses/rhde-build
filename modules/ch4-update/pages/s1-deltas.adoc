@@ -18,6 +18,35 @@ image::s1-deltas-fig-1.svg[title="End of an edge device update workflow"]
 
 Lorem ipsum
 
+RPM-OSTree keeps multiple system images side-by-side in a system, and only switches from the current to the new system image with a reboot -- constrast that with RPM package updates, which alter files which are in use by running processes and may produce unpredictable results.
+
+You can reboot an RPM-OSTree system into any of the available system images, making it trivial to rollback a system update to a previous known good image -- constrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, which depend on the kernel version.
+
+RPM-OSTree allows writes to only `/etc` and `/var`, which are treated in different ways:
+
+*  Files in `/var` are only touched at first boot, when they're copied from the system image to the writable file system, but updates keep the contents in `/var` unchanged.
+
+* Files in `/etc` are updated with a three-way merge process: the current `/etc` contents are compared with the original system image, differences are applied a copy of the contents of `/etc` from the new system image, and the result saved to the writable file system.
+
+The goal is, on one side, to preserve application data in `/var` across system updates, while enabling applications to include initial data in a system image; and on the other side, enable new system images to bring new configuration files and change configuration defaults, while preserving local customizations applied to the running system.
+
+
+
+== Distribution Edge Image Updates
+
+[ Image of multiple repos and promotion ]
+
+As you develop and test applications, which you embed in an RHEL for Edge system image, you may use multiple OSTree repositories. 
+
+You do not need OSTree for the inner loop, as you just test your applications on regular RHEL. But, at some moment, you need to perform integration testing and prepare an image for actual deployment and delivery to edge devices. You must ensure your image contains the right dependencies and customizations for your applications, so you must build an image and test it, probably using virtual machines.
+
+Assuming your RHEL for Edge system image passes integration tests, you might perform more involved tests, such as performance or functional testing, before you finally declare your system image is clear for production. 
+
+At each of these states, you may use different OSTree repositories, and copy the edte images, that is, their OSTree commits, from one repository to the next. Finally, you may have multiple repositories for production images, for fault-tolerance, or to serve differnent geographical regions.
+
+OSTree was designed to suppot such promotion proccess by not requiring the complete history between commits. OSTree commits are self-contained. You can copy (promote) one OSTree commit that was declared ready for production without copying all previous commits which may have failed testing.
+
+
 == OSTree Static Deltas
 
 Unlike Git, OSTree is designed to be able to easily and cleanly discard history, on the assumption that all operating system binaries in a commit can be recreated from their source code. An OSTree repository is not intended for long-term change tracking and auditing: these are best done on the source code rather than on the derived binaries.
@@ -51,14 +80,8 @@ It is possible ot update the system image and keep the overlay, as long as the o
 
 In this course, we will not teach the use of overlays and managing packages on RHEL for Edge. We focus on building and updating system images.
 
+[ Mention that RPM-OSTree prunes the local repository so it doesn't grow unbounded? Or save for ch4? ]
 
-== The OSTree tooling
-
-Lorem Ipsum
-
-[ Either add an introduction to the syntax of the rpm-ostree command, or move this heading to another topic ]
-
-[ Do we need to introduce the ostree command? For example, can I check the integrity of an ostree commit (or edte commit image) from rpm-ostree aline? ]
 
 == Next Steps
 

@@ -1,6 +1,6 @@
 :time_estimate: 5
 
-= Lab: Boot Edge VMs from Remote OSTree Repostories
+= Lab: Boot Test VMs from Remote OSTree Repostories
 
 _Estimated reading time: *{time_estimate} minutes*._
 
@@ -12,9 +12,9 @@ WARNING: Work In Progress
 
 == Before you Begin
 
-You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your test machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
-You need a second machine to run a web server that serves OSTree repositories. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
+You also need a _web server machine_ which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
@@ -22,7 +22,7 @@ If you are using the course classroom, you will log in on the `workstation` VM a
 
 == Instructions
 
-1. On your test machine, verify that you have the prerequisites from previous labs.
+1. On your _development machine_, verify that you have the prerequisites from previous labs.
 
 .. Verify that the Image Builder service is active and that the current Linux user can submit requests to it.
 +
@@ -56,8 +56,10 @@ mode=archive-z2
 $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge*
 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
 --
++
+Pay attention to the final path element of the URL, which should be "edge".
 
-2. Install the libvirtd tools and its Cockpit module.
+2. On your _development machine_, install the Libvirtd tools and its Cockpit module, if they are not already installed.
 
 .. Install the "Virtualization Host" package group to get the libvirtd, KVM, and Qemu daemons and tools.
 +
@@ -78,7 +80,7 @@ Complete!
 $ *sudo groupmod libvirt -a -U student*
 --
 
-3. Create and publish a kickstart file which points to the OSTree repository on the web server.
+3. On your _development machine_, create and publish a kickstart file which points to the OSTree repository on the web server.
 
 .. Using your preferred text editor, create a file named `rhel9-httpd.ks` with the following contents:
 +
@@ -103,7 +105,10 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 +
 You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks[kickstart file] from sample applications repository in GitHub.
 +
-Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. The important piece is the `ostreesetup` command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.
+Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are two really important pieces:
++
+** The `autopart` command, which creates a disk partitioning scheme without using LVM. Else, your edge system would bace a disk partitioning which is icompatible with RPM-OSTree and fail in a later installation stage.
+** The `ostreesetup` command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.
 
 .. Copy the Kickstart file to your home directory on the web server machine.
 +
@@ -113,7 +118,7 @@ $ *scp rhel9-httpd.ks servera.lab.example.com:~*
 ...
 --
 
-4. Switch to your web sever machine and publish the kickstart file and the OSTree commit in the web server content directory.
+4. Switch to your _web sever machine_ and publish the kickstart file in the web server content directory. This is simpler than embeding the kickstart file in the RHEL installation media or creating a virtual disk to use only for creating VMs.
 
 .. Copy the kickstart file to the web server content directory.
 +
@@ -143,7 +148,7 @@ $ *sudo chmod -R a+X /var/www/html*
 $ *sudo restorecon -R /var/www/html*
 --
 
-5. Back to your development machine, verify that a remote client can access the kickstart file.
+5. Back to your _development machine_, verify that a remote client can access the kickstart file.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -154,13 +159,13 @@ timezone Etc/UTC --isUtc
 ...
 --
 
-6. Create a RHEL VM which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
+6. Still on your _developer machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
 
 .. Download the standard RHEL installation ISO from the customer portal, or grab a copy in the classroom environment at [ADD LINK]. Ensure you have a complete and consistent ISO in the `/home/student/Downloads/rhel-9.4-x86_64-boot.iso` file before proceeding.
 
-.. Create a local VM, with a serial console, which uses the kickstart file from previous steps. Usign a serial console makes it easy to capture installation and boot messages for troubleshooting.
+.. Create a local VM, with a serial console, which uses the kickstart file from previous steps. Using a serial console makes it easy to capture boot anbd log messages for troubleshooting, if you need.
 +
-The following is a long command, it is broken into multiple lines for readability.
+The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]
 +
 [source,subs="verbatim,quotes"]
 --
@@ -171,28 +176,142 @@ $ *virt-install --name edge-test-1 --os-variant rhel9.2 \
 --extra-arg console=ttyS0 -v*
 --
 +
+If you are used to managing Libvirt VMs using Cockput, feel free to perform VM creation and other tasks using its web UI.
++
 NOTE: You must use `--location` instead of `--cdrom` to be able pass kernel arguments with `--extra-args`. Else you will be required to use the Grub menu, interactively, to add a reference to the kickstart file.
 
-.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `core` with password `redhat123`.
+.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `core` with password `redhat123`. [ review for  RHEL 9.4 ]
 +
 [source,subs="verbatim,quotes"]
 --
-Edge login:
+Red Hat Enterprise Linux 9.2 (Plow)
+Kernel 5.14.0-284.11.1.el9_2.x86_64 on an x86_64
+
+edge login: *core*
+Password: 
+[core@edge ~]$ 
 --
 
-.. If the VM creation fails, and you must try again, stop and remove the VM before retrying the previous step.
+7. On the _test VM_, check it is an image-based system using RPM-OStree.
+
+.. Use the `rpm-ostree` command to see its deployed branch and commit.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *rpm-ostree status*
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-09-06T22:07:45Z)
+                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+--
++
+Notice that the commit ID you see matches the one from the `curl` command at the beginning of this lab.
+
+.. You can get similar information from the `ostree` command, using its default system repository.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *ostree refs*
+edge:rhel/9/x86_64/edge
+ostree/0/1/0
+[core@edge ~]$ *ostree log rhel/9/x86_64/edge*
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
+Date:  2024-09-06 22:07:45 +0000
+Version: 9.2
+(no subject)
+--
+
+.. Also notice that the local OSTree repository connects to a remote repository on the web server machine.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *ostree remote list --show-urls*
+edge  http://servera.lab.example.com/repo/
+--
+
+.. Check also the location of the local OSTree repository in `/sysroot`
++
+[source,subs="verbatim,quotes"]
+--
+$ ostree refs --repo=/sysroot/ostree/repo
+ostree/0/1/0
+edge:rhel/9/x86_64/db
+--
+
+.. Take the opportunity to familiarize yourself with the file system layout of an RPM-OSTree system and the multiple bind mounts on the root disk.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *df -h | grep vda*
+/dev/vda3        35G  1.6G   34G   5% /sysroot
+/dev/vda1       960M  145M  816M  16% /boot
+[core@edge ~]$ *mount | grep vda*
+/dev/vda3 on /sysroot type xfs (ro,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/vda3 on / type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/vda3 on /etc type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/vda3 on /usr type xfs (ro,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/vda3 on /sysroot/ostree/deploy/rhel/var type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/vda3 on /var type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/vda1 on /boot type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+--
+
+8. Verify that there is an Apache Web Server running in the VM
+
+.. Check that the `httpd` Systemd service is enabled and active
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *systemctl is-active httpd*
+active
+--
+
+.. Check that the Apache Web Server inside the VM returns the standard welcome page
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *curl 127.0.0.1*
+[ GRAB OUTPUT ]
+--
++
+Later in this course you will update your edge image to include a static web site.
+
+9. Return to your _developer machine_, and optionally stop your _test VM_.
+
+.. Dettach from the serial console of the VM by typing `Ctrl+]`.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *^]*
+$
+--
++
+Later you can reattach a VM serial console using the `virsh console` command.
+
+.. Optionally, stop the _test VM_. You will still use that VM in a future lab, when we apply updates to edge images.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *virsh destroy edge-test-1*
 Domain 'edge-test-1' destroyed
-$ *virsh undefine edge-test-1*
+--
++
+NOTE: The `destroy` verb of the `virsh` command does not actually "destroys" a VM. It only stops the VM, which can be restarted at any time with the `virsh start` command.
+
+.. If the VM creation fails, which could be caused by an incorrect kickstart file, and you must try again, stop and delete the VM before retrying the previous step.
++
+[source,subs="verbatim,quotes"]
+--
+$ *virsh destroy edge-test-1*
+Domain 'edge-test-1' destroyed
+$ *virsh undefine --remove-all-storage edge-test-1*
 Domain 'edge-test-1' has been undefined
 --
++
+Depending on the installation and boot state that your VM failed, you may need the `--nvram`` and `--managed-state` options of the `virsh undefine` command.
 
-[ Add steps to check the local VM, its local OSTree repo, commit, remote, and deployed commit? ]
-
-You can leave that VM running, or stop it and restart in a future lab, when we apply updates to edge images.
+You just learned how to create and check a local VM from an edge commit image that was published in a remote OSTree repository.
 
 == Next Steps
 
