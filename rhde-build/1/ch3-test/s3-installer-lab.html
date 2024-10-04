@@ -421,7 +421,7 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 <p>Find the label of the ISO image, you will need it for the next step. Copy the argument of the <code>-l</code> option to a shell variable</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$  <strong>grep search  temp-iso/EFI/BOOT/grub.cfg</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>grep search temp-iso/EFI/BOOT/grub.cfg</strong>
 search --no-floppy --set=root -l 'RHEL-9-2-0-BaseOS-x86_64'
 $ <strong>LABEL=RHEL-9-2-0-BaseOS-x86_64</strong></code></pre>
 </div>
@@ -448,9 +448,9 @@ $ <strong>sudo tar cf - -C temp-iso . | tar xf - -C new-iso</strong></code></pre
 </div>
 </li>
 <li>
-<p>PENDING: Add a custom kickstart to the edge installer image, because the one from Image Builder does NOT work as-is.</p>
+<p>Replace the kickstart to the edge installer image with one designed for unattended installation.</p>
 <div class="paragraph">
-<p><a href="https://access.redhat.com/solutions/60959" class="bare">https://access.redhat.com/solutions/60959</a></p>
+<p>[ More recent Image Builder should allow providing the kickstart in the blueprint, but that is not working on RHEL 9.2, try again when there&#8217;s a RHEL 9.4 classroom ]</p>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -476,14 +476,17 @@ xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
 </div>
 </li>
 <li>
-<p>Build a new iso [ really need -no-emul-boot twice? ]</p>
+<p>Build a new iso. It <strong>not</strong> a mistake, you really need to specify the <code>-no-emul-boot</code> option twice.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/boot.cat \
 -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot \
 -graft-points -joliet-long -V "$LABEL" new-iso</strong>
 ...
-Writing to 'stdio:new-installer.iso' completed successfully.</code></pre>
+Writing to 'stdio:new-installer.iso' completed successfully.
+$ <strong>isohybrid --uefi new-installer.iso</strong>
+isohybrid: Warning: more than 1024 cylinders: 2220
+isohybrid: Not all BIOSes will be able to boot this device</code></pre>
 </div>
 </div>
 </li>
@@ -509,42 +512,35 @@ $ <strong>sudo umount temp-iso</strong></code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Create a local VM, with a serial console, which edge installer image from previous steps.</p>
-<div class="paragraph">
-<p>The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]</p>
-</div>
-<div class="paragraph">
-<p>If I can make customizations.installer to work with newer RHEL:</p>
-</div>
+<p>Create a local VM which edge installer image from previous steps. You can choose one the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Use a regular grapphical boot, using a virtual DVD reader</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-test-2 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=40 --graphics=none \
---location /home/student/$UUID-installer.iso
---extra-arg console=ttyS0 -v</strong></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Else, if have to hack the kickstart inside the iso: [ NOT WORKING --boot uefi made no difference ]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-test-2 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=40 --graphics=none \
---location /home/student/new-installer.iso
---extra-arg console=ttyS0 -v</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=40 \
+--cdrom /home/student/new-installer.iso -v</strong></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Gambiarra, getting ks from network [works&#8230;&#8203; what I did wrong on iso hack? ]</p>
+<p>Use the virtual serial console, and reference the kickstart in the ISO image.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">virt-install --name edge-db-1 --os-variant rhel9.2  --memory 4096 --vcpus 2 --disk size=40 --location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 -v --extra-arg inst.ks=http://servera.lab.example.com/rhel9-mysql.ks</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=40 \
+--location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 \
+--extra-arg inst.ks=hd:LABEL=$LABEL:/osbuild.ks -v</strong></code></pre>
 </div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.</p>
+<div class="paragraph">
+<p>[ This lab, using the installer image, might be a good one to use Cockpit begining to end &#8230;&#8203; or save it for the "simplifed installer image (next tentative lab?)" ]</p>
+</div>
+</li>
+</ul>
 </div>
 </li>
 <li>
