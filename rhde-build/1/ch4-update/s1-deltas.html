@@ -111,10 +111,10 @@
     <a class="nav-link" href="../ch3-test/s1-boot.html">Developement Testing of Edge Images</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Edge VMs from Remote OSTree Repostories</a>
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repostories</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Edge VMs from Edge Installer Images OSTree</a>
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
   </li>
 </ul>
   </li>
@@ -215,6 +215,51 @@ Work In Progress
 <div class="paragraph">
 <p>Lorem ipsum</p>
 </div>
+<div class="paragraph">
+<p>RPM-OSTree keeps multiple system images side-by-side in a system, and only switches from the current to the new system image with a reboot&#8201;&#8212;&#8201;constrast that with RPM package updates, which alter files which are in use by running processes and may produce unpredictable results.</p>
+</div>
+<div class="paragraph">
+<p>You can reboot an RPM-OSTree system into any of the available system images, making it trivial to rollback a system update to a previous known good image&#8201;&#8212;&#8201;constrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, which depend on the kernel version.</p>
+</div>
+<div class="paragraph">
+<p>RPM-OSTree allows writes to only <code>/etc</code> and <code>/var</code>, which are treated in different ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Files in <code>/var</code> are only touched at first boot, when they&#8217;re copied from the system image to the writable file system, but updates keep the contents in <code>/var</code> unchanged.</p>
+</li>
+<li>
+<p>Files in <code>/etc</code> are updated with a three-way merge process: the current <code>/etc</code> contents are compared with the original system image, differences are applied a copy of the contents of <code>/etc</code> from the new system image, and the result saved to the writable file system.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The goal is, on one side, to preserve application data in <code>/var</code> across system updates, while enabling applications to include initial data in a system image; and on the other side, enable new system images to bring new configuration files and change configuration defaults, while preserving local customizations applied to the running system.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_distribution_edge_image_updates"><a class="anchor" href="#_distribution_edge_image_updates"></a>Distribution Edge Image Updates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>[ Image of multiple repos and promotion ]</p>
+</div>
+<div class="paragraph">
+<p>As you develop and test applications, which you embed in an RHEL for Edge system image, you may use multiple OSTree repositories.</p>
+</div>
+<div class="paragraph">
+<p>You do not need OSTree for the inner loop, as you just test your applications on regular RHEL. But, at some moment, you need to perform integration testing and prepare an image for actual deployment and delivery to edge devices. You must ensure your image contains the right dependencies and customizations for your applications, so you must build an image and test it, probably using virtual machines.</p>
+</div>
+<div class="paragraph">
+<p>Assuming your RHEL for Edge system image passes integration tests, you might perform more involved tests, such as performance or functional testing, before you finally declare your system image is clear for production.</p>
+</div>
+<div class="paragraph">
+<p>At each of these states, you may use different OSTree repositories, and copy the edte images, that is, their OSTree commits, from one repository to the next. Finally, you may have multiple repositories for production images, for fault-tolerance, or to serve differnent geographical regions.</p>
+</div>
+<div class="paragraph">
+<p>OSTree was designed to suppot such promotion proccess by not requiring the complete history between commits. OSTree commits are self-contained. You can copy (promote) one OSTree commit that was declared ready for production without copying all previous commits which may have failed testing.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -267,19 +312,8 @@ Work In Progress
 <div class="paragraph">
 <p>In this course, we will not teach the use of overlays and managing packages on RHEL for Edge. We focus on building and updating system images.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_ostree_tooling"><a class="anchor" href="#_the_ostree_tooling"></a>The OSTree tooling</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Lorem Ipsum</p>
-</div>
-<div class="paragraph">
-<p>[ Either add an introduction to the syntax of the rpm-ostree command, or move this heading to another topic ]</p>
-</div>
-<div class="paragraph">
-<p>[ Do we need to introduce the ostree command? For example, can I check the integrity of an ostree commit (or edte commit image) from rpm-ostree aline? ]</p>
+<p>[ Mention that RPM-OSTree prunes the local repository so it doesn&#8217;t grow unbounded? Or save for ch4? ]</p>
 </div>
 </div>
 </div>
