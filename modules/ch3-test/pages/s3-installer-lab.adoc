@@ -186,7 +186,7 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 +
 [source,subs="verbatim,quotes"]
 --
-$  *grep search  temp-iso/EFI/BOOT/grub.cfg*
+$ *grep search temp-iso/EFI/BOOT/grub.cfg*
 search --no-floppy --set=root -l 'RHEL-9-2-0-BaseOS-x86_64'
 $ *LABEL=RHEL-9-2-0-BaseOS-x86_64*
 --
@@ -206,9 +206,9 @@ $ *sudo tar cf - -C temp-iso . | tar xf - -C new-iso*
 $ *sudo umount temp-iso*
 --
 
-4. PENDING: Add a custom kickstart to the edge installer image, because the one from Image Builder does NOT work as-is.
+4. Replace the kickstart to the edge installer image with one designed for unattended installation.
 +
-https://access.redhat.com/solutions/60959
+[ More recent Image Builder should allow providing the kickstart in the blueprint, but that is not working on RHEL 9.2, try again when there's a RHEL 9.4 classroom ]
 
 .. Verify that you have the `mkisofs` command. If you don't, install the `xorriso` package. It's fine if have a different version than shown bellow.
 +
@@ -228,7 +228,7 @@ xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
 $ *cp rhel9-mysql.ks new-iso/osbuild.ks*
 --
 
-.. Build a new iso [ really need -no-emul-boot twice? ]
+.. Build a new iso. It *not* a mistake, you really need to specify the `-no-emul-boot` option twice.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -237,6 +237,9 @@ $ *mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/bo
 -graft-points -joliet-long -V "$LABEL" new-iso*
 ...
 Writing to 'stdio:new-installer.iso' completed successfully.
+$ *isohybrid --uefi new-installer.iso*
+isohybrid: Warning: more than 1024 cylinders: 2220
+isohybrid: Not all BIOSes will be able to boot this device
 --
 
 .. Mount the new ISO and check that it contains the customized kickstart file.
@@ -254,38 +257,28 @@ $ *sudo umount temp-iso*
 
 5. Create a a _db VM_ that boots from the edge installer image.
 
-.. Create a local VM, with a serial console, which edge installer image from previous steps.
+.. Create a local VM which edge installer image from previous steps. You can choose one the following:
 +
-The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]
-+
-If I can make customizations.installer to work with newer RHEL:
+* Use a regular grapphical boot, using a virtual DVD reader
 +
 [source,subs="verbatim,quotes"]
 --
-$ *virt-install --name edge-test-2 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=40 --graphics=none \
---location /home/student/$UUID-installer.iso
---extra-arg console=ttyS0 -v*
+$ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=40 \
+--cdrom /home/student/new-installer.iso -v*
 --
 +
-Else, if have to hack the kickstart inside the iso: [ NOT WORKING --boot uefi made no difference ]
+* Use the virtual serial console, and reference the kickstart in the ISO image.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *virt-install --name edge-test-2 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=40 --graphics=none \
---location /home/student/new-installer.iso
---extra-arg console=ttyS0 -v*
+$ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=40 \
+--location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 \
+--extra-arg inst.ks=hd:LABEL=$LABEL:/osbuild.ks -v*
 --
 +
-.. Gambiarra, getting ks from network [works... what I did wrong on iso hack? ]
+* If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.
 +
-[source,subs="verbatim,quotes"]
---
-virt-install --name edge-db-1 --os-variant rhel9.2  --memory 4096 --vcpus 2 --disk size=40 --location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 -v --extra-arg inst.ks=http://servera.lab.example.com/rhel9-mysql.ks
---
-+
-If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.
+[ This lab, using the installer image, might be a good one to use Cockpit begining to end ... or save it for the "simplifed installer image (next tentative lab?)" ]
 
 .. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `dba` with password `redhat123`. [ review for  RHEL 9.4 ]
 +
