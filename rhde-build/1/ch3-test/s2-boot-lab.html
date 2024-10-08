@@ -216,6 +216,9 @@ Work In Progress
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
+<div class="paragraph">
+<p>You will perform most steps in this lab alternating between your <em>development machine</em> and your <em>web server</em> machine. You will also perform a few steps from a <em>test VM</em> that you will create as part of this lab.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -293,6 +296,9 @@ Complete!</code></pre>
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo groupmod libvirt -a -U student</strong></code></pre>
 </div>
 </div>
+</li>
+<li>
+<p>Log off and log in again to update the user membership of your unprivileged user.</p>
 </li>
 </ol>
 </div>
@@ -402,11 +408,14 @@ timezone Etc/UTC --isUtc
 </div>
 </li>
 <li>
-<p>Still on your <em>developer machine</em>, create a <em>test VM</em> which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
+<p>Still on your <em>developement machine</em>, create a <em>test VM</em> which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Download the standard RHEL installation ISO from the customer portal, or grab a copy in the classroom environment at [ADD LINK]. Ensure you have a complete and consistent ISO in the <code>/home/student/Downloads/rhel-9.4-x86_64-boot.iso</code> file before proceeding.</p>
+<p>Download the standard RHEL installation ISO from the customer portal, or download a copy in the classroom environment at [TBD].</p>
+<div class="paragraph">
+<p>Ensure you have a complete and consistent RHEL installation ISO in the <code>/home/student/Downloads/rhel-9.4-x86_64-boot.iso</code> file before proceeding.</p>
+</div>
 </li>
 <li>
 <p>Create a local VM, with a serial console, which uses the kickstart file from previous steps. Using a serial console makes it easy to capture boot anbd log messages for troubleshooting, if you need.</p>
@@ -455,7 +464,7 @@ Password:
 </div>
 </li>
 <li>
-<p>On the <em>test VM</em>, check it is an image-based system using RPM-OStree.</p>
+<p>On your <em>test VM</em>, check it is an image-based system using RPM-OStree.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -531,7 +540,7 @@ edge:rhel/9/x86_64/db</code></pre>
 </div>
 </li>
 <li>
-<p>Verify that there is an Apache Web Server running in the VM</p>
+<p>On the <em>test VM</em>, verify that there is an Apache Web Server running.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -544,11 +553,16 @@ active</code></pre>
 </div>
 </li>
 <li>
-<p>Check that the Apache Web Server inside the VM returns the standard welcome page</p>
+<p>Check that the Apache Web Server inside the VM returns the standard welcome page from RHEL.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>curl 127.0.0.1</strong>
-[ GRAB OUTPUT ]</code></pre>
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"&gt;
+        &lt;head&gt;
+                &lt;title&gt;Test Page for the HTTP Server on Red Hat Enterprise Linux&lt;/title&gt;
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -560,6 +574,18 @@ active</code></pre>
 </li>
 <li>
 <p>Return to your <em>developer machine</em>, and optionally stop your <em>test VM</em>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Do not delete (undefine) your <em>test VM</em>, you will use it during the next chapter to perform system updates.
+</td>
+</tr>
+</table>
+</div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -579,7 +605,11 @@ $</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh destroy edge-test-1</strong>
-Domain 'edge-test-1' destroyed</code></pre>
+Domain 'edge-test-1' destroyed
+$ <strong>virsh list --all</strong>
+ Id   Name          State
+---------------------------
+ 1    edge-test-1   shut-off</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
