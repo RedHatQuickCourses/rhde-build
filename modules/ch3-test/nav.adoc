@@ -2,3 +2,4 @@
 ** xref:s1-boot.adoc[]
 ** xref:s2-boot-lab.adoc[]
 ** xref:s3-installer-lab.adoc[]
+** xref:s5-summary.adoc[]

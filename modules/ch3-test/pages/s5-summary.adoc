@@ -1,0 +1,17 @@
+= Summary
+
+In this chapter, you learned:
+
+* The standard RHEL installer can use remote OSTree repositories as the installation source, but requires a custom kickstart file.
+
+* An edge installer image uses the standard RHEL installer and embeds an OSTree commit on the installation media for disconnected installations. 
+
+* Use minimal blueprints to create edge installer images. You cannot use the same blueprints from edge commit images.
+
+* You need remote OSTree repositories, already populated with edge commit images, to build edge installer images.
+
+* It is common practice to provide custom kickstart files for unattended installation, using either the standard RHEL installation media or an edge installer image.
+
+* Libvirt offers direct kernel booting, which enables testing edge images over SSH and capturing boot and installation messages without requiring that actual edge devices operate in text mode only.
+
+// Ammend this summary if we late decide to include a third lab using simplified edge installer images

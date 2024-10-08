@@ -1,4 +1,4 @@
-:time_estimate: 5
+:time_estimate: 9
 
 = Lab: Boot Test VMs from Remote OSTree Repostories
 
@@ -8,7 +8,7 @@ Objective::
 
 Boot a test VM from an OSTree commit in a remote OSTree repository.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 
@@ -107,11 +107,11 @@ network --bootproto=dhcp
 ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
 --
 +
-You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks[kickstart file] from sample applications repository in GitHub.
+You can also download the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks[kickstart file] from sample applications repository in GitHub.
 +
 Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are two really important pieces:
 +
-** The `autopart` command, which creates a disk partitioning scheme without using LVM. Else, your edge system would bace a disk partitioning which is icompatible with RPM-OSTree and fail in a later installation stage.
+** The `autopart` command, which creates a disk partitioning scheme without using LVM. Else, your edge system would get a disk partitioning which is incompatible with RPM-OSTree and fail in a later installation stage.
 ** The `ostreesetup` command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.
 
 .. Copy the Kickstart file to your home directory on the web server machine.
@@ -122,7 +122,7 @@ $ *scp rhel9-httpd.ks servera.lab.example.com:~*
 ...
 --
 
-4. Switch to your _web sever machine_ and publish the kickstart file in the web server content directory. This is simpler than embeding the kickstart file in the RHEL installation media or creating a virtual disk to use only for creating VMs.
+4. Switch to your _web sever machine_ and publish the kickstart file in the web server content directory. This is simpler than embedding the kickstart file in the RHEL installation media or creating a virtual disk to use only for creating VMs.
 
 .. Copy the kickstart file to the web server content directory.
 +
@@ -134,7 +134,7 @@ rhel9-httpd.ks
 $ *sudo cp rhel9-httpd.ks /var/ww/html*
 --
 
-.. Ensure that the kickstart file is acessible to the `apache` user and have correct SELinux labels.
+.. Ensure that the kickstart file is accessible to the `apache` user and have correct SELinux labels.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -163,13 +163,13 @@ timezone Etc/UTC --isUtc
 ...
 --
 
-6. Still on your _developement machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
+6. Still on your _development machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
 
 .. Download the standard RHEL installation ISO from the customer portal, or download a copy in the classroom environment at [TBD].
 +
 Ensure you have a complete and consistent RHEL installation ISO in the `/home/student/Downloads/rhel-9.4-x86_64-boot.iso` file before proceeding.
 
-.. Create a local VM, with a serial console, which uses the kickstart file from previous steps. Using a serial console makes it easy to capture boot anbd log messages for troubleshooting, if you need.
+.. Create a local VM, with a serial console and direct kernel loading, which uses the kickstart file from previous steps.
 +
 The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]
 +
@@ -182,7 +182,7 @@ $ *virt-install --name edge-test-1 --os-variant rhel9.2 \
 --extra-arg console=ttyS0 -v*
 --
 +
-If you are used to managing Libvirt VMs using Cockput, feel free to perform VM creation and other tasks using its web UI.
+If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.
 +
 NOTE: You must use `--location` instead of `--cdrom` to be able pass kernel arguments with `--extra-args`. Else you will be required to use the Grub menu, interactively, to add a reference to the kickstart file.
 
@@ -292,7 +292,7 @@ Later in this course you will update your edge image to include a static web sit
 +
 WARNING: Do not delete (undefine) your _test VM_, you will use it during the next chapter to perform system updates.
 
-.. Dettach from the serial console of the VM by typing `Ctrl+]`.
+.. Detach from the serial console of the VM by typing `Ctrl+]`.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -314,9 +314,9 @@ $ *virsh list --all*
  1    edge-test-1   shut-off
 --
 +
-NOTE: The `destroy` verb of the `virsh` command does not actually "destroys" a VM. It only stops the VM, which can be restarted at any time with the `virsh start` command.
+NOTE: The `destroy` verb of the `virsh` command does not actually "destroys" a VM. It only stops the VM, which can be restarted at any time with the `virsh start` command. What it actually destroys is the running kernel process which contains the running VM.
 
-.. If the VM creation fails, which could be caused by an incorrect kickstart file, and you must try again, stop and delete the VM before retrying the previous step.
+.. If the VM creation fails, which could be caused by an incorrect kickstart file, stop and delete the VM before retrying the previous step.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -326,7 +326,7 @@ $ *virsh undefine --remove-all-storage edge-test-1*
 Domain 'edge-test-1' has been undefined
 --
 +
-Depending on the installation and boot state that your VM failed, you may need the `--nvram`` and `--managed-state` options of the `virsh undefine` command.
+Depending on the installation and boot stage that your VM failed, you may need the `--nvram`` and `--managed-state` options of the `virsh undefine` command.
 
 You just learned how to create and check a local VM from an edge commit image that was published in a remote OSTree repository.
 

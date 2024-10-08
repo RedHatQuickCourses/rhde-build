@@ -1,4 +1,4 @@
-:time_estimate: 5
+:time_estimate: 11
 
 = Lab: Boot Test VMs from Edge Installer Images
 
@@ -8,11 +8,11 @@ Objective::
 
 Build an edge installer image and boot a test VM from it.
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 
-You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your developement machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
 You also need a _web server machine_ which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
 
@@ -176,7 +176,7 @@ $ *cat temp-iso/osbuild.ks*
 ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/9/x86_64/db --nogpg
 --
 
-.. Find the label of the ISO image, you will need it for the next step. Copy the argument of the `-l` option to a shell variable
+.. Find the label of the ISO image, you will need it for the next steps. Copy the argument of the `-l` option to a shell variable
 +
 [source,subs="verbatim,quotes"]
 --
@@ -234,14 +234,14 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 +
 You can also download the contents of the https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/ks/rhel9-mysql-installer.ks[new kickstart file] from the course samples repository in GitHub.
 
-.. Copy your custom kickstart over the kickstart file on the edge installer image
+.. Copy your custom kickstart file over the kickstart file on the edge installer image.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *cp rhel9-mysql-installer.ks new-iso/osbuild.ks*
 --
 
-.. Build a new iso. If you notice that the following command specifies the `-no-emul-boot` option twice, this is *not* a mistake, You really need the two of them.
+.. Build a new iso. If you notice that the following command specifies the `-no-emul-boot` option twice, this is *not* a mistake! You really need the two of them.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -252,7 +252,7 @@ $ *mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/bo
 Writing to 'stdio:new-installer.iso' completed successfully.
 --
 
-.. Ensure that your bootable ISO is compatible with UEFI-based systems.
+.. Ensure that your bootable ISO is compatible with UEFI firmware.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -261,7 +261,7 @@ isohybrid: Warning: more than 1024 cylinders: 2220
 isohybrid: Not all BIOSes will be able to boot this device
 --
 
-.. Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unount it.
+.. Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unmount it.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -278,7 +278,7 @@ $ *sudo umount temp-iso*
 
 .. Create a local VM using the edge installer image from previous steps. You can choose one the following:
 +
-* Use a regular grapphical boot, from a virtual CD-ROM reader.
+* Use a graphical boot, from a virtual CD-ROM reader.
 +
 NOTE: You must do this from a graphics desktop.
 +
@@ -288,7 +288,7 @@ $ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --
 --cdrom /home/student/new-installer.iso -v*
 --
 +
-* Use a virtual serial console, and reference the kickstart in the ISO image.
+* Use a virtual serial console and direct kernel loading, plus a reference the kickstart in the ISO image.
 +
 NOTE: You can do this from a secure shell session.
 +
@@ -369,9 +369,9 @@ Later in this course you will update your database image to include a starter da
 
 8. Return to your _developer machine_, and optionally stop your _database VM_.
 +
-WARNING: Do not delete (undefine) your _database VM_, you will use it during the next chapter to perform system updates.
+WARNING: Do not delete (`virsh undefine`) your _database VM_, you will use it during the next chapter to perform system updates.
 
-.. Dettach from the serial console of the VM by typing `Ctrl+]`.
+.. Detach from the serial console of the VM by typing `Ctrl+]`.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -392,7 +392,7 @@ $ *virsh list --all*
  2    edge-db-1     shut-off
 --
 
-.. If you had issues with booting or acessing your _database VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command. It may also help trying a different VM creation method, for example, if you used `--location`, try using `--cdrom`.
+.. If you had issues with booting or accessing your _database VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command. It may also help trying a different VM creation method, for example, if you used `--location`, try using `--cdrom`.
 
 You just learned how to create an edge installer image and boot a test VM from an it. Notice that, unlike the xref:s2-boot-lab.adoc[previous lab], you only accessed the _web server machine_ to create the edge installer image but didn't need it to create a test VM.
 

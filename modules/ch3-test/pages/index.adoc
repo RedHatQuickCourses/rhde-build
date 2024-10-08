@@ -3,7 +3,7 @@
 Goal:: 
 Validate RHEL for Edge images by deploying them in local VMs
 
-WARNING: Work In Progress
+WARNING: Pending SME Review & Proofreading
 
 == Introduction
 
