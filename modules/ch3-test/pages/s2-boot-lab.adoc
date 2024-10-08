@@ -20,6 +20,8 @@ These instructions were tested on RHEL 9.4 [tentative!] but should work with min
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
+You will perform most steps in this lab alternating between your _development machine_ and your _web server_ machine. You will also perform a few steps from a _test VM_ that you will create as part of this lab.
+
 == Instructions
 
 1. On your _development machine_, verify that you have the prerequisites from previous labs.
@@ -79,6 +81,8 @@ Complete!
 --
 $ *sudo groupmod libvirt -a -U student*
 --
+
+.. Log off and log in again to update the user membership of your unprivileged user.
 
 3. On your _development machine_, create and publish a kickstart file which points to the OSTree repository on the web server.
 
@@ -159,9 +163,11 @@ timezone Etc/UTC --isUtc
 ...
 --
 
-6. Still on your _developer machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
+6. Still on your _developement machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
 
-.. Download the standard RHEL installation ISO from the customer portal, or grab a copy in the classroom environment at [ADD LINK]. Ensure you have a complete and consistent ISO in the `/home/student/Downloads/rhel-9.4-x86_64-boot.iso` file before proceeding.
+.. Download the standard RHEL installation ISO from the customer portal, or download a copy in the classroom environment at [TBD].
++
+Ensure you have a complete and consistent RHEL installation ISO in the `/home/student/Downloads/rhel-9.4-x86_64-boot.iso` file before proceeding.
 
 .. Create a local VM, with a serial console, which uses the kickstart file from previous steps. Using a serial console makes it easy to capture boot anbd log messages for troubleshooting, if you need.
 +
@@ -192,7 +198,7 @@ Password:
 [core@edge ~]$ 
 --
 
-7. On the _test VM_, check it is an image-based system using RPM-OStree.
+7. On your _test VM_, check it is an image-based system using RPM-OStree.
 
 .. Use the `rpm-ostree` command to see its deployed branch and commit.
 +
@@ -257,7 +263,7 @@ edge:rhel/9/x86_64/db
 /dev/vda1 on /boot type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
 --
 
-8. Verify that there is an Apache Web Server running in the VM
+8. On the _test VM_, verify that there is an Apache Web Server running.
 
 .. Check that the `httpd` Systemd service is enabled and active
 +
@@ -267,17 +273,24 @@ edge:rhel/9/x86_64/db
 active
 --
 
-.. Check that the Apache Web Server inside the VM returns the standard welcome page
+.. Check that the Apache Web Server inside the VM returns the standard welcome page from RHEL.
 +
 [source,subs="verbatim,quotes"]
 --
 [core@edge ~]$ *curl 127.0.0.1*
-[ GRAB OUTPUT ]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+        <head>
+                <title>Test Page for the HTTP Server on Red Hat Enterprise Linux</title>
+...
 --
 +
 Later in this course you will update your edge image to include a static web site.
 
 9. Return to your _developer machine_, and optionally stop your _test VM_.
++
+WARNING: Do not delete (undefine) your _test VM_, you will use it during the next chapter to perform system updates.
 
 .. Dettach from the serial console of the VM by typing `Ctrl+]`.
 +
@@ -295,6 +308,10 @@ Later you can reattach a VM serial console using the `virsh console` command.
 --
 $ *virsh destroy edge-test-1*
 Domain 'edge-test-1' destroyed
+$ *virsh list --all*
+ Id   Name          State
+---------------------------
+ 1    edge-test-1   shut-off
 --
 +
 NOTE: The `destroy` verb of the `virsh` command does not actually "destroys" a VM. It only stops the VM, which can be restarted at any time with the `virsh start` command.

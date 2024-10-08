@@ -16,19 +16,24 @@ You need a _development machine_ with RHEL and configured with the Image Builder
 
 You also need a _web server machine_ which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
 
-Finally, you need the database image that you created and published in a xref:ch2-publish:s2-ostree-lab.adoc[another lab].
+Finally, you need the database image that you created and published in xref:ch2-publish:s2-ostree-lab.adoc[another lab].
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
-All steps in this lab are performed from your _development machine_. You have no need to log in on the _web server_ machine if it was prepared correctly by previous labs.
+You will perform most steps in this lab from your _development machine_. You have no need to log in on the _web server_ machine if it was prepared correctly by previous labs. You will also perform a few steps from a _database VM_ that you will create as part of this lab.
 
 == Instructions
 
-[ have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys ]
+// have the user created on the blueprint instead of by kickstart? use a name other than "core", and mention SSH keys
 
-[ See customizations.installer.kickstart in https://osbuild.org/docs/user-guide/blueprint-reference maybe I can embed the kick start on the blueprint, instead of altering the ISO after generation... if this is available on RHEL 9.2 or 9.4 ]
+// See customizations.installer.kickstart in https://osbuild.org/docs/user-guide/blueprint-reference maybe I can embed the kick start on the blueprint, instead of altering the ISO after generation... if this is available on RHEL 9.4 or later
+
+// Review the blueprint vs kickstart: where it's best to create the "core" user? Replace with a "dba" user? Check also sudo access!
+
+// This lab, using the installer image, might be a good one to use Cockpit begining to end ... or save it for the "simplifed installer image (next tentative lab?)"
+
 
 1. Verify that you have the prerequisites from previous labs.
 
@@ -57,7 +62,7 @@ repo_version=1
 mode=archive-z2
 --
 
-.. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s4-pull-local-lab.adoc[a previous lab]. Your will get a different ID:
+.. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s3-pull-local-lab.adoc[a previous lab]. Your will get a different ID:
 +
 [source,subs="verbatim,quotes"]
 --
@@ -77,7 +82,7 @@ $ *virsh list --all*
  1    edge-test-1   shut-off
 --
 +
-It's fine if your local VM displays an status of "running" instead of "shut off".
+It's fine the existing VM displays an status of "running" instead of "shut off". You do not need the existing VM for this lab, but you will use it in a future lab.
 
 2. Create an edge installer image.
 
@@ -88,20 +93,9 @@ It's fine if your local VM displays an status of "running" instead of "shut off"
 name = "mysql-installer"
 description = "blueprint-mysql-installer"
 version = "0.0.1"
-
-[customizations.installer]
-unattended = true
-sudo-nopasswd = ["core", "%wheel"]
 --
 +
 You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/mysql-installer.toml[installer blueprint] from sample applications repository in GitHub.
-+
-[ Retry on newer RHEL, if I can use customizations.installer ... oops it was human error, wrong bp name ]
-+
-[ Review previous labs, adding user customizations to the mysql edge commit image ]
-+
-[ Looks like my customizations.installer are lost on rhel 9.2 ]
-
 
 .. Upload the blueprint to the Image Builder service.
 +
@@ -114,7 +108,7 @@ rhel9-mysql
 mysql-installer
 --
 
-.. Build an edge installer image, using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a xref:ch2-publish:s4-pull-local-lab.adoc[previous lab].
+.. Build an edge installer image, using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a xref:ch2-publish:s3-pull-local-lab.adoc[previous lab].
 +
 [source,subs="verbatim,quotes"]
 --
@@ -170,7 +164,7 @@ $ *mkdir temp-iso*
 $ *sudo mount -o loop,ro $UUID-installer.iso temp-iso*
 --
 
-.. Check that the ISO contains a kickstart file and an OSTree repository.
+.. Check that the ISO contains an OSTree repository and a kickstart file.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -206,9 +200,7 @@ $ *sudo tar cf - -C temp-iso . | tar xf - -C new-iso*
 $ *sudo umount temp-iso*
 --
 
-4. Replace the kickstart to the edge installer image with one designed for unattended installation.
-+
-[ More recent Image Builder should allow providing the kickstart in the blueprint, but that is not working on RHEL 9.2, try again when there's a RHEL 9.4 classroom ]
+4. Replace the kickstart in the edge installer image with one designed for unattended installation.
 
 .. Verify that you have the `mkisofs` command. If you don't, install the `xorriso` package. It's fine if have a different version than shown bellow.
 +
@@ -219,16 +211,37 @@ xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
 ...
 --
 
-.. Create a kickstart file with uses the same `ostreesetup` command you see in the edge installer image, but adding other commands so it can run unattended.
+.. Create a new kickstart file with uses the same `ostreesetup` command from the minimal kickstart file you see in the edge installer image, but adding other commands so it can run unattended. Save the new kickstart file as `rhel9-mysql-installer.ks`
++
+[source,subs="verbatim,quotes"]
+--
+lang en_US.UTF-8
+keyboard us
+timezone Etc/UTC --isUtc
+text
+
+zerombr
+clearpart --all --initlabel
+autopart --type=plain
+rootpw --lock
+user --name=core --group=wheel --password=redhat123
+
+reboot
+
+network --bootproto=dhcp
+ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/9/x86_64/db --nogpg
+--
++
+You can also download the contents of the https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/ks/rhel9-mysql-installer.ks[new kickstart file] from the course samples repository in GitHub.
 
 .. Copy your custom kickstart over the kickstart file on the edge installer image
 +
 [source,subs="verbatim,quotes"]
 --
-$ *cp rhel9-mysql.ks new-iso/osbuild.ks*
+$ *cp rhel9-mysql-installer.ks new-iso/osbuild.ks*
 --
 
-.. Build a new iso. It *not* a mistake, you really need to specify the `-no-emul-boot` option twice.
+.. Build a new iso. If you notice that the following command specifies the `-no-emul-boot` option twice, this is *not* a mistake, You really need the two of them.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -237,12 +250,18 @@ $ *mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/bo
 -graft-points -joliet-long -V "$LABEL" new-iso*
 ...
 Writing to 'stdio:new-installer.iso' completed successfully.
+--
+
+.. Ensure that your bootable ISO is compatible with UEFI-based systems.
++
+[source,subs="verbatim,quotes"]
+--
 $ *isohybrid --uefi new-installer.iso*
 isohybrid: Warning: more than 1024 cylinders: 2220
 isohybrid: Not all BIOSes will be able to boot this device
 --
 
-.. Mount the new ISO and check that it contains the customized kickstart file.
+.. Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unount it.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -255,11 +274,13 @@ timezone Etc/UTC --isUtc
 $ *sudo umount temp-iso*
 --
 
-5. Create a a _db VM_ that boots from the edge installer image.
+5. Create a a _database VM_ that boots from the edge installer image.
 
-.. Create a local VM which edge installer image from previous steps. You can choose one the following:
+.. Create a local VM using the edge installer image from previous steps. You can choose one the following:
 +
-* Use a regular grapphical boot, using a virtual DVD reader
+* Use a regular grapphical boot, from a virtual CD-ROM reader.
++
+NOTE: You must do this from a graphics desktop.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -267,7 +288,9 @@ $ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --
 --cdrom /home/student/new-installer.iso -v*
 --
 +
-* Use the virtual serial console, and reference the kickstart in the ISO image.
+* Use a virtual serial console, and reference the kickstart in the ISO image.
++
+NOTE: You can do this from a secure shell session.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -278,9 +301,8 @@ $ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --
 +
 * If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.
 +
-[ This lab, using the installer image, might be a good one to use Cockpit begining to end ... or save it for the "simplifed installer image (next tentative lab?)" ]
 
-.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `dba` with password `redhat123`. [ review for  RHEL 9.4 ]
+.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `core` with password `redhat123`. [ review for  RHEL 9.4 ]
 +
 [source,subs="verbatim,quotes"]
 --
@@ -292,7 +314,7 @@ Password:
 [core@edge-db ~]$ 
 --
 
-6. On the _test VM_, check it is an image-based system using RPM-OStree.
+6. On your _database VM_, check it is an image-based system using RPM-OStree.
 
 .. Use the `rpm-ostree` command to see its deployed branch and commit.
 +
@@ -308,9 +330,19 @@ Deployments:
 +
 Notice that the commit ID you see matches the one from the `curl` command at the beginning of this lab.
 
-7. Verify that there is a MySQL database running in the VM
+.. Verify that the local OSTree repository is *not* connected to a remote repository yet. You will need to configure a remote before you can update this edge VM.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge-db ~]$ *ostree remote list --show-urls*
+rhel  file:///run/install/repo/ostree/repo
+--
 
-.. Check that the `mysqld` Systemd service is enabled and active
+.. If you wish, you can explore the file system inside the _database VM_. You should see the same mounts you already saw in the xref:s2-boot-lab.adoc[previous lab]. Different types of edge images should produce the same file system layout.
+
+7. On your _database VM_, check that there is a MySQL database running.
+
+.. Verify that the `mysqld` Systemd service is enabled and active
 +
 [source,subs="verbatim,quotes"]
 --
@@ -318,7 +350,7 @@ Notice that the commit ID you see matches the one from the `curl` command at the
 active
 --
 
-.. Check that the MySQL database inside the VM containers only the standard system databases.
+.. Verify that the MySQL database inside the VM containers only the standard system databases.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -335,7 +367,9 @@ active
 +
 Later in this course you will update your database image to include a starter database.
 
-8. Return to your _developer machine_, and optionally stop your _db VM_.
+8. Return to your _developer machine_, and optionally stop your _database VM_.
++
+WARNING: Do not delete (undefine) your _database VM_, you will use it during the next chapter to perform system updates.
 
 .. Dettach from the serial console of the VM by typing `Ctrl+]`.
 +
@@ -345,15 +379,20 @@ Later in this course you will update your database image to include a starter da
 $
 --
 
-.. Optionally, stop the _db VM_. You will still use that VM in a future lab, when we apply updates to edge images.
+.. Optionally, stop the _database VM_. You will still use that VM in a future lab, when we apply updates to edge images.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *virsh destroy edge-db-1*
 Domain 'edge-db-1' destroyed
+$ *virsh list --all*
+ Id   Name          State
+---------------------------
+ 1    edge-test-1   shut-off
+ 2    edge-db-1     shut-off
 --
 
-.. If you had issues with booting or acessing your _db VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command.
+.. If you had issues with booting or acessing your _database VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command. It may also help trying a different VM creation method, for example, if you used `--location`, try using `--cdrom`.
 
 You just learned how to create an edge installer image and boot a test VM from an it. Notice that, unlike the xref:s2-boot-lab.adoc[previous lab], you only accessed the _web server machine_ to create the edge installer image but didn't need it to create a test VM.
 
@@ -361,4 +400,4 @@ You just learned how to create an edge installer image and boot a test VM from a
 
 The final round of activities in this course will update the system images on both local VMs, to demonstrate how to build and apply system updates to edge devices.
 
-[ Could include a third Lab that uses a simplified edge installer image, but I don't see much value, it would perform the same steps with a slightly different bleprint. It would be more interesting if I had device or site customizations to apply with ignition or a sample application ]
+// Could include a third Lab that uses a simplified edge installer image, but I don't see much value, it would perform the same steps with a slightly different bleprint. It would be more interesting if I had device or site customizations to apply with ignition or a sample application
