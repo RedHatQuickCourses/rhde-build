@@ -117,6 +117,9 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-summary.html">Summary</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -177,7 +180,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>9 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -194,7 +197,7 @@
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Work In Progress
+Pending SME Review &amp; Proofreading
 </td>
 </tr>
 </table>
@@ -329,7 +332,7 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 </div>
 </div>
 <div class="paragraph">
-<p>You can also downlod the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks">kickstart file</a> from sample applications repository in GitHub.</p>
+<p>You can also download the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks">kickstart file</a> from sample applications repository in GitHub.</p>
 </div>
 <div class="paragraph">
 <p>Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are two really important pieces:</p>
@@ -337,7 +340,7 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>autopart</code> command, which creates a disk partitioning scheme without using LVM. Else, your edge system would bace a disk partitioning which is icompatible with RPM-OSTree and fail in a later installation stage.</p>
+<p>The <code>autopart</code> command, which creates a disk partitioning scheme without using LVM. Else, your edge system would get a disk partitioning which is incompatible with RPM-OSTree and fail in a later installation stage.</p>
 </li>
 <li>
 <p>The <code>ostreesetup</code> command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.</p>
@@ -358,7 +361,7 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 </div>
 </li>
 <li>
-<p>Switch to your <em>web sever machine</em> and publish the kickstart file in the web server content directory. This is simpler than embeding the kickstart file in the RHEL installation media or creating a virtual disk to use only for creating VMs.</p>
+<p>Switch to your <em>web sever machine</em> and publish the kickstart file in the web server content directory. This is simpler than embedding the kickstart file in the RHEL installation media or creating a virtual disk to use only for creating VMs.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -373,7 +376,7 @@ $ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Ensure that the kickstart file is acessible to the <code>apache</code> user and have correct SELinux labels.</p>
+<p>Ensure that the kickstart file is accessible to the <code>apache</code> user and have correct SELinux labels.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -lZ /var/www/html</strong>
@@ -408,7 +411,7 @@ timezone Etc/UTC --isUtc
 </div>
 </li>
 <li>
-<p>Still on your <em>developement machine</em>, create a <em>test VM</em> which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
+<p>Still on your <em>development machine</em>, create a <em>test VM</em> which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -418,7 +421,7 @@ timezone Etc/UTC --isUtc
 </div>
 </li>
 <li>
-<p>Create a local VM, with a serial console, which uses the kickstart file from previous steps. Using a serial console makes it easy to capture boot anbd log messages for troubleshooting, if you need.</p>
+<p>Create a local VM, with a serial console and direct kernel loading, which uses the kickstart file from previous steps.</p>
 <div class="paragraph">
 <p>The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]</p>
 </div>
@@ -432,7 +435,7 @@ timezone Etc/UTC --isUtc
 </div>
 </div>
 <div class="paragraph">
-<p>If you are used to managing Libvirt VMs using Cockput, feel free to perform VM creation and other tasks using its web UI.</p>
+<p>If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -589,7 +592,7 @@ Do not delete (undefine) your <em>test VM</em>, you will use it during the next 
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Dettach from the serial console of the VM by typing <code>Ctrl+]</code>.</p>
+<p>Detach from the serial console of the VM by typing <code>Ctrl+]</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>^]</strong>
@@ -619,14 +622,14 @@ $ <strong>virsh list --all</strong>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The <code>destroy</code> verb of the <code>virsh</code> command does not actually "destroys" a VM. It only stops the VM, which can be restarted at any time with the <code>virsh start</code> command.
+The <code>destroy</code> verb of the <code>virsh</code> command does not actually "destroys" a VM. It only stops the VM, which can be restarted at any time with the <code>virsh start</code> command. What it actually destroys is the running kernel process which contains the running VM.
 </td>
 </tr>
 </table>
 </div>
 </li>
 <li>
-<p>If the VM creation fails, which could be caused by an incorrect kickstart file, and you must try again, stop and delete the VM before retrying the previous step.</p>
+<p>If the VM creation fails, which could be caused by an incorrect kickstart file, stop and delete the VM before retrying the previous step.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh destroy edge-test-1</strong>
@@ -636,7 +639,7 @@ Domain 'edge-test-1' has been undefined</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Depending on the installation and boot state that your VM failed, you may need the <code>--nvram`</code> and <code>--managed-state</code> options of the <code>virsh undefine</code> command.</p>
+<p>Depending on the installation and boot stage that your VM failed, you may need the <code>--nvram`</code> and <code>--managed-state</code> options of the <code>virsh undefine</code> command.</p>
 </div>
 </li>
 </ol>

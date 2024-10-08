@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Lab: Boot Test VMs from Edge Installer Images :: Building Red Hat Device Edge Images</title>
     <link rel="prev" href="s2-boot-lab.html">
-    <link rel="next" href="../ch4-update/index.html">
+    <link rel="next" href="s5-summary.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -117,6 +117,9 @@
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-summary.html">Summary</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -177,7 +180,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>5 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>11 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -194,7 +197,7 @@
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Work In Progress
+Pending SME Review &amp; Proofreading
 </td>
 </tr>
 </table>
@@ -205,7 +208,7 @@ Work In Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your developement machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
@@ -399,7 +402,7 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 </div>
 </li>
 <li>
-<p>Find the label of the ISO image, you will need it for the next step. Copy the argument of the <code>-l</code> option to a shell variable</p>
+<p>Find the label of the ISO image, you will need it for the next steps. Copy the argument of the <code>-l</code> option to a shell variable</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>grep search temp-iso/EFI/BOOT/grub.cfg</strong>
@@ -468,7 +471,7 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 </div>
 </li>
 <li>
-<p>Copy your custom kickstart over the kickstart file on the edge installer image</p>
+<p>Copy your custom kickstart file over the kickstart file on the edge installer image.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>cp rhel9-mysql-installer.ks new-iso/osbuild.ks</strong></code></pre>
@@ -476,7 +479,7 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 </div>
 </li>
 <li>
-<p>Build a new iso. If you notice that the following command specifies the <code>-no-emul-boot</code> option twice, this is <strong>not</strong> a mistake, You really need the two of them.</p>
+<p>Build a new iso. If you notice that the following command specifies the <code>-no-emul-boot</code> option twice, this is <strong>not</strong> a mistake! You really need the two of them.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/boot.cat \
@@ -488,7 +491,7 @@ Writing to 'stdio:new-installer.iso' completed successfully.</code></pre>
 </div>
 </li>
 <li>
-<p>Ensure that your bootable ISO is compatible with UEFI-based systems.</p>
+<p>Ensure that your bootable ISO is compatible with UEFI firmware.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>isohybrid --uefi new-installer.iso</strong>
@@ -498,7 +501,7 @@ isohybrid: Not all BIOSes will be able to boot this device</code></pre>
 </div>
 </li>
 <li>
-<p>Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unount it.</p>
+<p>Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unmount it.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo mount -o loop,ro new-installer.iso temp-iso</strong>
@@ -523,7 +526,7 @@ $ <strong>sudo umount temp-iso</strong></code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Use a regular grapphical boot, from a virtual CD-ROM reader.</p>
+<p>Use a graphical boot, from a virtual CD-ROM reader.</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -544,7 +547,7 @@ You must do this from a graphics desktop.
 </div>
 </li>
 <li>
-<p>Use a virtual serial console, and reference the kickstart in the ISO image.</p>
+<p>Use a virtual serial console and direct kernel loading, plus a reference the kickstart in the ISO image.</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -666,7 +669,7 @@ active</code></pre>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Do not delete (undefine) your <em>database VM</em>, you will use it during the next chapter to perform system updates.
+Do not delete (<code>virsh undefine</code>) your <em>database VM</em>, you will use it during the next chapter to perform system updates.
 </td>
 </tr>
 </table>
@@ -674,7 +677,7 @@ Do not delete (undefine) your <em>database VM</em>, you will use it during the n
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Dettach from the serial console of the VM by typing <code>Ctrl+]</code>.</p>
+<p>Detach from the serial console of the VM by typing <code>Ctrl+]</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>^]</strong>
@@ -697,7 +700,7 @@ $ <strong>virsh list --all</strong>
 </div>
 </li>
 <li>
-<p>If you had issues with booting or acessing your <em>database VM</em>, please review the <a href="s2-boot-lab.html" class="xref page">previous lab</a> for Libvirt troubleshooting hints using the <code>virsh</code> command. It may also help trying a different VM creation method, for example, if you used <code>--location</code>, try using <code>--cdrom</code>.</p>
+<p>If you had issues with booting or accessing your <em>database VM</em>, please review the <a href="s2-boot-lab.html" class="xref page">previous lab</a> for Libvirt troubleshooting hints using the <code>virsh</code> command. It may also help trying a different VM creation method, for example, if you used <code>--location</code>, try using <code>--cdrom</code>.</p>
 </li>
 </ol>
 </div>
@@ -719,7 +722,7 @@ $ <strong>virsh list --all</strong>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repostories</a></span>
-  <span class="next"><a href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a></span>
+  <span class="next"><a href="s5-summary.html">Summary</a></span>
 </nav>
 </article>
   </div>

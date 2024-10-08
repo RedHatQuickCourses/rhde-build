@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Section 2 :: Building Red Hat Device Edge Images</title>
+    <title>Summary :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s3-installer-lab.html">
+    <link rel="next" href="../ch4-update/index.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -104,19 +106,19 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+    <a class="nav-link" href="index.html">Test Operating System Images for Edge Devices</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+    <a class="nav-link" href="s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repostories</a>
+    <a class="nav-link" href="s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repostories</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+    <a class="nav-link" href="s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s5-summary.html">Summary</a>
   </li>
 </ul>
   </li>
@@ -126,10 +128,10 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Update Edge Devices with New Operating System Images</a>
+    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
   </li>
 </ul>
   </li>
@@ -164,7 +166,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
-    <li><a href="section2.html">Section 2</a></li>
+    <li><a href="index.html">Test Operating System Images for Edge Devices</a></li>
+    <li><a href="s5-summary.html">Summary</a></li>
   </ul>
 </nav>
 </div>
@@ -173,10 +176,36 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Section 2</h1>
+<h1 class="page">Summary</h1>
 <div class="paragraph">
-<p>This is <em>Section 2</em> of <em>Chapter 3</em> in the <strong>hello</strong> quick course&#8230;&#8203;.</p>
+<p>In this chapter, you learned:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The standard RHEL installer can use remote OSTree repositories as the installation source, but requires a custom kickstart file.</p>
+</li>
+<li>
+<p>An edge installer image uses the standard RHEL installer and embeds an OSTree commit on the installation media for disconnected installations.</p>
+</li>
+<li>
+<p>Use minimal blueprints to create edge installer images. You cannot use the same blueprints from edge commit images.</p>
+</li>
+<li>
+<p>You need remote OSTree repositories, already populated with edge commit images, to build edge installer images.</p>
+</li>
+<li>
+<p>It is common practice to provide custom kickstart files for unattended installation, using either the standard RHEL installation media or an edge installer image.</p>
+</li>
+<li>
+<p>Libvirt offers direct kernel booting, which enables testing edge images over SSH and capturing boot and installation messages without requiring that actual edge devices operate in text mode only.</p>
+</li>
+</ul>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a></span>
+  <span class="next"><a href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a></span>
+</nav>
 </article>
   </div>
 </main>
