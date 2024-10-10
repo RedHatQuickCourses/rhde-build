@@ -1,2 +1,5 @@
 * xref:index.adoc[]
 ** xref:s1-deltas.adoc[]
+** xref:s2-update-lab.adoc[]
+** xref:s3-rollback-lab.adoc[]
+** xref:s4-deltas-lab.adoc[]

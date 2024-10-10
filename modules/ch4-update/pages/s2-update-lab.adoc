@@ -28,6 +28,8 @@ You will some steps in this lab on your _development machine_ and some steps on 
 
 [ Make one lab perform an update without a delta, and the other with a delta? ]
 
+[ Add commands to start VMs and connect to their consoles ]
+
 == Instructions
 
 1. On your _development machine_, verify that you have the prerequisites from previous labs.
@@ -303,11 +305,12 @@ cockpit-286.1-1.el9.x86_64
 --
 +
 Notice the bullet on rpm-ostree status to show which is the active deployment
-
++
 [ do static detlas now or later? ]
-
++
 [ I didn't do "ostreee summary -u"  what is its purpose? ]
 
+.. Info om remotes depends on summary files on server
 +
 [source,subs="verbatim,quotes"]
 --
@@ -319,6 +322,140 @@ after [student@servera ~]$ sudo ostree summary -u --repo=/var/www/html/repo
 [core@edge ~]$ ostree remote refs edge
 edge:rhel/9/x86_64/edge
 --
+
+
+6. Build another update and pull to the ostree repo
+
+.. Have three commits in the branch.
++
+[ any way of setting the subject during a pull local? or at image build time? ]
++
+[source,subs="verbatim,quotes"]
+--
+[student@servera ~]$ ostree refs --repo /var/www/html/repo
+rhel/9/x86_64/edge
+[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo /var/www/html/repo
+commit cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
+Parent:  4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+ContentChecksum:  a366c9c7b9887f26356db475c62aee3197ccdb505fe90406b391b11b049e47d0
+Date:  2024-10-10 16:37:33 +0000
+Version: 9.2
+(no subject)
+
+commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
+Date:  2024-10-09 22:43:27 +0000
+Version: 9.2
+(no subject)
+
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
+Date:  2024-10-09 20:25:03 +0000
+Version: 9.2
+(no subject)
+--
+
+.. Have two commits deployed
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ rpm-ostree status
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-09T22:43:27Z)
+                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+
+  edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-09T20:25:03Z)
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+--
+
+.. VM sees no updates available, try again after updating the summary, it works.
++
+[ I cannot see how the issue linked makes --check unreliable. guess it's just about layered packages, not about image/commit updates ]
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ sudo rpm-ostree upgrade --check
+2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
+Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
+AvailableUpdate:
+        Version: 9.2 (2024-10-10T16:37:33Z)
+         Commit: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
+           Diff: 2 added
+[core@edge ~]$ sudo rpm-ostree upgrade 
+⠠ Scanning metadata: 2370                                                       37 metadata, 65 content objects fetched; 14453 KiB transferred in 3 seconds; 57.6 MB content written
+Scanning metadata: 2370... done
+Staging deployment... done
+Added:
+  php-8.0.27-1.el9_1.x86_64
+  php-common-8.0.27-1.el9_1.x86_64
+Run "systemctl reboot" to start a reboot
+--
+
+.. After reboot, see that the commit from initial deployment of the VM was discarded.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ rpm-ostree status
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-10T16:37:33Z)
+                   Commit: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
+
+  edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-09T22:43:27Z)
+                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+[core@edge ~]$ rpm -q cockpit
+cockpit-286.1-1.el9.x86_64
+[core@edge ~]$ rpm -q php
+php-8.0.27-1.el9_1.x86_64--
+
+
+7. Rollback to the previous image, which didn't have php, but only cockpit
+
+.. Rollback and reboot
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ sudo rpm-ostree rollback
+[sudo] password for core: 
+Moving '4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b.0' to be first deployment
+Transaction complete; bootconfig swap: no; bootversion: boot.0.0, deployment count change: 0
+Removed:
+  php-8.0.27-1.el9_1.x86_64
+  php-common-8.0.27-1.el9_1.x86_64
+Changes queued for next boot. Run "systemctl reboot" to start a reboot
+[core@edge ~]$ sudo systemctl reboot
+...
+--
+
+.. After reboot (and relogin) both commits are still in the system, but they switch order
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ rpm-ostree status
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-09T22:43:27Z)
+                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+
+  edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-10T16:37:33Z)
+                   Commit: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
+
+[core@edge ~]$ rpm -q cockpit
+cockpit-286.1-1.el9.x86_64
+[core@edge ~]$ rpm -q php
+package php is not installed
+--
+
+
+[ keeping commit hashes consistent between labs will be a pain. maye it's time to use asciidoc attributes? ]
 
 [ with the edge-db VM, you need to configure a remote before applying updates ]
 
@@ -334,3 +471,47 @@ But then we'd miss automatic rollbacks (greenboot) which I didn't put in scope h
 [ should I start with an empty remote ostree repo and reference it since the first build? The way it is now, the first build is different than other builds. ]
 
 [ Use --filename to not have to deal with UUIDs? ]
+
+[ changed the "y" version to see if image builder preserves them, and increments only the "z" number when you push a bp that overwrites an existing one ]
+
+////
+
+Jq to filter composes
+
+$ composer-cli compose list -j | jq ".[1].body.finished[] | select(.id==\"$UUID\")"
+{
+  "blueprint": "rhel9-edge",
+  "compose_type": "edge-commit",
+  "id": "e03d42c5-d60a-4ce2-8f4f-e4c5c2b34201",
+  "image_size": 0,
+  "job_created": 1728577818.9874678,
+  "job_finished": 1728578265.801976,
+  "job_started": 1728577818.9923553,
+  "queue_status": "FINISHED",
+  "version": "0.0.2"
+}
+$ composer-cli compose list -j | jq ".[1].body.finished[] | select(.id==\"$UUID\").queue_status"
+"FINISHED"
+$ composer-cli compose list -j | jq ".[1].body.finished[] | select(.id==\"$UUID\") | [.blueprint, .queue_status]"
+[
+  "rhel9-edge",
+  "FINISHED"
+]
+$ composer-cli compose list -j | jq ".[1].body.finished[] | select(.id==\"$UUID\") | .blueprint + \": \" + .queue_status"
+"rhel9-edge: FINISHED"
+
+# not tested yet, but should work for running composes
+
+$ composer-cli compose list -j | jq ".[0].body.run[] | select(.id==\"$UUID\").queue_status"
+
+////
+
+////
+
+Need more updates to show:
+
+1. That an edge device only keeps the latest two updates (or how to prune older from devices)
+2. That I can retire an update, after finding it failed in many devices, so other devices won't get it
+3. That retiring an update (removing a commit from an ostree repo) won't break the chain from head to previous, and I can still rollback to those olders if I find more issues or regressions -- OK if a device already rolled back, it has no previous to go. I must push whatever they need to go back to as if it's a newer one.
+
+////
