@@ -14,15 +14,15 @@ WARNING: Work In Progress
 
 Edge devices running RHEL for Edge retrieve operating system updates as new system images. They do not download individual package updates from RPM repositories, like package-based RHEL deployments do. You cannot end up in a state where some updates were applied but others weren't. You either update the entire system image or do not update anything.
 
-image::s1-deltas-fig-1.svg[title="End of an edge device update workflow"]
+image::s1-deltas-fig-1.svg[title="End of an edge device installation and update workflow"]
 
-RPM-OSTree keeps two system images side-by-side in a system, and only switches from the current to the new system image with a reboot -- constrast that with RPM package updates, which alter files which are in use by running processes and may produce unpredictable results.
+RPM-OSTree keeps two system images side-by-side in a system, and only switches from the current to the new system image with a reboot -- contrast that with RPM package updates, which alter files which may be in use by running processes and may produce unpredictable results.
 
-You can rollback an RPM-OSTree system into a previous known good image -- constrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, which depend on the kernel version. With an image-baed system using RPM-OStree you revert to the the kernel, libraries, and binaries of a previous system image all at one.
+You can rollback an RPM-OSTree system into a previous known good image -- contrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, some of which may depend on the kernel version. With an image-baed system using RPM-OStree you revert to the the kernel, libraries, and binaries of a previous system image all at one.
 
-You must use the `rpm-ostree` command on an edge device to download (stage) a new system image, and them reboot the system to deploy the new image. The same command allows you to rollback to the previous system image. In case you download further system updates, the one not currently active is discarded to give room to the new updates, so there's at most two system images in an edge devices and you don't need to prune old updates nor disk exhausting disk space on the device.
+You must use the `rpm-ostree` command on an edge device to download (stage) a new system image, and then reboot the system to deploy the new image. The same command allows you to rollback to the previous system image. In case you download further system updates, the one not currently active is discarded to give room to the new updates, so there's at most two system images in edge devices and you don't need to prune old updates nor risk exhausting disk space on the devices.
 
-Both on disk and during download, RPM-OStree takes advatage of OSTree capabilities to not store and download files which didn't change between the current and the new system image. But the process of checking file changes can still take multiple network transactions and be slow for systems with low-bandwidth or high-latency network connections. In that case, you're advised to crate a static delta on your OSTree repository for faster download of updates.
+Both on disk and during download, RPM-OStree takes advatage of OSTree capabilities to not store nor download files which didn't change between the current and the new system image. But the process of checking file changes can still take multiple network transactions and be slow for systems with low-bandwidth or high-latency network connections. In that case, you're advised to crate a static delta on your OSTree repository for faster download of updates.
 
 == Device Updates and Configuration or Application Data
 
