@@ -163,6 +163,14 @@
         </li>
       </ul>
     </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
   </ul>
 </div>
     </div>
@@ -304,13 +312,13 @@ API server status:
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
 description = "blueprint-rhel9-edge"
-version = <strong>"0.2.0"</strong>
+version = "0.2.0"
 modules = []
 groups = []
 distro = ""
 
-<strong>[[packages]]
-name = "cockpit"</strong>
+[[packages]]
+name = "cockpit"
 
 [[packages]]
 name = "httpd"
@@ -319,10 +327,10 @@ name = "httpd"
 hostname = "edge"
 
 [customizations.services]
-enabled = ["sshd", "httpd"<strong>, "cockpit"</strong>]
+enabled = ["sshd", "httpd", "cockpit"]
 
 [customizations.firewall.services]
-enabled = ["ssh", "http", <strong>"cockpit"</strong>]</code></pre>
+enabled = ["ssh", "http", "cockpit"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
