@@ -1,4 +1,6 @@
 :time_estimate: 11
+:compose-uuid-httpd-v2-aaaaaaaaaaaa: fb5ef664-1def-4589-919d-1a0681f86371
+
 
 = Lab: Create And Publish Edge Image Updates
 
@@ -72,29 +74,9 @@ It's fine the existing VM displays an status of "running" instead of "shut off".
 +
 Increment the minor version number, in the beginning of the TOML file, add a new `packages` section, and makes changes to its `services` and `firewall` customization sections. The file should look like the following, after all edits:
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim"]
 --
-name = "rhel9-edge"
-description = "blueprint-rhel9-edge"
-version = *"0.2.0"*
-modules = []
-groups = []
-distro = ""
-
-*[[packages]]
-name = "cockpit"*
-
-[[packages]]
-name = "httpd"
-
-[customizations]
-hostname = "edge"
-
-[customizations.services]
-enabled = ["sshd", "httpd"*, "cockpit"*]
-
-[customizations.firewall.services]
-enabled = ["ssh", "http", *"cockpit"*]
+include::1@samples:blueprints:example$rhel9-httpd-v2.toml[]
 --
 +
 You can also download a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v2.toml[TOML file with all edits] from the course samples repository in GitHub. Beware that the file in the samples repository has a different file name, but the same blueprint name, so it can be used as-is, without renaming.
@@ -115,9 +97,7 @@ mysql-installer
 rhel9-edge
 rhel9-mysql
 $ *composer-cli blueprints show rhel9-edge*
-name = "rhel9-edge"
-description = "blueprint-rhel9-edge"
-version = "0.2.0"
+include::1@samples:blueprints:example$rhel9-httpd-v2.toml[lines=1..3]
 ...
 --
 
@@ -127,22 +107,22 @@ This is very similar to what you done in previous labs, but pay attention to the
 
 .. Start a compose for an edge commit image and copy its UUID to a shell variable.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose start-ostree rhel9-edge edge-commit --url http://servera.lab.example.com/repo --ref rhel/9/x86_64/edge*
-Compose fb5ef664-1def-4589-919d-1a0681f86371 added to the queue
-$ *UUID=fb5ef664-1def-4589-919d-1a0681f86371*
+Compose {compose-uuid-httpd-v2-aaaaaaaaaaaa} added to the queue
+$ *UUID={compose-uuid-httpd-v2-aaaaaaaaaaaa}*
 --
 +
 IMPORTANT: Be sure you include the URL of your remote OSTree repository and its branch name, so you can use it for system updates.
 
 .. Wait until the compose finishes. To avoid clutter from previous labs, this time we filter the list of composes to only show running composes.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose list running*
 ID                                     Status    Blueprint    Version   Type
-fb5ef664-1def-4589-919d-1a0681f86371   RUNNING   rhel9-edge   0.2.0     edge-commit
+{compose-uuid-httpd-v2-aaaaaaaaaaaa}   RUNNING   rhel9-edge   0.2.0     edge-commit
 $ *composer-cli compose list running*
 ID   Status   Blueprint   Version   Type
 --

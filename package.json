@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "antora antora-playbook.yml",
-    "watch:adoc": "watch 'npx antora antora-playbook.yml' ./modules",
+    "watch:adoc": "watch 'npx antora antora-playbook.yml --fetch' ./modules",
     "serve": "npx http-server build/site -c-1"
   }
 }
