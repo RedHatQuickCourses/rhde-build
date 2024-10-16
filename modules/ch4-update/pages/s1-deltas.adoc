@@ -66,7 +66,7 @@ At each of these states, you may use different OSTree repositories, and copy edg
 
 What if an edge commit image does not pass tests and is never delivered to production? Just build the next iteration using the same parent OSTree commit as the failed image. That way it replaces the previous iterations on the intermediate OSTree repositories you use for testing, and if it passess all tests it can be added to production repositories.
 
-image::s1-deltas-fig-6.svg[title="New edge image, failed some tests so it's not promoted to production and is optionally purged from test repositories"]
+image::s1-deltas-fig-6.svg[title="New edge image, failed some tests so it's not promoted to production and discarded, and optionally purged from test repositories"]
 
 So, instead of using the latest test image (latest OSTree commit from test repositories) as the parent of the next image you build for testing, you keep using the latest production image (latest successfuly delivered to production) as the patent of all test images, until one of them is promoted all the way to production and becomes the new latest. A way of enforcing that is using, during image build, a reference production OSTree repository, even if that image might never be pulled into the production repository.
 
