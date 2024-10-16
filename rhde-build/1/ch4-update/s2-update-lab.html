@@ -262,18 +262,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that a remote client can access the OSTree repository in the web server machine.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/config</strong>
-[core]
-repo_version=1
-mode=archive-z2</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. Your will get a different ID:</p>
+<p>Check that a remote client can access the OSTree repository in the <em>web server machine</em> and get the current commit ID the OSTree branch with the httpd edge system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. Your will get a different ID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
@@ -309,7 +298,7 @@ mode=archive-z2</code></pre>
 <li>
 <p>Open the <code>rhel9-httpd.toml</code> file, which you created in a <a href="../ch1-build/s6-blueprint-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 <div class="paragraph">
-<p>Increment the version number, in the beginning of the TOML file, add a new <code>packages</code> section, and makes changes to its <code>services`</code> and <code>firewall</code> customization sections. The file should look like the following, after all edits:</p>
+<p>Increment the minor version number, in the beginning of the TOML file, add a new <code>packages</code> section, and makes changes to its <code>services</code> and <code>firewall</code> customization sections. The file should look like the following, after all edits:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -428,8 +417,17 @@ FAILED</code></pre>
 <div class="paragraph">
 <p>Because our compose didn&#8217;t fail, the previous query returns empty.</p>
 </div>
-<div class="paragraph">
-<p>You can download, from the source samples repository in GitHub, a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh">simple Bash script</a> that returns the status of a compose gives its UUID.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can download, from the source samples repository in GitHub, a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh">simple Bash script</a> that returns the status of a compose gives its UUID. The scrit contains the <code>jq</code> from previous commands and also a couple other queries.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
@@ -482,7 +480,7 @@ rhel/9/x86_64/db</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree log rhel/9/x86_64/edge --repo=delete-me/repo</strong>
 commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 <i class="conum" data-value="1"></i><b>(1)</b>
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
 Version: 9.2
@@ -490,12 +488,24 @@ Version: 9.2
 
 &lt;&lt; History beyond this commit not fetched &gt;&gt;
 $ <strong>ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo</strong>
-commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 <i class="conum" data-value="2"></i><b>(2)</b>
 ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
 Date:  2024-10-09 20:25:03 +0000
 Version: 9.2
 (no subject)</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Commit ID of parent of the new edge commit image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Commit ID of the parent edge umage in the OSTree reposity on the <em>web server machine</em>.</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
@@ -557,11 +567,11 @@ running</code></pre>
 </div>
 </li>
 <li>
-<p>Attach to the console of your <em>test VM</em> and log in as the user <code>core</code> with password <code>redhat123</code>. It may be necessary to press <code>[Enter]</code> a few times to get a login prompt</p>
+<p>Attach to the console of your <em>test VM</em> and log in as the user <code>core</code> with password <code>redhat123</code>. It may be necessary to press <kbd>Enter</kbd> a few times to get a login prompt</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh console edge-test-1</strong>
-
+...
 edge login:</code></pre>
 </div>
 </div>
@@ -730,7 +740,7 @@ cockpit-286.1-1.el9.x86_64</code></pre>
 </div>
 </li>
 <li>
-<p>If you wish, you can leave the console of your <em>test VM</em> by typing <code>Ctrl+]</code> and stop your <em>test VM</em>. Or you can leave it there to use the terminal for the next activiy and open another terminal on your <em>development VM</em>.</p>
+<p>If you wish, you can leave the console of your <em>test VM</em> by typing <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>]</kbd></span> and stop your <em>test VM</em>. Or you can leave it there to use the terminal for the next activiy and open another terminal on your <em>development VM</em>.</p>
 </li>
 </ol>
 </div>
