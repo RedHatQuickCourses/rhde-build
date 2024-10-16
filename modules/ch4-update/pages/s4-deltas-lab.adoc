@@ -1,12 +1,12 @@
 :time_estimate: 11
 
-= Lab: Create And Publish Edge Image Updates
+= Lab: Update Edge Devices Using Static Deltas
 
 _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Build RHEL for Edge image updates and publish them as OSTree deltas.
+Update a test VM, that was provisioned using an edge installer image, using OSTree deltas.
 
 WARNING: Work in Progress
 
