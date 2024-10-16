@@ -334,7 +334,7 @@ Work In Progress
 <div class="content">
 <img src="_images/s1-deltas-fig-6.svg" alt="s1 deltas fig 6">
 </div>
-<div class="title">Figure 6. New edge image, failed some tests so it&#8217;s not promoted to production and is optionally purged from test repositories</div>
+<div class="title">Figure 6. New edge image, failed some tests so it&#8217;s not promoted to production and discarded, and optionally purged from test repositories</div>
 </div>
 <div class="paragraph">
 <p>So, instead of using the latest test image (latest OSTree commit from test repositories) as the parent of the next image you build for testing, you keep using the latest production image (latest successfuly delivered to production) as the patent of all test images, until one of them is promoted all the way to production and becomes the new latest. A way of enforcing that is using, during image build, a reference production OSTree repository, even if that image might never be pulled into the production repository.</p>
