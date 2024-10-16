@@ -137,10 +137,10 @@
     <a class="nav-link" href="s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s3-rollback-lab.html">Lab: Create And Publish Edge Image Updates</a>
+    <a class="nav-link" href="s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s4-deltas-lab.html">Lab: Create And Publish Edge Image Updates</a>
+    <a class="nav-link" href="s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
   </li>
 </ul>
   </li>
@@ -195,7 +195,7 @@
 <dl>
 <dt class="hdlist1">Objective</dt>
 <dd>
-<p>Build RHEL for Edge image updates and publish them as OSTree deltas.</p>
+<p>Build RHEL for Edge image updates, publish them as OSTree deltas, and apply the updates to a test VM.</p>
 </dd>
 </dl>
 </div>
@@ -223,7 +223,7 @@ Work in Progress
 <p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>Finally, you need the <em>test VM</em> that you created and published in <a href="#ch2-publish:s2-boot-lab.adoc" class="xref unresolved">another lab</a>.</p>
+<p>Finally, you need the <em>test VM</em> that you created and published in <a href="../ch3-test/s2-boot-lab.html" class="xref page">another lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -232,16 +232,7 @@ Work in Progress
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. In this case, the <code>workstation</code> VM is your <em>development machine</em>, and the <code>servera</code> VM is your <em>web server</em> machine. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>[ REVIEW NEXT PARA ]</p>
-</div>
-<div class="paragraph">
-<p>You will some steps in this lab on your <em>development machine</em> and some steps on the <em>web server</em> machine.</p>
-</div>
-<div class="paragraph">
-<p>[ Make one lab perform an update without a delta, and the other with a delta? ]</p>
-</div>
-<div class="paragraph">
-<p>[ Add commands to start VMs and connect to their consoles ]</p>
+<p>You will perform some steps in this lab on your <em>development machine</em> and some steps on the <em>web server</em> machine. Pay attention to the instructions at each step!</p>
 </div>
 </div>
 </div>
@@ -282,15 +273,15 @@ mode=archive-z2</code></pre>
 </div>
 </li>
 <li>
-<p>Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in <a href="#ch2-publish:s3-ostree-lab.adoc" class="xref unresolved">a previous lab</a>. Your will get a different ID:</p>
+<p>Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. Your will get a different ID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Pay attention to the final path element of the URL, which should be "edge".</p>
+<p>Pay attention to the final path element of the URL, which should be "edge". The commit ID you got will be the parent commit of the edge commit image you are building during this lab.</p>
 </div>
 </li>
 <li>
@@ -301,47 +292,59 @@ mode=archive-z2</code></pre>
  Id   Name          State
 ---------------------------
  1    edge-test-1   shut-off
- 2    edge-db-1     shut-off
----
-+
-It's fine the existing VM displays an status of "running" instead of "shut off".
-
-2. Make changes to the edge image blueprint to add a custom welcome page to the Apache Web Server.
-
-.. Open the <code>rhel9-httpd.toml</code> file which you created in a xref:ch1-build-blueprint-lab.adoc[previous lab], with any text editor.
-
-.. Increment the version number, in tbe beginning of the TOML file, and add a <code>customizations.file</code> section with an inline HTML page, to the end of the TOML file.
-+
-[ didn't work, switch to adding the cockpit package ]
-+
-[source,subs="verbatim,quotes"]</code></pre>
+ 2    edge-db-1     shut-off</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>name = "rhel9-edge"
-description = "blueprint-rhel9-edge"
-version = "0.0.2"
-&#8230;&#8203;</p>
+<p>It&#8217;s fine the existing VM displays an status of "running" instead of "shut off".</p>
 </div>
-<div id="customizations.files" class="paragraph">
-<p>path = "/var/www/html/index.html"
-mode = "0644"
-user = "root"
-group = "root"
-data = """
-&lt;html&gt;
-&lt;body&gt;
-&lt;h1&gt;I am an Edge Device!&lt;/h1&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-"""--</p>
+</li>
+</ol>
 </div>
 </li>
 <li>
-<p>Push the updated blueprint.</p>
+<p>On your <em>developer machine</em>, make changes to the edge image blueprint to add the Cockpit packages.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Open the <code>rhel9-httpd.toml</code> file, which you created in a <a href="../ch1-build/s6-blueprint-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
+<div class="paragraph">
+<p>Increment the version number, in the beginning of the TOML file, add a new <code>packages</code> section, and makes changes to its <code>services`</code> and <code>firewall</code> customization sections. The file should look like the following, after all edits:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli push blueprints rhde-build-samples/blueprints/rhel9-httpd-v2.toml</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
+description = "blueprint-rhel9-edge"
+version = <strong>"0.2.0"</strong>
+modules = []
+groups = []
+distro = ""
+
+<strong>[[packages]]
+name = "cockpit"</strong>
+
+[[packages]]
+name = "httpd"
+
+[customizations]
+hostname = "edge"
+
+[customizations.services]
+enabled = ["sshd", "httpd"<strong>, "cockpit"</strong>]
+
+[customizations.firewall.services]
+enabled = ["ssh", "http", <strong>"cockpit"</strong>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also download a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v2.toml">TOML file with all edits</a> from the course samples repository in GitHub. Beware that the file in the samples repository has a different file name, but the same blueprint name, so it can be used as-is, without renaming.</p>
+</div>
+</li>
+<li>
+<p>Push the updated blueprint to the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-httpd.toml</strong></code></pre>
 </div>
 </div>
 </li>
@@ -356,7 +359,7 @@ rhel9-mysql
 $ <strong>composer-cli blueprints show rhel9-edge</strong>
 name = "rhel9-edge"
 description = "blueprint-rhel9-edge"
-version = "0.0.2"
+version = "0.2.0"
 ...</code></pre>
 </div>
 </div>
@@ -366,13 +369,13 @@ version = "0.0.2"
 </li>
 <li>
 <p>Still on your <em>development machine</em>, build an edge commit image from your changed blueprint.</p>
+<div class="paragraph">
+<p>This is very similar to what you done in previous labs, but pay attention to the differences required for update images and a few hints about the usage of the <code>composer-cli</code> command.</p>
+</div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Start a compose for an edge commit image and copy its UUID to a shell variable.</p>
-<div class="paragraph">
-<p>[ do I need a parent? looks like I have to reference the external repo ]</p>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-edge edge-commit --url http://servera.lab.example.com/repo --ref rhel/9/x86_64/edge</strong>
@@ -380,33 +383,65 @@ Compose fb5ef664-1def-4589-919d-1a0681f86371 added to the queue
 $ <strong>UUID=fb5ef664-1def-4589-919d-1a0681f86371</strong></code></pre>
 </div>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Be sure you include the URL of your remote OSTree repository and its branch name, so you can use it for system updates.
+</td>
+</tr>
+</table>
+</div>
 </li>
 <li>
-<p>Wait until the compose finishes. To avoid clutter from previous labs, this time we filter the list of composes.</p>
-<div class="paragraph">
-<p>[ try a better filter with jq. why can&#8217;t I ask just the status of a given compose? :-() ]</p>
-</div>
+<p>Wait until the compose finishes. To avoid clutter from previous labs, this time we filter the list of composes to only show running composes.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list running</strong>
 ID                                     Status    Blueprint    Version   Type
-fb5ef664-1def-4589-919d-1a0681f86371   RUNNING   rhel9-edge   0.0.2     edge-commit
+fb5ef664-1def-4589-919d-1a0681f86371   RUNNING   rhel9-edge   0.2.0     edge-commit
 $ <strong>composer-cli compose list running</strong>
-ID   Status   Blueprint   Version   Type
-$ <strong>composer-cli compose list finished</strong>
-ID                                     Status     Blueprint     Version   Type
-...
-fb5ef664-1def-4589-919d-1a0681f86371   FINISHED   rhel9-edge    0.0.2     edge-commit</code></pre>
+ID   Status   Blueprint   Version   Type</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Download the edge commit image and copy it to your <em>web sever machine</em>.</p>
+<p>Once the list of running composes is empty, it means your compose job either finished or failed. You could filter the list of composes on those statuses, but after some time both lists could become too large for visual inspection. Let&#8217;s see how to filter the JSON output of <code>composer-cli</code> to get information of just one compose by its UUID:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID</strong>
-fb5ef664-1def-4589-919d-1a0681f86371-commit.tar
-$ <strong>scp $UUID-commit.tar servera:~</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list -j | jq -r ".[1].body.finished[] | select(.id==\"$UUID\").queue_status"</strong>
+FINISHED</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If your compose had failed, you would need a different filter, such as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list -j | jq -r ".[2].body.failed[] | select(.id==\"$UUID\").queue_status"</strong>
+FAILED</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Because our compose didn&#8217;t fail, the previous query returns empty.</p>
+</div>
+<div class="paragraph">
+<p>You can download, from the source samples repository in GitHub, a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh">simple Bash script</a> that returns the status of a compose gives its UUID.</p>
+</div>
+</li>
+<li>
+<p>Download the edge commit image and copy it to your <em>web sever machine</em>.</p>
+<div class="paragraph">
+<p>Because you have to track two sets of hashes, one for compose UUIDs, another for OSTree commit IDs, use the <code>--filename</code> option to give a mnemonic name to the TAR file of your edge commit image. This way, you won&#8217;t be lost trying to figure out which of your many TAR files corresponds to each edge image, specially after they are moved to a different machine than the one where you run the Image Builder service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID --filename rhel9-httpd-v2.tar</strong>
+rhel9-httpd-v2.tar-commit.tar
+$ <strong>scp rhel9-httpd-v2.tar servera:~</strong>
 ...</code></pre>
 </div>
 </div>
@@ -415,35 +450,25 @@ $ <strong>scp $UUID-commit.tar servera:~</strong>
 </div>
 </li>
 <li>
-<p>On your <em>web server machine</em>, copy the new edge image to the OSTree repository.</p>
+<p>Open a terminal on your <em>web server machine</em> and copy the new edge image to the OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Copy the shell variable with the UUID of the new edge commit image and check that it exists on your home folder.</p>
+<p>Check that the new edge commit image exists on your home folder.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=fb5ef664-1def-4589-919d-1a0681f86371</strong>
-$ <strong>ls $UUID-commit.tar</strong>
-fb5ef664-1def-4589-919d-1a0681f86371-commit.tar</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls rhel9-httpd-v2.tar</strong>
+rhel9-httpd-v2.tar</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Extract the edge commit image and pull it into the OSTree repository.</p>
+<p>Extract the new edge commit image to an empty temporary directory and verify that it contains a branch that exists on the OSTree repository of the web server.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
-$ <strong>tar xf $UUID-commit.tar -C delete-me/</strong>
-$ <strong>sudo ostree pull-local --repo=/var/www/html/repo delete-me/repo</strong>
-506 metadata, 1893 content objects imported; 0 bytes content written</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Verify that the OSTree repo contains the same branch than your new edge commit image. The OSTree repo should contain additional branches.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree refs --repo=delete-me/repo</strong>
+$ <strong>tar xf rhel9-httpd-v2.tar -C delete-me/</strong>
+$ <strong>ostree refs --repo=delete-me/repo</strong>
 rhel/9/x86_64/edge
 $ <strong>ostree refs --repo=/var/www/html/repo</strong>
 rhel/9/x86_64/edge
@@ -452,20 +477,11 @@ rhel/9/x86_64/db</code></pre>
 </div>
 </li>
 <li>
-<p>Verify that the OSTree repo contains the same commit than your new edge commit image.</p>
-<div class="paragraph">
-<p>[ looks like my pull overwrote everything in the branch with the new commit and discarded the old one :-( ]</p>
-</div>
-<div class="paragraph">
-<p>[ do I fix this at build time or at pull time? looks like at build time ]</p>
-</div>
-<div class="paragraph">
-<p>[ parent must be 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b for consistency with previous labs ]</p>
-</div>
+<p>Verify that the OSTree repository contains the commit that your edge commit image references as its parent.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree log rhel/9/x86_64/edge --repo=delete-me/repo</strong>
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
 Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
@@ -474,7 +490,37 @@ Version: 9.2
 
 &lt;&lt; History beyond this commit not fetched &gt;&gt;
 $ <strong>ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo</strong>
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
+Date:  2024-10-09 20:25:03 +0000
+Version: 9.2
+(no subject)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Now that you know your new edge commit image will connect to the existing history of the OSTree repository, pull the new edge commit image into the OSTree repository on the web server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo ostree pull-local --repo=/var/www/html/repo delete-me/repo</strong>
+Scanning metadata: 3434</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Update the summary file of the OSTree repository on the web server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo ostree summary -u --repo=/var/www/html/repo</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>As a sanity check, verify that the OSTree repository contains both the new commit, from the new edge commit image, and the previous commit. If everything is fine, you can delete the temporary directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
 Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
@@ -485,7 +531,9 @@ commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
 Date:  2024-10-09 20:25:03 +0000
 Version: 9.2
-(no subject)</code></pre>
+(no subject)
+
+$ <strong>rm -rf delete-me</strong></code></pre>
 </div>
 </div>
 </li>
@@ -493,23 +541,93 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Now how do I get and apply the update to the test VM?</p>
+<p>Back to your <em>development machine</em>, stage the new edge commit image on your <em>test VM</em>, which you created in a <a href="../ch3-test/s2-boot-lab.html" class="xref page">previous lab</a>.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If your <em>test VM</em> is shut down, start it.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$  rpm-ostree status
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh domstate edtge-test-1</strong>
+shut off
+$ <strong>virsh start edge-test-1</strong>
+$ <strong>virsh domstate edtge-test-1</strong>
+running</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Attach to the console of your <em>test VM</em> and log in as the user <code>core</code> with password <code>redhat123</code>. It may be necessary to press <code>[Enter]</code> a few times to get a login prompt</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh console edge-test-1</strong>
+
+edge login:</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> is running the system image from the OSTree you got at the beginning of this lab. Notice that there&#8217;s a single OSTree deployment, because your <em>test VM</em> was just provisioned and didn&#8217;t get any upgrade so far.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
                   Version: 9.2 (2024-10-09T20:25:03Z)
-                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-[core@edge ~]$ sudo rpm-ostree upgrade --check
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> does not contains the RPM package which provides Cockpit.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm -q cockpit</strong>
+package cockpit is not installed</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> is preconfigured with an OSTree remote which points to the web server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>ostree remote list --show-urls</strong>
+edge  http://servera.lab.example.com/repo/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> can find available upgrades in the remote OSTree repository.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade --check</strong>
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
         Version: 9.2 (2024-10-09T22:43:27Z)
-         Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-           Diff: 46 added
-[core@edge ~]$ sudo rpm-ostree upgrade
+         Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+           Diff: 46 added</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You safely can ignore the warning about <code>--check</code> being unreliable. It refers to the use of <code>/usr</code> overlays to install RPMs packages not included in the system image. We are not using this feature of RPM-OSTree.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Stage the upgrade on your <em>test VM</em>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade</strong>
 [ 9130.645481] SELinux:  Context system_u:object_r:cockpit_ws_exec_t:s0 is not valid (left unmapped).
 [ 9130.658824] SELinux:  Context system_u:object_r:cockpit_session_exec_t:s0 is not valid (left unmapped).
 [ 9131.532015] SELinux:  Context system_u:object_r:cockpit_unit_file_t:s0 is not valid (left unmapped).
@@ -520,64 +638,37 @@ Added:
   adobe-source-code-pro-fonts-2.030.1.050-12.el9.1.noarch
   cockpit-286.1-1.el9.x86_64
 ...
-Run "systemctl reboot" to start a reboot
-$ systemctl reboot
-...
-boot messages
-...
-new login
-...
-[core@edge ~]$ rpm-ostree status
-State: idle
-Deployments:
-● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T22:43:27Z)
-                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-
-  edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
-                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-
-[core@edge ~]$ ostree log rhel/9/x86_64/edge
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
-(no subject)
-
-commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
-Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
-(no subject)
-
-[core@edge ~]$ rpm -q cockpit
-cockpit-286.1-1.el9.x86_64</code></pre>
+Run "systemctl reboot" to start a reboot</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Notice the bullet on rpm-ostree status to show which is the active deployment</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can safely ignore the SELinux errors during staging of a new system image. Those issues are fixed by reboot, when the kernel loads the SELinux policy included in the new system image.
+</td>
+</tr>
+</table>
 </div>
-<div class="paragraph">
-<p>[ do static detlas now or later? ]</p>
-</div>
-<div class="paragraph">
-<p>[ I didn&#8217;t do "ostreee summary -u"  what is its purpose? ]</p>
-</div>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
+</li>
 <li>
-<p>Info om remotes depends on summary files on server</p>
+<p>You can verify that the new system image is not active (its the second deployment) but it is marked for the next reboot (notice the bullet).</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ ostree remote refs edge
-error: Remote refs not available; server has no summary file
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
+State: idle
+Deployments:
+  edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-15T20:27:34Z)
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+                     Diff: 46 added
 
-after [student@servera ~]$ sudo ostree summary -u --repo=/var/www/html/repo
-
-[core@edge ~]$ ostree remote refs edge
-edge:rhel/9/x86_64/edge</code></pre>
+● edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-15T19:56:56Z)
+                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
 </div>
 </div>
 </li>
@@ -585,27 +676,36 @@ edge:rhel/9/x86_64/edge</code></pre>
 </div>
 </li>
 <li>
-<p>Build another update and pull to the ostree repo</p>
+<p>Still on your <em>development machine</em>, apply the upgrade to your <em>test VM</em> and verify it is running the new edge commit image you built during this lab.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Have three commits in the branch.</p>
-<div class="paragraph">
-<p>[ any way of setting the subject during a pull local? or at image build time? ]</p>
-</div>
+<p>Reboot your <em>test VM</em> and verify that the new commit is now the first (active) deployment and also the one marked for the next boot (as indicated by the bullet).</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[student@servera ~]$ ostree refs --repo /var/www/html/repo
-rhel/9/x86_64/edge
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo /var/www/html/repo
-commit cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-Parent:  4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-ContentChecksum:  a366c9c7b9887f26356db475c62aee3197ccdb505fe90406b391b11b049e47d0
-Date:  2024-10-10 16:37:33 +0000
-Version: 9.2
-(no subject)
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>systemctl reboot</strong>
+...
+edge login:
+...
+[core@edge ~]$ <strong>rpm-ostree status</strong>
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-09T22:43:27Z)
+                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
 
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+  edge:rhel/9/x86_64/edge
+                  Version: 9.2 (2024-10-09T20:25:03Z)
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>As a sanity check, verify that the OSTree repository on your <em>test VM</em> contains both the new and the previous commits.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>ostree log rhel/9/x86_64/edge</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
 Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
@@ -621,159 +721,38 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Have two commits deployed</p>
+<p>To prove it&#8217;s running the new edge commit image, verify it contains the Cockpit RPM packages:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ rpm-ostree status
-State: idle
-Deployments:
-● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T22:43:27Z)
-                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-
-  edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
-                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm -q cockpit</strong>
+cockpit-286.1-1.el9.x86_64</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>VM sees no updates available, try again after updating the summary, it works.</p>
-<div class="paragraph">
-<p>[ I cannot see how the issue linked makes --check unreliable. guess it&#8217;s just about layered packages, not about image/commit updates ]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ sudo rpm-ostree upgrade --check
-2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
-Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
-AvailableUpdate:
-        Version: 9.2 (2024-10-10T16:37:33Z)
-         Commit: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-           Diff: 2 added
-[core@edge ~]$ sudo rpm-ostree upgrade
-⠠ Scanning metadata: 2370                                                       37 metadata, 65 content objects fetched; 14453 KiB transferred in 3 seconds; 57.6 MB content written
-Scanning metadata: 2370... done
-Staging deployment... done
-Added:
-  php-8.0.27-1.el9_1.x86_64
-  php-common-8.0.27-1.el9_1.x86_64
-Run "systemctl reboot" to start a reboot</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>After reboot, see that the commit from initial deployment of the VM was discarded.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ rpm-ostree status
-State: idle
-Deployments:
-● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-10T16:37:33Z)
-                   Commit: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-
-  edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T22:43:27Z)
-                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-[core@edge ~]$ rpm -q cockpit
-cockpit-286.1-1.el9.x86_64
-[core@edge ~]$ rpm -q php
-php-8.0.27-1.el9_1.x86_64--
-
-
-7. Rollback to the previous image, which didn't have php, but only cockpit
-
-.. Rollback and reboot
-+
-[source,subs="verbatim,quotes"]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>[core@edge ~]$ sudo rpm-ostree rollback
-[sudo] password for core:
-Moving '4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b.0' to be first deployment
-Transaction complete; bootconfig swap: no; bootversion: boot.0.0, deployment count change: 0
-Removed:
-  php-8.0.27-1.el9_1.x86_64
-  php-common-8.0.27-1.el9_1.x86_64
-Changes queued for next boot. Run "systemctl reboot" to start a reboot
-[core@edge ~]$ sudo systemctl reboot
-&#8230;&#8203;</p>
-</div>
+<p>If you wish, you can leave the console of your <em>test VM</em> by typing <code>Ctrl+]</code> and stop your <em>test VM</em>. Or you can leave it there to use the terminal for the next activiy and open another terminal on your <em>development VM</em>.</p>
 </li>
 </ol>
 </div>
 </li>
 </ol>
 </div>
-<div class="openblock">
-<div class="content">
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>After reboot (and relogin) both commits are still in the system, but they switch order</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
 <div class="paragraph">
-<p>[core@edge ~]$ rpm-ostree status
-State: idle
-Deployments:
-● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T22:43:27Z)
-                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>edge:rhel/9/x86_64/edge
-                Version: 9.2 (2024-10-10T16:37:33Z)
-                 Commit: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88</pre>
+<p>You sucessfully built an edge commit image and applied it as an update to a <em>test VM</em> whoch stands for an edge device.</p>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>[core@edge ~]$ rpm -q cockpit
-cockpit-286.1-1.el9.x86_64
-[core@edge ~]$ rpm -q php
-package php is not installed</p>
-</div>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>[ keeping commit hashes consistent between labs will be a pain. maye it&#8217;s time to use asciidoc attributes? ]</p>
-</div>
-<div class="paragraph">
-<p>[ with the edge-db VM, you need to configure a remote before applying updates ]</p>
-</div>
-<div class="paragraph">
-<p>[ there&#8217;s rpm-ostree update, to get a newer commit of the same branch, and rpm-ostree rebase, to switch to a different branch which uses a different RHEL release ]</p>
-</div>
-<div class="paragraph">
-<p>[ to make a lab using the edge-db VM more interesting (instead of 90%+ the same as this) could configure automatic image updates
-But then we&#8217;d miss automatic rollbacks (greenboot) which I didn&#8217;t put in scope here, this course is already too long
- <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html-single/composing_installing_and_managing_rhel_for_edge_images/index#proc_upgrading-your-rhel-8-system-to-rhel-9_managing-rhel-for-edge-images" class="bare">https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html-single/composing_installing_and_managing_rhel_for_edge_images/index#proc_upgrading-your-rhel-8-system-to-rhel-9_managing-rhel-for-edge-images</a> ]</p>
-</div>
-<div class="paragraph">
-<p>[ After an update, grub shows two entries (new and old deployment) show it here or in the next lab with the db VM? ]</p>
-</div>
-<div class="paragraph">
-<p>[ should I start with an empty remote ostree repo and reference it since the first build? The way it is now, the first build is different than other builds. ]</p>
-</div>
-<div class="paragraph">
-<p>[ Use --filename to not have to deal with UUIDs? ]</p>
-</div>
-<div class="paragraph">
-<p>[ changed the "y" version to see if image builder preserves them, and increments only the "z" number when you push a bp that overwrites an existing one ]</p>
-</div>
-</div>
+<p>The next activity builds another edge commit image that is applied as an update and then rolled back, to show how you can revert an RPM-OSTree upgrade of an edge device.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a></span>
-  <span class="next"><a href="s3-rollback-lab.html">Lab: Create And Publish Edge Image Updates</a></span>
+  <span class="next"><a href="s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a></span>
 </nav>
 </article>
   </div>
