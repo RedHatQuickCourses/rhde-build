@@ -43,17 +43,7 @@ API server status:
 ...
 --
 
-.. Check that a remote client can access the OSTree repository in the web server machine.
-+
-[source,subs="verbatim,quotes"]
---
-$ *curl http://servera.lab.example.com/repo/config*
-[core]
-repo_version=1
-mode=archive-z2
---
-
-.. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s2-ostree-lab.adoc[a previous lab]. Your will get a different ID:
+.. Check that a remote client can access the OSTree repository in the _web server machine_ and get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s2-ostree-lab.adoc[a previous lab]. Your will get a different ID:
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -80,7 +70,7 @@ It's fine the existing VM displays an status of "running" instead of "shut off".
 
 .. Open the `rhel9-httpd.toml` file, which you created in a xref:ch1-build:s6-blueprint-lab.adoc[previous lab], with any text editor.
 +
-Increment the version number, in the beginning of the TOML file, add a new `packages` section, and makes changes to its `services`` and `firewall` customization sections. The file should look like the following, after all edits:
+Increment the minor version number, in the beginning of the TOML file, add a new `packages` section, and makes changes to its `services` and `firewall` customization sections. The file should look like the following, after all edits:
 +
 [source,subs="verbatim,quotes"]
 --
@@ -175,7 +165,7 @@ FAILED
 +
 Because our compose didn't fail, the previous query returns empty.
 +
-You can download, from the source samples repository in GitHub, a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh[simple Bash script] that returns the status of a compose gives its UUID.
+NOTE: You can download, from the source samples repository in GitHub, a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh[simple Bash script] that returns the status of a compose gives its UUID. The scrit contains the `jq` from previous commands and also a couple other queries.
 
 
 .. Download the edge commit image and copy it to your _web sever machine_.
@@ -219,7 +209,7 @@ rhel/9/x86_64/db
 --
 $ *ostree log rhel/9/x86_64/edge --repo=delete-me/repo*
 commit {commit-httpd-v2}
-Parent:  {commit-httpd-v1}
+Parent:  {commit-httpd-v1} <.>
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
 Version: 9.2
@@ -227,13 +217,15 @@ Version: 9.2
 
 << History beyond this commit not fetched >>
 $ *ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo*
-commit {commit-httpd-v1}
+commit {commit-httpd-v1} <.>
 ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
 Date:  2024-10-09 20:25:03 +0000
 Version: 9.2
 (no subject)
 
 --
+<.> Commit ID of parent of the new edge commit image
+<.> Commit ID of the parent edge umage in the OSTree reposity on the _web server machine_.
 
 .. Now that you know your new edge commit image will connect to the existing history of the OSTree repository, pull the new edge commit image into the OSTree repository on the web server.
 +
@@ -284,12 +276,12 @@ $ *virsh domstate edtge-test-1*
 running
 --
 
-.. Attach to the console of your _test VM_ and log in as the user `core` with password `redhat123`. It may be necessary to press `[Enter]` a few times to get a login prompt
+.. Attach to the console of your _test VM_ and log in as the user `core` with password `redhat123`. It may be necessary to press kbd:[Enter] a few times to get a login prompt
 +
 [source,subs="verbatim,quotes,attributes"]
 --
 $ *virsh console edge-test-1*
-
+...
 edge login:
 --
 
@@ -422,7 +414,7 @@ Version: 9.2
 cockpit-286.1-1.el9.x86_64
 --
 
-.. If you wish, you can leave the console of your _test VM_ by typing `Ctrl+]` and stop your _test VM_. Or you can leave it there to use the terminal for the next activiy and open another terminal on your _development VM_.
+.. If you wish, you can leave the console of your _test VM_ by typing kbd:[Ctrl+\]] and stop your _test VM_. Or you can leave it there to use the terminal for the next activiy and open another terminal on your _development VM_.
 
 You sucessfully built an edge commit image and applied it as an update to a _test VM_ whoch stands for an edge device.
 
