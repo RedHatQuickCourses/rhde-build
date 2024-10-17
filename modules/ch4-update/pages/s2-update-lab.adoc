@@ -1,4 +1,4 @@
-:time_estimate: 12
+:time_estimate: 13
 :compose-uuid-httpd-v2-aaaaaaaaaaaa: fb5ef664-1def-4589-919d-1a0681f86371
 
 = Lab: Create And Publish Edge Image Updates

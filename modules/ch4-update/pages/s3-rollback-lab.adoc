@@ -1,4 +1,4 @@
-:time_estimate: 11
+:time_estimate: 12
 :compose-uuid-httpd-v3-bbbbbbbbbbbb: fb5ef664-1def-4589-919d-1a0681f86371
 
 = Lab: Rollback Edge Image Updates
@@ -403,7 +403,7 @@ Deployments:
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *sudo systemctl reboot*
+[core@microweb ~]$ *sudo systemctl reboot*
 ...
 microweb login:
 ...
@@ -441,7 +441,9 @@ Timezone=Etc/UTC
 include::1@samples:html:example$info.php[]
 --
 
-As you see, rolling back an RPM-OSTree system just switches which deployment is active for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it. Also notice that a system rollback does NOT rollbacks changes to configuration and application data.
+As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it.
+
+Also notice that a system rollback does NOT rollbacks changes to configuration and application data. If your upgrade required special handling of application data, your rollback will also require it.
 
 == Next Steps
 
