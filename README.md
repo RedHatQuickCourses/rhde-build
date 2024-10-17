@@ -13,3 +13,21 @@ Figures on this course are designed using Google Slides, and the deck is availab
 * [Figures](https://docs.google.com/presentation/d/1tpZx28kQ2hITdSKmMf4ho7QsNuV0XygGI4ZOTPFj7nY/edit?usp=sharing)
 
 Refer to the [Red Hat Quick Courses Contributor Guide](https://redhatquickcourses.github.io/welcome/1/guide/overview.html) for instructions about collaborating in this repository.
+
+## Experimentation with Antora
+
+This course is trying new features of Antora and AsciiDoc (new for the Product Enablement Team, at least) so it requires some settings that are different from other Red Hat Training Quick Courses:
+
+* On antora.yml, add asciidoc.attributes.experimental: true
+* On antora-playbook.yml, add content.sources that point to the GitHub URL of the course samples repository
+* On package.json, the watch.doc command requires the --fetch option
+
+The first change supports using asciidoc macros such as kbd: The other two changes support using code sample files directly in listings inside adoc files, so we don't need to cut-and-paste.
+
+This course also uses asciidoc attributes for information that changes everytime you run a command, such as ostree commit IDs and image builder compose UUIDs, to ensure they are consistent in commands and outputs, and the ouputs in labs are useful to learners as a reference that "this is what I should see if all is fine". We're using site-level attributes (in antora.yml) for attributes that must keep their value between different labs, such as commit IDs, and page-level attributes (in each *-lab.adoc file) for attributes that shouldn't ne nedded in multiple labs, such as compose UUIDs.
+
+Also notable experiments in this course:
+
+* Using collapsible sections for quiz answer feedback
+* Using xrefs to reference prerequisites that come from previous labs
+* Using generic names for virtual machines, to reinforce their roles and help adapting the contents for different environments
