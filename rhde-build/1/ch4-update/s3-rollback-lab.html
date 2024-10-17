@@ -310,7 +310,7 @@ API server status:
 <p>Open the <code>rhel9-httpd.toml</code> file which you edited in the <a href="s2-update-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 </li>
 <li>
-<p>Increment the version number, in tbe beginning of the TOML file, and add another <code>packages</code> section. There is no need to change any of the <code>customizations</code> section. After your edits, the TOML file should look like the following:</p>
+<p>Increment the version number, in tbe beginning of the TOML file, and add two <code>packages</code> sections, one for the PHP interpreter and another for the PHP-FastCGI engine. There is no need to change any of the <code>customizations</code> section. After your edits, the TOML file should look like the following:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
@@ -328,6 +328,9 @@ name = "httpd"
 
 [[packages]]
 name = "php"
+
+[[packages]]
+name = "php-fpm"
 
 ...</code></pre>
 </div>
@@ -553,7 +556,7 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Back to your <em>development machine</em>, stage the new edge commit image on your <em>test VM</em>.</p>
+<p>Still on your <em>development machine</em>, stage the new edge commit image on your <em>test VM</em>.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -567,7 +570,7 @@ $ <strong>virsh domstate edge-test-1</strong>
 running
 $ <strong>virsh console edge-test-1</strong>
 ...
-edge login:</code></pre>
+microweb login:</code></pre>
 </div>
 </div>
 </li>
@@ -575,7 +578,7 @@ edge login:</code></pre>
 <p>Verify that your <em>test VM</em> is running the system image from the OSTree commit ID you got at the beginning of this lab. Notice that there are two OSTree deployments, because your <em>test VM</em> was already updated in the previous lab.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -591,7 +594,7 @@ Deployments:
 <p>Verify that your <em>test VM</em> does not contain any PHP packages.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm -q php</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>rpm -q php</strong>
 package php is not installed</code></pre>
 </div>
 </div>
@@ -600,7 +603,7 @@ package php is not installed</code></pre>
 <p>Verify that your <em>test VM</em> finds another update available in the remote OSTree repository. The commit ID of the update should match the commit ID of your new edge commit image.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade --check</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>sudo rpm-ostree upgrade --check</strong>
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
@@ -614,13 +617,15 @@ AvailableUpdate:
 <p>Stage the upgrade on your <em>test VM</em>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>sudo rpm-ostree upgrade</strong>
 ⠤ Scanning metadata: 2691                                                       37 metadata, 65 content objects fetched; 14453 KiB transferred in 4 seconds; 57.6 MB content written
 Scanning metadata: 2691... done
 Staging deployment... done
 Added:
+  nginx-filesystem-1:1.20.1-14.el9.noarch
   php-8.0.27-1.el9_1.x86_64
   php-common-8.0.27-1.el9_1.x86_64
+  php-fpm-8.0.27-1.el9_1.x86_64
 Run "systemctl reboot" to start a reboot</code></pre>
 </div>
 </div>
@@ -636,11 +641,11 @@ Run "systemctl reboot" to start a reboot</code></pre>
 <p>Reboot your <em>test VM</em> and verify that the older commit was discarded by RPM-OSTree, so the local repository of the edge device stays with only two commits.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>systemctl reboot</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>sudo systemctl reboot</strong>
 ...
-edge login:
+microweb login:
 ...
-[core@edge ~]$ <strong>rpm-ostree status</strong>
+[core@microweb ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -657,7 +662,7 @@ Deployments:
 <p>To prove it&#8217;s running the new edge commit image, verify it contains the PHP packages:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm -q php</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>rpm -q php</strong>
 php-8.0.27-1.el9_1.x86_64</code></pre>
 </div>
 </div>
@@ -666,19 +671,64 @@ php-8.0.27-1.el9_1.x86_64</code></pre>
 </div>
 </li>
 <li>
-<p>Still on your <em>developer machine</em>, suppose you discovered the new edge commit image contains a serious security issue and you must rollback your <em>test VM</em> to the previous system image, to verify that the bad update can be rolled back.</p>
+<p>Still on your <em>development machine</em>, change configurations and application data on your <em>test VM</em>, so you can verify if those changes are retained by rolling back an update.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Change the timezone of your <em>test VM</em>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>date</strong>
+Thu Oct 17 21:45:58 UTC 2024
+[core@microweb ~]$ <strong>sudo timedatectl set-timezone America/Aruba</strong>
+[core@microweb ~]$ <strong>date</strong>
+Thu Oct 17 17:46:53 AST 2024</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Using a text editor, create the <code>/var/www/html/info.php</code> script with the following contents;</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">&lt;html&gt;
+&lt;body&gt;
+This is PHP version: &lt;?= phpversion() ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the Apache Web Server inside your <em>test VM</em> runs your PHP script.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>curl http://127.0.0.1/info.php</strong>
+&lt;html&gt;
+&lt;body&gt;
+This is PHP version: 8.0.27&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Still on your <em>developer machine</em>, suppose that you discovered the new edge commit image contains a serious security issue and you must rollback your <em>test VM</em> to the previous system image, to verify that the bad update can be rolled back.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Rollback your <em>test VM</em>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree rollback</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>sudo rpm-ostree rollback</strong>
 Moving '4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b.0' to be first deployment
 Transaction complete; bootconfig swap: no; bootversion: boot.0.0, deployment count change: 0
 Removed:
+  nginx-filesystem-1:1.20.1-14.el9.noarch
   php-8.0.27-1.el9_1.x86_64
   php-common-8.0.27-1.el9_1.x86_64
+  php-fpm-8.0.27-1.el9_1.x86_64
 Changes queued for next boot. Run "systemctl reboot" to start a reboot</code></pre>
 </div>
 </div>
@@ -687,7 +737,7 @@ Changes queued for next boot. Run "systemctl reboot" to start a reboot</code></p
 <p>Check that now the old commit is marked as the one for the next boot (notice the bullet on the second deployment) but the current commit was NOT discarded by rolling back from it.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
   edge:rhel/9/x86_64/edge
@@ -702,14 +752,14 @@ Deployments:
 </div>
 </li>
 <li>
-<p>After reboot (and relogin) both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.</p>
+<p>After reboot (and login) both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo systemctl reboot</strong>
 ...
-edge login:
+microweb login:
 ...
-[core@edge ~]$ <strong>rpm-ostree status</strong>
+[core@microweb ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -726,10 +776,27 @@ Deployments:
 <p>Verify that the <em>test VM</em> does NOT contain PHP packages anymore, but still contains the Cockpit packages, so it is indeed running the update from the previous lab.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm -q php</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>rpm -q php</strong>
 package php is not installed
-[core@edge ~]$ <strong>rpm -q cockpit</strong>
+[core@microweb ~]$ <strong>rpm -q cockpit</strong>
 cockpit-286.1-1.el9.x86_64</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that your <em>test VM</em> still contains the changes to timezone and the PHP script, which doesn&#8217;t work anymore because there&#8217;s no PHP engine on its Apache Web Server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>date</strong>
+Thu Oct 17 22:45:04 UTC 2024
+[core@microweb ~]$ <strong>timedatectl show -p Timezone</strong>
+Timezone=Etc/UTC
+[core@microweb ~]$ <strong>curl http://127.0.0.1/info.php</strong>
+&lt;html&gt;
+&lt;body&gt;
+This is PHP version: &lt;?= phpversion() ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
 </div>
 </div>
 </li>
@@ -739,7 +806,7 @@ cockpit-286.1-1.el9.x86_64</code></pre>
 </ol>
 </div>
 <div class="paragraph">
-<p>As you see, rolling back an RPM-OSTree system just switches which deployment is active for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it.</p>
+<p>As you see, rolling back an RPM-OSTree system just switches which deployment is active for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it. Also notice that a system rollback does NOT rollbacks changes to configuration and application data.</p>
 </div>
 </div>
 </div>
