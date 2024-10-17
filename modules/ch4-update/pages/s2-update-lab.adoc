@@ -154,9 +154,9 @@ Because you have to track two sets of hashes, one for compose UUIDs, another for
 +
 [source,subs="verbatim,quotes"]
 --
-$ *composer-cli compose image $UUID --filename rhel9-httpd-v2.tar*
+$ *composer-cli compose image $UUID --filename rhel9-httpd-v2-commit.tar*
 rhel9-httpd-v2.tar-commit.tar
-$ *scp rhel9-httpd-v2.tar servera:~*
+$ *scp rhel9-httpd-v2-commit.tar servera:~*
 ...
 --
 
@@ -247,16 +247,16 @@ Version: 9.2
 
 .. You can now delete the temporary directory.
 +
-[source,subs="verbatim,quotes,attributes"]
+[source,subs="verbatim,quotes"]
 --
 $ *rm -rf delete-me*
 --
 
-5. Back to your _development machine_, stage the new edge commit image on your _test VM_, which you created in a xref:ch3-test:s2-boot-lab.adoc[previous lab].
+5. Back to your _development machine_, make some changes to configuration and data on your _test VM_, which you created in a xref:ch3-test:s2-boot-lab.adoc[previous lab], so you can verify if those chantes are retained after an update.
 
 .. If your _test VM_ is shut down, start it.
 +
-[source,subs="verbatim,quotes,attributes"]
+[source,subs="verbatim,quotes"]
 --
 $ *virsh domstate edtge-test-1*
 shut off
@@ -267,12 +267,43 @@ running
 
 .. Attach to the console of your _test VM_ and log in as the user `core` with password `redhat123`. It may be necessary to press kbd:[Enter] a few times to get a login prompt
 +
-[source,subs="verbatim,quotes,attributes"]
+[source,subs="verbatim,quotes"]
 --
 $ *virsh console edge-test-1*
 ...
 edge login:
 --
+
+.. Change the hostname of your _test VM_ and verify that change is stored in a file under the `/etc/` directory.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *sudo hostnamectl set-hostname microweb*
+[core@edge ~]$ *cat /etc/hostname*
+microweb
+--
++
+You will not see the change of hostname in your shell prompt until you log off.
+
+.. Add a welcome page the Apache Web Server on your _test VM_. Because it is on `/var`, it is treated as application data by RPM-OSTree.
++
+Using a text editor, create the `/var/www/html/index.html` with any contents you like, for example:
++
+[source,subs="verbatim,quotes"]
+--
+include::1@samples:html:example$index.html[]
+--
+
+.. Check that the Apache Web Server inside your _test VM_ uses your new welcome page.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *curl http://127.0.0.1*
+include::1@samples:html:example$index.html[lines=1,1]
+...
+--
+
+6. Again on your _development machine_, stage the new edge commit image on your _test VM_, which you created in a xref:ch3-test:s2-boot-lab.adoc[previous lab].
 
 .. Verify that your _test VM_ is running the system image from the OSTree commit you got at the beginning of this lab.
 +
@@ -356,17 +387,17 @@ Deployments:
                    Commit: {commit-httpd-v2}
 --
 
-6. Still on your _development machine_, apply the upgrade to your _test VM_ and verify it is running the new edge commit image you built during this lab.
+7. Still on your _development machine_, apply the upgrade to your _test VM_ and verify it is running the new edge commit image you built during this lab.
 
 .. Reboot your _test VM_, log in again, and verify that the new commit is now the first (active) deployment and also the one marked for the next boot (as indicated by the bullet).
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *systemctl reboot*
+[core@edge ~]$ *sudo systemctl reboot*
 ...
-edge login:
+microweb login:
 ...
-[core@edge ~]$ *rpm-ostree status*
+[core@microweb ~]$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -382,7 +413,7 @@ Deployments:
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *ostree log rhel/9/x86_64/edge*
+[core@microweb ~]$ *ostree log rhel/9/x86_64/edge*
 commit {commit-httpd-v2}
 Parent:  {commit-httpd-v1}
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
@@ -399,15 +430,25 @@ Version: 9.2
 
 .. To prove it's running the new edge commit image, verify it contains the Cockpit RPM packages:
 +
-[source,subs="verbatim,quotes, attributes"]
+[source,subs="verbatim,quotes"]
 --
-[core@edge ~]$ *rpm -q cockpit*
+[core@microweb ~]$ *rpm -q cockpit*
 cockpit-286.1-1.el9.x86_64
+--
+
+.. Check that the changes to configuration and data files were retained by the upgrade.
++
+You already noticed the change of hostname in the login and shell prompts of the _test VM_. Now fetch the welcome page of its Apache Web Server.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ *curl http://127.0.0.1*
+include::1@samples:html:example$index.html[]
 --
 
 .. If you wish, you can leave the console of your _test VM_ by typing kbd:[Ctrl+\]] and stop your _test VM_. Or you can leave it there to use the terminal for the next activiy and open another terminal on your _development VM_.
 
-You sucessfully built an edge commit image and applied it as an update to a _test VM_, demonstrating that your new system image can upgrade edge devices.
+You sucessfully built an edge commit image and applied it as an update to a _test VM_, demonstrating that your new system image can upgrade edge devices. You also demonstrated that edge devices retain configuration and application data over system upgrades.
 
 == Next Steps
 

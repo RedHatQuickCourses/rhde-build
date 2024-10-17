@@ -73,11 +73,11 @@ This similar to what you did in the previous lab. It's just another update image
 
 .. Open the `rhel9-httpd.toml` file which you edited in the xref:s2-update-lab.adoc[previous lab], with any text editor.
 
-.. Increment the version number, in tbe beginning of the TOML file, and add another `packages` section. There is no need to change any of the `customizations` section. After your edits, the TOML file should look like the following:
+.. Increment the version number, in tbe beginning of the TOML file, and add two `packages` sections, one for the PHP interpreter and another for the PHP-FastCGI engine. There is no need to change any of the `customizations` section. After your edits, the TOML file should look like the following:
 +
 [source,subs="verbatim"]
 --
-include::1@samples:blueprints:example$rhel9-httpd-v3.toml[lines=1..15]
+include::1@samples:blueprints:example$rhel9-httpd-v3.toml[lines=1..18]
 
 ...
 --
@@ -236,11 +236,11 @@ Version: 9.2
 <.> Parent commmit of the previous commit, it was the initial commit
 <.> Initial commit
 
-5. Back to your _development machine_, stage the new edge commit image on your _test VM_.
+5. Still on your _development machine_, stage the new edge commit image on your _test VM_.
 
 .. If your _test VM_ is shut down, start it. Then and connect to its console and log in as the user `core` with password `redhat123`.
 +
-[source,subs="verbatim,quotes,attributes"]
+[source,subs="verbatim,quotes"]
 --
 $ *virsh domstate edge-test-1*
 shut off
@@ -249,14 +249,14 @@ $ *virsh domstate edge-test-1*
 running
 $ *virsh console edge-test-1*
 ...
-edge login:
+microweb login:
 --
 
 .. Verify that your _test VM_ is running the system image from the OSTree commit ID you got at the beginning of this lab. Notice that there are two OSTree deployments, because your _test VM_ was already updated in the previous lab.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *rpm-ostree status*
+[core@microweb ~]$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -269,9 +269,9 @@ Deployments:
 
 .. Verify that your _test VM_ does not contain any PHP packages.
 +
-[source,subs="verbatim,quotes,attributes"]
+[source,subs="verbatim,quotes"]
 --
-[core@edge ~]$ *rpm -q php*
+[core@microweb ~]$ *rpm -q php*
 package php is not installed
 --
 
@@ -279,7 +279,7 @@ package php is not installed
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *sudo rpm-ostree upgrade --check*
+[core@microweb ~]$ *sudo rpm-ostree upgrade --check*
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
@@ -292,13 +292,15 @@ AvailableUpdate:
 +
 [source,subs="verbatim,quotes"]
 --
-[core@edge ~]$ *sudo rpm-ostree upgrade*
+[core@microweb ~]$ *sudo rpm-ostree upgrade*
 ⠤ Scanning metadata: 2691                                                       37 metadata, 65 content objects fetched; 14453 KiB transferred in 4 seconds; 57.6 MB content written
 Scanning metadata: 2691... done
 Staging deployment... done
 Added:
+  nginx-filesystem-1:1.20.1-14.el9.noarch
   php-8.0.27-1.el9_1.x86_64
   php-common-8.0.27-1.el9_1.x86_64
+  php-fpm-8.0.27-1.el9_1.x86_64
 Run "systemctl reboot" to start a reboot
 --
 
@@ -308,11 +310,11 @@ Run "systemctl reboot" to start a reboot
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *systemctl reboot*
+[core@microweb ~]$ *sudo systemctl reboot*
 ...
-edge login:
+microweb login:
 ...
-[core@edge ~]$ *rpm-ostree status*
+[core@microweb ~]$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -326,24 +328,57 @@ Deployments:
 
 .. To prove it's running the new edge commit image, verify it contains the PHP packages:
 +
-[source,subs="verbatim,quotes, attributes"]
+[source,subs="verbatim,quotes"]
 --
-[core@edge ~]$ *rpm -q php*
+[core@microweb ~]$ *rpm -q php*
 php-8.0.27-1.el9_1.x86_64
 --
 
-7. Still on your _developer machine_, suppose you discovered the new edge commit image contains a serious security issue and you must rollback your _test VM_ to the previous system image, to verify that the bad update can be rolled back.
+7. Still on your _development machine_, change configurations and application data on your _test VM_, so you can verify if those changes are retained by rolling back an update.
+
+.. Change the timezone of your _test VM_.
++
+[source,subs="verbatim,quotes"]
+--
+[core@microweb ~]$ *date*
+Thu Oct 17 21:45:58 UTC 2024
+[core@microweb ~]$ *sudo timedatectl set-timezone America/Aruba*
+[core@microweb ~]$ *date*
+Thu Oct 17 17:46:53 AST 2024
+--
+
+.. Using a text editor, create the `/var/www/html/info.php` script with the following contents;
++
+[source,subs="verbatim,quotes"]
+--
+include::1@samples:html:example$info.php[]
+--
+
+.. Check that the Apache Web Server inside your _test VM_ runs your PHP script.
++
+[source,subs="verbatim,quotes"]
+--
+[core@microweb ~]$ *curl http://127.0.0.1/info.php*
+<html>
+<body>
+This is PHP version: 8.0.27</body>
+</html>
+--
+
+8. Still on your _developer machine_, suppose that you discovered the new edge commit image contains a serious security issue and you must rollback your _test VM_ to the previous system image, to verify that the bad update can be rolled back.
 
 .. Rollback your _test VM_.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *sudo rpm-ostree rollback*
+[core@microweb ~]$ *sudo rpm-ostree rollback*
 Moving '{commit-httpd-v2}.0' to be first deployment
 Transaction complete; bootconfig swap: no; bootversion: boot.0.0, deployment count change: 0
 Removed:
+  nginx-filesystem-1:1.20.1-14.el9.noarch
   php-8.0.27-1.el9_1.x86_64
   php-common-8.0.27-1.el9_1.x86_64
+  php-fpm-8.0.27-1.el9_1.x86_64
 Changes queued for next boot. Run "systemctl reboot" to start a reboot
 --
 
@@ -351,7 +386,7 @@ Changes queued for next boot. Run "systemctl reboot" to start a reboot
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *rpm-ostree status*
+[core@microweb ~]$ *rpm-ostree status*
 State: idle
 Deployments:
   edge:rhel/9/x86_64/edge
@@ -364,15 +399,15 @@ Deployments:
                    Commit: {commit-httpd-v2}
 --
 
-.. After reboot (and relogin) both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.
+.. After reboot (and login) both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
 [core@edge ~]$ *sudo systemctl reboot*
 ...
-edge login:
+microweb login:
 ...
-[core@edge ~]$ *rpm-ostree status*
+[core@microweb ~]$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -388,13 +423,25 @@ Deployments:
 +
 [source,subs="verbatim,quotes"]
 --
-[core@edge ~]$ *rpm -q php*
+[core@microweb ~]$ *rpm -q php*
 package php is not installed
-[core@edge ~]$ *rpm -q cockpit*
+[core@microweb ~]$ *rpm -q cockpit*
 cockpit-286.1-1.el9.x86_64
 --
 
-As you see, rolling back an RPM-OSTree system just switches which deployment is active for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it.
+.. Check that your _test VM_ still contains the changes to timezone and the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
++
+[source,subs="verbatim,quotes"]
+--
+[core@microweb ~]$ *date*
+Thu Oct 17 22:45:04 UTC 2024
+[core@microweb ~]$ *timedatectl show -p Timezone*
+Timezone=Etc/UTC
+[core@microweb ~]$ *curl http://127.0.0.1/info.php*
+include::1@samples:html:example$info.php[]
+--
+
+As you see, rolling back an RPM-OSTree system just switches which deployment is active for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it. Also notice that a system rollback does NOT rollbacks changes to configuration and application data.
 
 == Next Steps
 
