@@ -197,7 +197,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Estimated reading time: <strong>11 minutes</strong>.</em></p>
+<p><em>Estimated reading time: <strong>12 minutes</strong>.</em></p>
 </div>
 <div class="dlist">
 <dl>
@@ -755,7 +755,7 @@ Deployments:
 <p>After reboot (and login) both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo systemctl reboot</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>sudo systemctl reboot</strong>
 ...
 microweb login:
 ...
@@ -806,7 +806,10 @@ This is PHP version: &lt;?= phpversion() ?&gt;
 </ol>
 </div>
 <div class="paragraph">
-<p>As you see, rolling back an RPM-OSTree system just switches which deployment is active for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it. Also notice that a system rollback does NOT rollbacks changes to configuration and application data.</p>
+<p>As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it.</p>
+</div>
+<div class="paragraph">
+<p>Also notice that a system rollback does NOT rollbacks changes to configuration and application data. If your upgrade required special handling of application data, your rollback will also require it.</p>
 </div>
 </div>
 </div>
