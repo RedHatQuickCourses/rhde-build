@@ -1,6 +1,5 @@
-:time_estimate: 11
+:time_estimate: 12
 :compose-uuid-httpd-v2-aaaaaaaaaaaa: fb5ef664-1def-4589-919d-1a0681f86371
-
 
 = Lab: Create And Publish Edge Image Updates
 
@@ -30,7 +29,7 @@ You will perform some steps in this lab on your _development machine_ and some s
 
 1. On your _development machine_, verify that you have the prerequisites from previous labs.
 
-.. Verify that the Image Builder service is active and that the current Linux user can submit requests to it.
+.. Check that the Image Builder service is active and that the current Linux user can submit requests to it.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -45,7 +44,7 @@ API server status:
 ...
 --
 
-.. Check that a remote client can access the OSTree repository in the _web server machine_ and get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s2-ostree-lab.adoc[a previous lab]. Your will get a different ID:
+.. Check that a remote client can access the OSTree repository in the _web server machine_ and get the current commit ID the OSTree branch with the Apache Web Server system image that you created in xref:ch2-publish:s2-ostree-lab.adoc[a previous lab]. You will get a different ID:
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -55,7 +54,7 @@ $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge*
 +
 Pay attention to the final path element of the URL, which should be "edge". The commit ID you got will be the parent commit of the edge commit image you are building during this lab.
 
-.. Check that you can manage local VMs, and there's a VM left from the xref:s2-boot-lab:[previous lab] named `edge-test-1`.
+.. Check that you can manage local VMs, and there's a VM left from the xref:ch3-test:s2-boot-lab:[previous lab] named `edge-test-1`.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -66,7 +65,7 @@ $ *virsh list --all*
  2    edge-db-1     shut-off
 --
 +
-It's fine the existing VM displays an status of "running" instead of "shut off".
+It's fine if the existing VM displays an status of "running" instead of "shut off".
 
 2. On your _developer machine_, make changes to the edge image blueprint to add the Cockpit packages.
 
@@ -79,7 +78,7 @@ Increment the minor version number, in the beginning of the TOML file, add a new
 include::1@samples:blueprints:example$rhel9-httpd-v2.toml[]
 --
 +
-You can also download a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v2.toml[TOML file with all edits] from the course samples repository in GitHub. Beware that the file in the samples repository has a different file name, but the same blueprint name, so it can be used as-is, without renaming.
+You can also download a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v2.toml[TOML file with all edits] from the course samples repository in GitHub. Beware that the files in the samples repository have different file names, but the same blueprint name, so they can be used as-is, without renaming.
 
 .. Push the updated blueprint to the Image Builder service.
 +
@@ -101,7 +100,7 @@ include::1@samples:blueprints:example$rhel9-httpd-v2.toml[lines=1..3]
 ...
 --
 
-3. Still on your _development machine_, build an edge commit image from your changed blueprint.
+3. Still on your _development machine_, build a new edge commit image from your changed blueprint.
 +
 This is very similar to what you done in previous labs, but pay attention to the differences required for update images and a few hints about the usage of the `composer-cli` command.
 
@@ -114,7 +113,7 @@ Compose {compose-uuid-httpd-v2-aaaaaaaaaaaa} added to the queue
 $ *UUID={compose-uuid-httpd-v2-aaaaaaaaaaaa}*
 --
 +
-IMPORTANT: Be sure you include the URL of your remote OSTree repository and its branch name, so you can use it for system updates.
+IMPORTANT: Be sure you include the URL of your remote OSTree repository and its branch name, so you can use the image from this compose for system updates.
 
 .. Wait until the compose finishes. To avoid clutter from previous labs, this time we filter the list of composes to only show running composes.
 +
@@ -123,11 +122,12 @@ IMPORTANT: Be sure you include the URL of your remote OSTree repository and its 
 $ *composer-cli compose list running*
 ID                                     Status    Blueprint    Version   Type
 {compose-uuid-httpd-v2-aaaaaaaaaaaa}   RUNNING   rhel9-edge   0.2.0     edge-commit
+...
 $ *composer-cli compose list running*
 ID   Status   Blueprint   Version   Type
 --
 
-.. Once the list of running composes is empty, it means your compose job either finished or failed. You could filter the list of composes on those statuses, but after some time both lists could become too large for visual inspection. Let's see how to filter the JSON output of `composer-cli` to get information of just one compose by its UUID:
+.. Once the list of running composes is empty, it means your compose job either finished or failed. You could filter the list of composes on those statuses, but after some time both lists could become too large for visual inspection. Let's see how to filter the JSON output of `composer-cli` to get the status of just one compose by its UUID:
 +
 [source,subs="verbatim,quotes"]
 --
@@ -188,7 +188,7 @@ rhel/9/x86_64/db
 [source,subs="verbatim,quotes,attributes"]
 --
 $ *ostree log rhel/9/x86_64/edge --repo=delete-me/repo*
-commit {commit-httpd-v2}
+commit {commit-httpd-v2} <.>
 Parent:  {commit-httpd-v1} <.>
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
@@ -204,10 +204,11 @@ Version: 9.2
 (no subject)
 
 --
+<.> Commit ID of the new edge commit image
 <.> Commit ID of parent of the new edge commit image
-<.> Commit ID of the parent edge umage in the OSTree reposity on the _web server machine_.
+<.> Commit ID of the current head of the remote OSTree reposity, which should match the previous commit ID.
 
-.. Now that you know your new edge commit image will connect to the existing history of the OSTree repository, pull the new edge commit image into the OSTree repository on the web server.
+.. Now that you verified that your new edge commit image can connect to the existing history of your OSTree repository, pull the new edge commit image into the OSTree repository on the web server.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -222,24 +223,32 @@ Scanning metadata: 3434
 $ *sudo ostree summary -u --repo=/var/www/html/repo*
 --
 
-.. As a sanity check, verify that the OSTree repository contains both the new commit, from the new edge commit image, and the previous commit. If everything is fine, you can delete the temporary directory.
+.. As a sanity check, verify that the OSTree repository contains both the new commit, from the new edge commit image, and the previous commit.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
 $ *ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo*
-commit {commit-httpd-v2}
-Parent:  {commit-httpd-v1}
+commit {commit-httpd-v2} <.>
+Parent:  {commit-httpd-v1} <.>
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
 Version: 9.2
 (no subject)
 
-commit {commit-httpd-v1}
+commit {commit-httpd-v1} <.>
 ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
 Date:  2024-10-09 20:25:03 +0000
 Version: 9.2
 (no subject)
+--
+<.> Commit ID of the new edge commit image
+<.> Commit ID of parent of the new edge commit image
+<.> Commit ID of the old edge commit image, which is the parent of the new edge commit image
 
+.. You can now delete the temporary directory.
++
+[source,subs="verbatim,quotes,attributes"]
+--
 $ *rm -rf delete-me*
 --
 
@@ -265,7 +274,9 @@ $ *virsh console edge-test-1*
 edge login:
 --
 
-.. Verify that your _test VM_ is running the system image from the OSTree you got at the beginning of this lab. Notice that there's a single OSTree deployment, because your _test VM_ was just provisioned and didn't get any upgrade so far.
+.. Verify that your _test VM_ is running the system image from the OSTree commit you got at the beginning of this lab.
++
+Notice that there's a single OSTree deployment, because your _test VM_ was just provisioned and didn't get any upgrade so far.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -277,7 +288,7 @@ Deployments:
                    Commit: {commit-httpd-v1}
 --
 
-.. Verify that your _test VM_ does not contains the RPM package which provides Cockpit.
+.. Verify that your _test VM_ does NOT contain the RPM package which provides Cockpit.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -347,7 +358,7 @@ Deployments:
 
 6. Still on your _development machine_, apply the upgrade to your _test VM_ and verify it is running the new edge commit image you built during this lab.
 
-.. Reboot your _test VM_ and verify that the new commit is now the first (active) deployment and also the one marked for the next boot (as indicated by the bullet).
+.. Reboot your _test VM_, log in again, and verify that the new commit is now the first (active) deployment and also the one marked for the next boot (as indicated by the bullet).
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -367,7 +378,7 @@ Deployments:
                    Commit: {commit-httpd-v1}
 --
 
-.. As a sanity check, verify that the OSTree repository on your _test VM_ contains both the new and the previous commits.
+.. As a sanity check, verify that the OSTree repository on your _test VM_ contains both the new and the previous commits, but nothing more.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -396,7 +407,7 @@ cockpit-286.1-1.el9.x86_64
 
 .. If you wish, you can leave the console of your _test VM_ by typing kbd:[Ctrl+\]] and stop your _test VM_. Or you can leave it there to use the terminal for the next activiy and open another terminal on your _development VM_.
 
-You sucessfully built an edge commit image and applied it as an update to a _test VM_ whoch stands for an edge device.
+You sucessfully built an edge commit image and applied it as an update to a _test VM_, demonstrating that your new system image can upgrade edge devices.
 
 == Next Steps
 
