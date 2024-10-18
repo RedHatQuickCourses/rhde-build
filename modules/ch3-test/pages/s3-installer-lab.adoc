@@ -112,7 +112,7 @@ mysql-installer
 +
 [source,subs="verbatim,quotes"]
 --
-$ *composer-cli compose start-ostree mysql-installer edge-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo/*
+$ *composer-cli compose start-ostree mysql-installer edge-installer --ref rhel/9/x86_64/db --url http://servera.lab.example.com/repo/*
 Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue
 --
 
@@ -127,7 +127,7 @@ ERROR: ManifestCreationFailed: failed to create osbuild manifest: unsupported bl
 +
 [source,subs="verbatim,quotes"]
 --
-$ *UUID=7a5036e1-4037-4edc-82ff-4c632c0a84fc**
+$ *UUID=7a5036e1-4037-4edc-82ff-4c632c0a84fc*
 --
 
 .. Wait until the compose finishes.
