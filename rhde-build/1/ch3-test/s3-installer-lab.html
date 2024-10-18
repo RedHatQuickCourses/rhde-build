@@ -342,7 +342,7 @@ mysql-installer</code></pre>
 <p>Build an edge installer image, using the blueprint you just uploaded, referring to the edge commit image that was published in a web server in a <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">previous lab</a>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree mysql-installer edge-installer --ref rhel/9/x86_64/edge --url http://servera.lab.example.com/repo/</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree mysql-installer edge-installer --ref rhel/9/x86_64/db --url http://servera.lab.example.com/repo/</strong>
 Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue</code></pre>
 </div>
 </div>
@@ -359,7 +359,7 @@ Compose 7a5036e1-4037-4edc-82ff-4c632c0a84fc added to the queue</code></pre>
 <p>Copy the UUID of your compose, from the previous command, to a shell variable.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=7a5036e1-4037-4edc-82ff-4c632c0a84fc</strong>*</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=7a5036e1-4037-4edc-82ff-4c632c0a84fc</strong></code></pre>
 </div>
 </div>
 </li>
