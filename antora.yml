@@ -7,6 +7,8 @@ asciidoc:
     commit-httpd-v1: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
     commit-httpd-v2: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
     commit-httpd-v3: cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
+    commit-mysql-v1: 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
+    commit-mysql-v2: 7485f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3
 
 nav:
 - modules/ROOT/nav.adoc

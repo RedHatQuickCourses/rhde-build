@@ -238,7 +238,7 @@ Version: 9.2
 
 5. Still on your _development machine_, stage the new edge commit image on your _test VM_.
 
-.. If your _test VM_ is shut down, start it. Then and connect to its console and log in as the user `core` with password `redhat123`.
+.. If your _test VM_ is shut down, start it. Then connect to its console and log in as the user `core` with password `redhat123`.
 +
 [source,subs="verbatim,quotes"]
 --
