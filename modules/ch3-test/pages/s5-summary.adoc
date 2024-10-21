@@ -2,7 +2,7 @@
 
 In this chapter, you learned:
 
-* The standard RHEL installer can use remote OSTree repositories as the installation source, but requires a custom kickstart file.
+* The standard RHEL installer can use remote OSTree repositories as the installation source but requires a custom kickstart file.
 
 * An edge installer image uses the standard RHEL installer and embeds an OSTree commit on the installation media for disconnected installations. 
 
