@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Summary :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s8-compose-lab.html">
+    <link rel="next" href="../ch2-publish/index.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s4-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Build Operating System Images for Edge Devices</a></li>
+    <li><a href="s9-summary.html">Summary</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Summary</h1>
+<div class="paragraph">
+<p>In this chapter, you learned:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Red Hat Device Edge offers a way to subscribe and entitle edge systems to use RHEL, MicroShift, and Ansible that is more adequate to scale and requirements of edge devices, as opposed to data center servers and office workstations.</p>
+</li>
+<li>
+<p>RHEL for Edge is a feature designed to provision and maintain edge systems as image-based systems, using the RHEL Image Builder and RPM-OSTree technologies.</p>
+</li>
+<li>
+<p>Image Builder accepts blueprints which describe packages and customizations to include in edge system images.</p>
+</li>
+<li>
+<p>Image Builder composes can create different kinds of edge images, and the most important kind is the edge commit image which contains an OSTree commit to publish in an OSTree repository.</p>
+</li>
+<li>
+<p>Image Builder composes that produce edge installer and edge cloud images, for provisioning edge devices, require an OSTree commit and an OSTree repository.</p>
+</li>
+<li>
+<p>OSTree commits must be published on remote OSTree repositories so edge devices can fetch system updates.</p>
+</li>
+</ul>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a></span>
+  <span class="next"><a href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

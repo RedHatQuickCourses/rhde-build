@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Introduction to Red Hat Device Edge :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="s2-devices-quiz.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s4-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Build Operating System Images for Edge Devices</a></li>
+    <li><a href="s1-devices.html">Introduction to Red Hat Device Edge</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Introduction to Red Hat Device Edge</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>15 minutes</strong>.</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Understand how edge devices differ from traditional Linux servers and the features of Red Hat Enterprise Linux (RHEL) for Edge.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Pending SME Review &amp; Proofreading
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_red_hat_device_edge"><a class="anchor" href="#_what_is_red_hat_device_edge"></a>What is Red Hat Device Edge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Red Hat Device Edge is a software and support subscription that bundles three components:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Red Hat Enterprise Linux (RHEL) and its RHEL for Edge feature.</p>
+</li>
+<li>
+<p>Red Hat build of MicroShift.</p>
+</li>
+<li>
+<p>Red Hat Ansible Automation Platform.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-devices-fig-1.svg" alt="s1 devices fig 1">
+</div>
+<div class="title">Figure 1. Components of Red Hat Device Edge</div>
+</div>
+<div class="paragraph">
+<p>All of these three components can be purchased as part of a number of other subscriptions from Red Hat. For example, RHEL and Ansible are frequently purchased as their own subscriptions, instead of as part of a bundle, and MicroShift is also available as part of Red Hat OpenShift Container Platform and Red Hat OpenShift Plus.</p>
+</div>
+<div class="paragraph">
+<p>In the end, you may purchase Red Hat Device Edge to use the RHEL for Edge feature in an army of small edge devices, but you could also find out that your edge machines are "large" and best suited to another subscription which also includes RHEL, OpenShift, and other Red Hat products, and still take advantage of the RHEL for Edge feature.</p>
+</div>
+<div class="paragraph">
+<p>In this course, we focus on the technical capabilities provided by RHEL for Edge, while other courses in this learning path focus on MicroShift and Ansible management of edge devices.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_rhel_for_edge"><a class="anchor" href="#_what_is_rhel_for_edge"></a>What is RHEL for Edge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RHEL for Edge offers a number of technical capabilities designed to make it more productive and cost-effective to provision and manage a larger fleet of edge devices, compared to a relatively smaller fleet of office workstations and corporate servers. These capabilities also addresses the common constraints on the availability of good network connectivity and highly skilled IT personnel at edge sites.</p>
+</div>
+<div class="paragraph">
+<p>The RHEL for Edge feature relies on the following components of Red Hat Enterprise Linux:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Image Builder</dt>
+<dd>
+<p>The Image builder tool takes a blueprint as input and outputs different types of operating system images. Those images can be either traditional package-based images or single-system images, which it calls edge images, and those images can be deployed by means of physical media, network boot, or as cloud provider native images.</p>
+</dd>
+<dt class="hdlist1">OSTree</dt>
+<dd>
+<p>The OSTree technology enables deploying and updating bootable operating system images as atomic units, with efficient use of both disk space and network bandwidth. OSTree is also capable of preserving the local state of a device, including both operating system configuration and application data, when updating a system image.</p>
+</dd>
+<dt class="hdlist1">RPM-OSTree</dt>
+<dd>
+<p>The RPM-ostree technology is a bridge between the world of traditional Linux package managers and image-based deployments. It enables building OSTree operating system images from RPM packages and, optionally, adding RPM packages as an extension layer into an OSTree deployment.</p>
+</dd>
+<dt class="hdlist1">Green Boot</dt>
+<dd>
+<p>The Green Boot technology enables performing health checks at system boot and, if those checks detect any issue, rolling back the system to a previous system image. Green Boot ensures that system updates can be applied safely and reliably, without intervention from IT personal in case of issues.</p>
+</dd>
+<dt class="hdlist1">FIDO Device Onboard (FDO)</dt>
+<dd>
+<p>The FDO standard enables installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms and with central IT systems. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart, Cloud-Init, and ignition, but the FDO standard is gaining traction in the Internet-of-Things (IoT) community and vendors.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Notice that the components of RHEL for Edge depend on each other, for example: Green Boot can only rollback a system update because RPM-OSTree keeps the previous OSTree image on disk, unchanged.</p>
+</div>
+<div class="paragraph">
+<p>In this course, we focus on using the Image Builder and RPM-OSTree components of RHEL for Edge to deploy and update edge devices. Other courses will teach the use of Green Boot and FDO to automate system image rollback and device on-boarding.</p>
+</div>
+<div class="paragraph">
+<p>To understand how these components address the needs of edge devices, you must consider how edge devices differ from traditional office workstations and data center servers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_an_edge_device"><a class="anchor" href="#_what_is_an_edge_device"></a>What is an Edge Device</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Edge devices, sometimes called edge endpoints, edge gateways, and edge servers, come in varying shapes and forms. Some of them  look like standard computers, maybe in a rugged and smaller form factory, which connect to varying kinds of sensors and machinery. They could also take unique form factors which integrate sensors, servo mechanisms, and other kinds machinery with an Intel or ARM computer in the same system board and might not look, from the outside, anything like a "personal computer", despite being built on the same fundamental architecture, processors, chipsets, and peripheral busses.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-devices-fig-2.svg" alt="s1 devices fig 2">
+</div>
+<div class="title">Figure 2. Representative images of edge devices and traditional computers</div>
+</div>
+<div class="paragraph">
+<p>RHEL for Edge is not designed to support any kind of edge device. It is designed to run in devices which are close in hardware architecture to standard personal computers and servers. It benefits from the large ecosystem of software and hardware certified for RHEL and the fact that the economy of edge devices got to a point where a "standard computer" is cost-effective and brings a lot more flexibility and power than a custom processor and interface design.</p>
+</div>
+<div class="paragraph">
+<p>For example you cannot run RHEL directly in a surveillance camera, even if many security cameras do indeed run Linux. But you could run RHEL in edge devices that monitor the video feed from a surveillance camera (or from multiple cameras) to detect potential security threats and fire an alarm to call security or the police.</p>
+</div>
+<div class="paragraph">
+<p>A similar edge device could use a video camera to perform quality control in a factory, identifying defective pieces and reducing the need for human inspection, and also reroute the defective pieces for either disposal or recycling without manual intervention.</p>
+</div>
+<div class="paragraph">
+<p>Now imagine that the same edge device controls a robotic arm with a spray gun: instead being programmed with a fixed path for only a few pieces known in advance, an edge device could adapt and optimize the paint process based on the specific piece it sees.</p>
+</div>
+<div class="paragraph">
+<p>Each of the scenarios above requires some specialized hardware, but they are more about the application software which controls the hardware than about custom chips and peripherals. Having a common and standard foundation for that software, based on Red Hat Device Edge, reduces the development and maintenance effort.</p>
+</div>
+<div class="paragraph">
+<p>There are many more potential scenarios for edge devices than we can describe here. Most times, edge devices co-exist with more traditional computers and applications in the same site. Edge devices usually connect to traditional computers in remote sites such as corporate headquarters or a regional distribution center. For more information on the applicability of RHEL for Edge and Red Hat Device Edge to different edge scenarios, we invite you to explore <a href="https://www.redhat.com/en/products/edge/hatville">HatVille, the miniature city where edge computing comes to life</a>.</p>
+</div>
+<div class="paragraph">
+<p>Another set of factors to consider in assessing your edge device use case is the infrastructure available on an edge site. Edge devices may exist by themselves, in a site where the owner has little control of anything, like an pick-up locker location or an ATM machine at a drugstore. But edge devices might exist in a location which has a server room, uninterruptible power supplies, and reasonable cooling, such as a large department store.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-devices-fig-3.svg" alt="s1 devices fig 3">
+</div>
+<div class="title">Figure 3. Generic edge site with many classes of edge devices</div>
+</div>
+<div class="paragraph">
+<p>The following table compares edge devices with more traditional computers to help you distinguish when you might have a case of RHEL for Edge versus a case for traditional RHEL. Parts of it may become quickly outdated as hardware evolve and costs come down, so instead of focus on hard facts, focus on relative differences and check the <a href="https://www.redhat.com/en/resources/red-hat-enterprise-linux-subscription-guide">RHEL Subscription Guide</a> or ask your Red Hat Account Manager for pricing and eligibility of the many edge and non-edge product SKUs.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">RHEL for Edge</th>
+<th class="tableblock halign-left valign-top">RHEL Workstation</th>
+<th class="tableblock halign-left valign-top">RHEL Server</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mini-PC, rugged mini-server, and many custom form factors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">desktop or laptop PC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rack-mounted or blade enclosure</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="imageblock">
+<div class="content">
+<img src="_images/edge-device.png" alt="edge device">
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="imageblock">
+<div class="content">
+<img src="_images/pc.png" alt="pc">
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="imageblock">
+<div class="content">
+<img src="_images/rack-server.png" alt="rack server">
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 CPU socket, 1 or 2 CPU cores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 or 2 CPU sockets, 4 to 16 CPU cores each</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2 to many CPU sockets, from dozens to hundreds of CPU cores</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5 to 8 GB of memory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4 to 64 GB of memory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hundreds to thousands GB of memory</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Single purpose: Point-of-sales, industrial control, access control</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multi-purpose: web browsing, spreadsheets, multimedia, etc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multi-purpose: databases, ERP, IT automation, etc</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Special-purpose peripherals: bar code readers, device actuators, temperature/humidity sensors, custom key panels, and so on</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Standard peripherals: monitors, qwerty keyboards, mouses, scanners, printers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Standard peripherals: Ethernet NIC, NVMe cards</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployed on hazardous environments, exposed to dust, heat, electromagnetic fields, and heavy machinery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployed on friendly office environments, with stabilized power supply and cooling</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployed on friendly data center environments, with stabilized power supply and cooling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exposed to end users, customers, and outsiders, frequently in public areas</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exposed to office employees, protected by corporate access controls</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locked in server rooms</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rely on minimal to no infra-structure on edge sites, such as DHCP servers and IP routers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Depend on extensive infra-structure from corporate IT, such as identity managers, backup appliances, file servers, and remote control</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Depend on extensive infra-structure from corporate IT, such as automated management, certificate servers, CI/CD, storage arrays, and firewalls</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployed and maintained by field technicians</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployed and maintained by IT support staff</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployed and maintained by System Administrators</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_image_based_versus_package_based_systems"><a class="anchor" href="#_image_based_versus_package_based_systems"></a>Image-Based Versus Package-Based Systems</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The main characteristic of RHEL for Edge, from the point of view of a Systems Administrator, is that it is an image-based system, while traditional RHEL is a package-based system.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-devices-fig-4.svg" alt="s1 devices fig 4">
+</div>
+<div class="title">Figure 4. Package-based RHEL versus image-based RHEL for Edge</div>
+</div>
+<div class="paragraph">
+<p>You can use RHEL Image Builder to build both types of system images:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Package-based system images based on RPM and DNF for traditional RHEL</p>
+</li>
+<li>
+<p>Image-based images based on RPM-OSTree for RHEL for Edge.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This course focus on the second option.</p>
+</div>
+<div class="paragraph">
+<p>An image-based system manages an entire operating system as a single system image. You do not install or update individual parts of the operating system, like you would do with package-based systems, using a package manager.</p>
+</div>
+<div class="paragraph">
+<p>Package-based systems require extensive day-2 customizations to install additional packages and edit system configuration files. On the other side, with image-based systems it is expected that most day-2 customizations are already embedded on the system image. This is consistent with the shift-left approaches popular among DevOps and cloud-native practitioners.</p>
+</div>
+<div class="paragraph">
+<p>The following table compares common actions for deploying and managing traditional RHEL, or package-based RHEL, with RHEL for Edge.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">RHEL for Edge</th>
+<th class="tableblock halign-left valign-top">Traditional RHEL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image-based, using the RPM-OSTree hybrid image and manager with OSTree system images and RPM packages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Package-based, using the DNF package manager with RPM packages.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Either the RHEL installer or the CoreOS installer downloads and extracts a complete OSTree system image at once.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The RHEL installer downloads and installs many RPM packages one by one.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Download and deploy a complete OSTree system image, while retaining the previous system image unchanged. You end up keeping the previous system image or switching to the new system image.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update individual RPM packages using DNF. You might update some packages and not others, either on purpose, by mistake, or because some package updates could not be downloaded or applied.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">You know the state of the entire system: it corresponds to one and only one of the available system images.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">You can never be sure about the state of a package-based system, as a whole: it could be in any permutation of the many packages and versions available.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Install all operating system components and applications at once, as part of the system image.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Install individual operating system components or applications one by one, from individual RPM packages and OCI container images.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Embed operating system and application configuration files in the system image, and perform minimal local customization or edits, per-device or per-site, as a day-2 activity.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Edit operating system and application configuration files one by one, as a day-2 activity (after deploying the operating system).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>When you create a RHEL cloud instance, for example using the AMI or Qcow2 cloud images for RHEL, they deploy package-based RHEL, which you manage the same way as if you installed from the RHEL installation media. But, with RHEL for Edge, you can create cloud images which deploy image-based systems, even if your cloud instances are not cloud edge instances.</p>
+</div>
+<div class="paragraph">
+<p>The RPM-OSTree technology allows you to add RPM packages to a system installed from an OSTree system image, but it enforces a clear separation between the contents from the system image and the packages (mostly applications) layered over the system image, similar to how Android and iOS devices deploy and update their operating systems independent of applications from the marketplace. Do not abuse from this capability, else you could lose track of the state of each individual edge devices. It exists mostly for development, testing, and troubleshooting of changes that will become part of the next system image.</p>
+</div>
+<div class="paragraph">
+<p>RHEL for Edge can also consume applications as OCI container images, and update those container images from container registries. This is more manageable than RPM packages because there is an automatic rollback capability from Podman and Systemd, which is similar to Green Boot with OSTree updates. Anyway, it is usually preferable to include your application container images in the OSTree system image so you know the state of edge devices corresponds to a system image and nothing else.</p>
+</div>
+<div class="paragraph">
+<p>When you think about customizations of an edge device, consider how much of it is actually per-device or per-site. You may find that many, if not most, of the day-2 customizations you&#8217;re used to perform in package-based systems could be included in a system image. For example, the public key of your corporate certificate authority, for secure TLS communications, is a customization that applies to all your edge devices equally, in all sites. But the IP address of a web proxy is probably different for each site and multiple devices on the same site require the same web proxy configuration.</p>
+</div>
+<div class="paragraph">
+<p>It is your option to build site-specific edge images, which embed customizations for each individual site, or building a single edge image for all edge sites, and apply the same configurations to multiple devices in the same location. In any case, you can use Ansible automation to apply or change site and device-specific customizations, similar to what you would do with traditional computers. You just expect to have fewer customizations to apply using automation, because more of them are already done in the system image.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before learning about the operation of Image Builder and edge image types, you will assess your understanding of how edge sites differ from traditional corporate IT data centers and cloud IT.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Build Operating System Images for Edge Devices</a></span>
+  <span class="next"><a href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
