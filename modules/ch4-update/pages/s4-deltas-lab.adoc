@@ -336,7 +336,7 @@ db  file:///run/install/repo/ostree/repo
 db  http://servera.lab.example.com/repo
 --
 
-.. Check that your _database VM_ can find available dates on the remote OSTree repository.
+.. Check that your _database VM_ can find available updates on the remote OSTree repository.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -404,9 +404,6 @@ NOTE: If you do not see any evidence of using static deltas to perform the upgra
 +
 [source,subs="verbatim,quotes"]
 --
-[core@edge ~]$ sudo journalctl --no-pager -t rpm-ostree -g pull
-[sudo] password for core: 
--- Boot f744fcc757d74cb9823d3315a3a5d373
 Oct 22 16:39:47 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86_64/edge complete
                                        security: GPG: disabled 
                                        security: SIGN: disabled http: TLS
@@ -450,7 +447,6 @@ $ *sudo tail /var/log/httpd/access_log*
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo tail -f /var/log/httpd/access_log*
 ...
 172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/summary HTTP/1.1" 200 672 "-" "libostree/2022.6" <.>
 172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/config HTTP/1.1" 200 58 "-" "libostree/2022.6"
@@ -469,7 +465,7 @@ $ *sudo tail -f /var/log/httpd/access_log*
 <.> Request for the summary file, from which an edge device finds about the availability of static deltas.
 <.> Request for the indexes of deltas, notice it fails with HTTP error 404 because there are no deltas for the commit on the _test VM_.
 <.> Request for the commit metadata, from which an edge device gets a list of files on the OSTree commit.
-<.> From now on, many requests, one for each individual file and directory in the OSTree commit.
+<.> From now on, many requests, possibly hundreds or thousands, one for each individual file and directory in the OSTree commit.
 
 As you see, the usage of static deltas is transparent to administrators of edge devices. Upgrades will not fail because there are no static deltas, and you wouldn't notice any performance improvement if your updates are small as in the examples of this course and network connectivity between edge devices end their remote OSTree repositories is good.
 
