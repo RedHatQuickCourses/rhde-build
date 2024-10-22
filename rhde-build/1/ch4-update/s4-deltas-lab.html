@@ -306,7 +306,7 @@ API server status:
 <p>Open the <code>rhel9-mysql.toml</code> file which you created in a <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 </li>
 <li>
-<p>Increment the version number, in tbe beginning of the TOML file, and add a <code>packages</code> wich refer to the <code>nano</code> package.</p>
+<p>Increment the version number, in tbe beginning of the TOML file, and add a <code>packages</code> section which refer to packages from Nano.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-mysql"
@@ -381,7 +381,7 @@ $ <strong>UUID=e0722e00-9cd1-4d7f-96fc-83776eac85fc</strong></code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-ensure that the branch name of the previous command ends with "db". You don&#8217;t want to build this image as an update to the web server image from previous labs!
+Ensure that the branch name of the previous command ends with "db". You don&#8217;t want to build this image as an update to the web server image from previous labs!
 </td>
 </tr>
 </table>
@@ -536,17 +536,7 @@ modified: 11
 new reachable: metadata=93 content regular=103 symlink=2
 rollsum for 0/11 modified
 processing bsdiff: [0/11]
-processing bsdiff: [1/11]
-processing bsdiff: [2/11]
-processing bsdiff: [3/11]
-processing bsdiff: [4/11]
-processing bsdiff: [5/11]
-processing bsdiff: [6/11]
-processing bsdiff: [7/11]
-processing bsdiff: [8/11]
-processing bsdiff: [9/11]
-processing bsdiff: [10/11]
-
+...
 part 1 n:103 compressed:379009 uncompressed:48900526
 part 2 n:94 compressed:588953 uncompressed:2660939
 uncompressed=51561465 compressed=967962 loose=1340818
@@ -597,11 +587,11 @@ edge-db login:</code></pre>
 <li>
 <p>Check that your <em>database VM</em> is running the system image from the OSTree commit ID you got at the beginning of this lab.</p>
 <div class="paragraph">
-<p>There should be a single deployment, that is, a single OSTree commit and system image on this VM, because it wasn&#8217;t updated yet.</p>
+<p>There should be a single deployment, that is, a single OSTree commit and system image on the local OSTree repository, because the <em>database VM</em> wasn&#8217;t updated yet.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@db ~]$ <strong>rpm-ostree status</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -611,12 +601,12 @@ Deployments:
 </div>
 </li>
 <li>
-<p>Check that your <em>database VM</em> contains MySQL packages but not Nano packages.</p>
+<p>Check that your <em>database VM</em> contains MySQL packages but no Nano packages.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@db ~]$ <strong>rpm -q mysql</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>rpm -q mysql</strong>
 mysql-8.0.30-3.el9_0.x86_64
-[core@db ~]$ <strong>rpm -q nano</strong>
+[core@edge-db ~]$ <strong>rpm -q nano</strong>
 package nano is not installed</code></pre>
 </div>
 </div>
@@ -625,27 +615,27 @@ package nano is not installed</code></pre>
 <p>Check that, because this VM was provisioned using an edge installer image, it is NOT configured with a valid OSTree remote.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@db ~]$ <strong>rpm-ostree remote list --show-url</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>ostree remote list --show-urls</strong>
 db  file:///run/install/repo/ostree/repo</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Configure you <em>database VM</em> with an OSTree remote that points to your <em>web server</em> machine.configured with an OSTree remote.</p>
+<p>Configure you <em>database VM</em> with an OSTree remote that points to your <em>web server</em> machine.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@db ~]$ <strong>sudo ostree remote delete db</strong>
-[core@db ~]$ <strong>sudo ostree remote add --no-gpg-verify db http://servera.lab.example.com/repo</strong>
-[core@db ~]$ *ostree remote list --show-urls *
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>sudo ostree remote delete db</strong>
+[core@edge-db ~]$ <strong>sudo ostree remote add --no-gpg-verify db http://servera.lab.example.com/repo</strong>
+[core@edge-db ~]$ <strong>ostree remote list --show-urls</strong>
 db  http://servera.lab.example.com/repo</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>lorem ipsum [ USING edtge-db-3 TO TEST ]</p>
+<p>Check that your <em>database VM</em> can find available dates on the remote OSTree repository.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade --check</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>sudo rpm-ostree upgrade --check</strong>
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
@@ -656,69 +646,202 @@ AvailableUpdate:
 </div>
 </li>
 <li>
-<p>lorem ipsum</p>
+<p>Stage the upgrade and reboot the <em>database VM</em> to apply its updates. Then check it&#8217;s running the new system image, which contains the Nano text editor.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade</strong>
-[ GRAB OUTPUT ]
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>sudo rpm-ostree upgrade</strong>
 ...
+Staging deployment... done
+Added:
+  nano-5.6.1-5.el9.x86_64
 Run "systemctl reboot" to start a reboot
-$ systemctl reboot
+$ <strong>sudo systemctl reboot</strong>
 ...
-boot messages
+edge-db login:
 ...
-new login
-...
-[core@edge ~]$ rpm-ostree status
+[core@edge-db ~]$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
-● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T22:43:27Z)
-                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+● db:rhel/9/x86_64/db
+                  Version: 9.2 (2024-10-21T23:02:11Z)
+                   Commit: 7485f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3
 
-  edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
-                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-
-[core@edge ~]$ ostree log rhel/9/x86_64/edge
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
-(no subject)
-
-commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
-Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
-(no subject)
-
-[core@edge ~]$ rpm -q cockpit
-cockpit-286.1-1.el9.x86_64</code></pre>
+  db:rhel/9/x86_64/db
+                  Version: 9.2 (2024-10-18T15:36:53Z)
+                   Commit: 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
+[core@edge-db ~]$ <strong>rpm -q nano</strong>
+nano-5.6.1-5.el9.x86_64</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Notice the bullet on rpm-ostree status to show which is the active deployment</p>
 </div>
 </li>
 </ol>
 </div>
 </li>
 <li>
-<p>Verify that the upgrade was actually performed using static deltas.</p>
+<p>Still on your <em>development machine</em>, verify that your <em>database VM</em> actually fetched upgrades using static deltas.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Inspect the access log from previous updates</p>
+<p>Search the system logs on the <em>database VM</em>. You should see two entries with a message <code>libostree pull</code>: one from checking for updates, which referes to no deltas and has a small transfer size, and another from the actual upgrade operation, which refers to a delta and with a larger transfer size.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>sudo journalctl --no-pager -t rpm-ostree -g pull</strong>
+Oct 22 15:39:53 db rpm-ostree[1246]: libostree pull from 'db' for rhel/9/x86_64/db complete
+                                     security: GPG: disabled
+                                     security: SIGN: disabled http: TLS
+                                     non-delta: meta: 2 content: 0
+                                     transfer: secs: 0 size: 18.5 kB
+Oct 22 15:40:45 db rpm-ostree[1246]: libostree pull from 'db' for rhel/9/x86_64/db complete
+                                     security: GPG: disabled
+                                     security: SIGN: disabled http: TLS
+                                     delta: parts: 2 loose: 2
+                                     transfer: secs: 3 size: 993.2 kB
+-- Boot c7ab9e1e55944e17a38672c152c9106d --</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you do not see any evidence of using static deltas to perform the upgrade operation, it might be because you forgot to update the summary file of the remote OSTree repository after creating the static delta. In that case, the upgrade didn&#8217;t use the available static delta.
+</td>
+</tr>
+</table>
+</div>
 </li>
 <li>
-<p>Leave a terminal on tail -f for the next update</p>
+<p>If you seach the system log of the <em>test VM</em> from the previous labs, your would see entries similar to the folowing.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ sudo journalctl --no-pager -t rpm-ostree -g pull
+[sudo] password for core:
+-- Boot f744fcc757d74cb9823d3315a3a5d373
+Oct 22 16:39:47 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86_64/edge complete
+                                       security: GPG: disabled
+                                       security: SIGN: disabled http: TLS
+                                       non-delta: meta: 2 content: 0
+                                       transfer: secs: 0 size: 18.5 kB
+Oct 22 16:40:00 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86_64/edge complete
+                                       security: GPG: disabled
+                                       security: SIGN: disabled http: TLS
+                                       non-delta: meta: 507 content: 1893
+                                       transfer: secs: 7 size: 121.5 MB
+-- Boot dc233afb346f4aa2b9e25d64ae9f4c3c --</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that all entries are <code>non-delta</code> pulls.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Switch to your <em>web server machine</em> and verify that the web server served requests for using static deltas.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Check the last lines of the access logs of the Apache Web Server. They should include requests with a path of <code>/repo/deltas</code> which refer to the two parts of the delta as seen on the logs from the <code>rpm-ostree</code> command in the previous step.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo tail /var/log/httpd/access_log</strong>
+172.25.250.9 - - [22/Oct/2024:15:43:42 -0400] "GET /repo/objects/74/85f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3.commitmeta HTTP/1.1" 404 196 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:43:42 -0400] "GET /repo/objects/74/85f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3.commit HTTP/1.1" 200 18260 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/summary.sig HTTP/1.1" 404 196 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/summary HTTP/1.1" 200 672 "-" "libostree/2022.6" <i class="conum" data-value="1"></i><b>(1)</b>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/config HTTP/1.1" 200 58 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/delta-indexes/dI/X3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM.index HTTP/1.1" 200 205 "-" "libostree/2022.6" <i class="conum" data-value="2"></i><b>(2)</b>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/deltas/NJ/F_p7mLUGVaFohIhIZAg08t_5AOM_B9alxYSLKRm44-dIX3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM/superblock HTTP/1.1" 200 25012 "-" "libostree/2022.6" <i class="conum" data-value="3"></i><b>(3)</b>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/deltas/NJ/ F_p7mLUGVaFohIhIZAg08t_5AOM_B9alxYSLKRm44-dIX3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM/0 HTTP/1.1" 200 379009 "-" "libostree/2022.6" <i class="conum" data-value="4"></i><b>(4)</b>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/deltas/NJ/F_p7mLUGVaFohIhIZAg08t_5AOM_B9alxYSLKRm44-dIX3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM/1 HTTP/1.1" 200 588953 "-" "libostree/2022.6" <i class="conum" data-value="5"></i><b>(5)</b>
+172.25.250.9 - - [22/Oct/2024:16:02:35 -0400] "HEAD /repo HTTP/1.1" 301 - "-" "curl/7.76.1"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Request for the summary file, from which an edge device finds about the availability of static deltas.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Request for the indexes of deltas, from which an edge device finds if there&#8217;s a delta that matches its upgrade operations</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Request for the superblock of the desired delta, from which an edge device finds its parts</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Request for part 1 of the delta</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Request for part 2 of the delta</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>If you were checking the logs from upgrading the <em>test VM</em> from the previous lab, you would see requests similar to the following.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo tail -f /var/log/httpd/access_log</strong>
+...
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/summary HTTP/1.1" 200 672 "-" "libostree/2022.6" <i class="conum" data-value="1"></i><b>(1)</b>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/config HTTP/1.1" 200 58 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/delta-indexes/k1/Buyn565biiarvRuIyecbXDRoMYVrzR5IcYoZFo68w.index HTTP/1.1" 404 196 "-" "libostree/2022.6" <i class="conum" data-value="2"></i><b>(2)</b>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/93/506eca7e7ae5b8a26abbd1b88c9e71b5c346831856bcd1e48718a19168ebcc.commitmeta HTTP/1.1" 404 196 "-" "libostree/2022.6" <i class="conum" data-value="3"></i><b>(3)</b>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/eb/049ca6ed02d59965726ea3820798c6295f72643447e40e1e70405bcee57fad.dirtree HTTP/1.1" 200 1095 "-" "libostree/2022.6" <i class="conum" data-value="4"></i><b>(4)</b>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/0c/838feff043ef5f56180b54e340733174765fb47c51341edc6937cb5b724970.dirtree HTTP/1.1" 200 815 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/56/76902fc461f868f4e2f1b214a21b582b9c941a6dfd9fcbc114d234d65c14dd.dirtree HTTP/1.1" 200 34351 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/7e/a2c5410038e1f58baeddddee3b775e64c304296f574c872f5f92e8623df2d0.dirtree HTTP/1.1" 200 9675 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/a6/5d2dc8c573696c941646077906a4984ef9ab485d565170e45940508dc96812.dirtree HTTP/1.1" 200 2699 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/a6/35c3efc51056fe97f5674427f12574b9e9ed925959afc64b1634713df02abb.dirtree HTTP/1.1" 200 32916 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/6a/66c95127808bb8c723e163b7a0557a54f010132deb04b70a15bd15d0269f74.dirtree HTTP/1.1" 200 4454 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/13/5479584d3d98616cedfb7c334995cb819177b7c13966e7386bb39b72b2e863.dirtree HTTP/1.1" 200 19012 "-" "libostree/2022.6"
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Request for the summary file, from which an edge device finds about the availability of static deltas.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Request for the indexes of deltas, notice it fails with HTTP error 404 because there are no deltas for the commit on the <em>test VM</em>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Request for the commit metadata, from which an edge device gets a list of files on the OSTree commit.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>From now on, many requests, one for each individual file and directory in the OSTree commit.</td>
+</tr>
+</table>
+</div>
 </li>
 </ol>
 </div>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>As you see, the usage of static deltas is transparent to administrators of edge devices. Upgrades will not fail because there are no static deltas, and you wouldn&#8217;t notice any performance improvement if your updates are small as in the examples of this course and network connectivity between edge devices end their remote OSTree repositories is good.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This was the last activity in this course. Stay tuned for the reminaing Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot and FDO.</p>
 </div>
 </div>
 </div>
