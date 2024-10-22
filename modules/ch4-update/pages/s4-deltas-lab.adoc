@@ -81,7 +81,7 @@ It's fine the existing VM displays an status of "running" instead of "shut off".
 
 .. Open the `rhel9-mysql.toml` file which you created in a xref:ch2-publish:s3-pull-local-lab.adoc[previous lab], with any text editor.
 
-.. Increment the version number, in tbe beginning of the TOML file, and add a `packages` wich refer to the `nano` package.
+.. Increment the version number, in tbe beginning of the TOML file, and add a `packages` section which refer to packages from Nano.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -120,7 +120,7 @@ $ *composer-cli compose start-ostree rhel9-db edge-commit --url http://servera.l
 Compose {compose-uuid-mysql-v2-bbbbbbbbbbbb} added to the queue
 $ *UUID={compose-uuid-mysql-v2-bbbbbbbbbbbb}*
 --
-IMPORTANT: ensure that the branch name of the previous command ends with "db". You don't want to build this image as an update to the web server image from previous labs!
+IMPORTANT: Ensure that the branch name of the previous command ends with "db". You don't want to build this image as an update to the web server image from previous labs!
 
 .. Wait until the compose finishes.
 +
@@ -255,17 +255,7 @@ modified: 11
 new reachable: metadata=93 content regular=103 symlink=2
 rollsum for 0/11 modified
 processing bsdiff: [0/11]
-processing bsdiff: [1/11]
-processing bsdiff: [2/11]
-processing bsdiff: [3/11]
-processing bsdiff: [4/11]
-processing bsdiff: [5/11]
-processing bsdiff: [6/11]
-processing bsdiff: [7/11]
-processing bsdiff: [8/11]
-processing bsdiff: [9/11]
-processing bsdiff: [10/11]
-
+...
 part 1 n:103 compressed:379009 uncompressed:48900526
 part 2 n:94 compressed:588953 uncompressed:2660939
 uncompressed=51561465 compressed=967962 loose=1340818
@@ -306,11 +296,11 @@ edge-db login:
 
 .. Check that your _database VM_ is running the system image from the OSTree commit ID you got at the beginning of this lab.
 +
-There should be a single deployment, that is, a single OSTree commit and system image on this VM, because it wasn't updated yet.
+There should be a single deployment, that is, a single OSTree commit and system image on the local OSTree repository, because the _database VM_ wasn't updated yet.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@db ~]$ *rpm-ostree status*
+[core@edge-db ~]$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
@@ -318,13 +308,13 @@ Deployments:
                    Commit: {commit-mysql-v1}
 --
 
-.. Check that your _database VM_ contains MySQL packages but not Nano packages.
+.. Check that your _database VM_ contains MySQL packages but no Nano packages.
 +
 [source,subs="verbatim,quotes"]
 --
-[core@db ~]$ *rpm -q mysql*
+[core@edge-db ~]$ *rpm -q mysql*
 mysql-8.0.30-3.el9_0.x86_64
-[core@db ~]$ *rpm -q nano*
+[core@edge-db ~]$ *rpm -q nano*
 package nano is not installed
 --
 
@@ -332,25 +322,25 @@ package nano is not installed
 +
 [source,subs="verbatim,quotes"]
 --
-[core@db ~]$ *rpm-ostree remote list --show-url*
+[core@edge-db ~]$ *ostree remote list --show-urls*
 db  file:///run/install/repo/ostree/repo
 --
 
-.. Configure you _database VM_ with an OSTree remote that points to your _web server_ machine.configured with an OSTree remote.
+.. Configure you _database VM_ with an OSTree remote that points to your _web server_ machine.
 +
 [source,subs="verbatim,quotes"]
 --
-[core@db ~]$ *sudo ostree remote delete db*
-[core@db ~]$ *sudo ostree remote add --no-gpg-verify db http://servera.lab.example.com/repo*
-[core@db ~]$ *ostree remote list --show-urls *
+[core@edge-db ~]$ *sudo ostree remote delete db*
+[core@edge-db ~]$ *sudo ostree remote add --no-gpg-verify db http://servera.lab.example.com/repo*
+[core@edge-db ~]$ *ostree remote list --show-urls*
 db  http://servera.lab.example.com/repo
 --
 
-.. lorem ipsum [ USING edtge-db-3 TO TEST ]
+.. Check that your _database VM_ can find available dates on the remote OSTree repository.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *sudo rpm-ostree upgrade --check*
+[core@edge-db ~]$ *sudo rpm-ostree upgrade --check*
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
@@ -359,397 +349,130 @@ AvailableUpdate:
            Diff: 1 added
 --
 
-.. lorem ipsum
+.. Stage the upgrade and reboot the _database VM_ to apply its updates. Then check it's running the new system image, which contains the Nano text editor.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge ~]$ *sudo rpm-ostree upgrade*
-[ GRAB OUTPUT ]
+[core@edge-db ~]$ *sudo rpm-ostree upgrade*
 ...
+Staging deployment... done
+Added:
+  nano-5.6.1-5.el9.x86_64
 Run "systemctl reboot" to start a reboot
-$ systemctl reboot
+$ *sudo systemctl reboot*
 ...
-boot messages
+edge-db login:
 ...
-new login
-...
-[core@edge ~]$ rpm-ostree status
+[core@edge-db ~]$ *rpm-ostree status*
 State: idle
 Deployments:
-● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T22:43:27Z)
-                   Commit: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
+● db:rhel/9/x86_64/db
+                  Version: 9.2 (2024-10-21T23:02:11Z)
+                   Commit: {commit-mysql-v2}
 
-  edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
-                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-
-[core@edge ~]$ ostree log rhel/9/x86_64/edge
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
-(no subject)
-
-commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
-Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
-(no subject)
-
-[core@edge ~]$ rpm -q cockpit
-cockpit-286.1-1.el9.x86_64
+  db:rhel/9/x86_64/db
+                  Version: 9.2 (2024-10-18T15:36:53Z)
+                   Commit: {commit-mysql-v1}
+[core@edge-db ~]$ *rpm -q nano*
+nano-5.6.1-5.el9.x86_64
 --
 +
-Notice the bullet on rpm-ostree status to show which is the active deployment
 
-99. Verify that the upgrade was actually performed using static deltas.
-
-.. Inspect the access log from previous updates
-
-.. Leave a terminal on tail -f for the next update
-
-
-
-////
-
-[student@servera ~]$ sudo tac /var/log/httpd/access_log grep | grep -B9 -m1 "/repo/refs/heads/rhel/9/x86_64/edge" | tac
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/refs/heads/rhel/9/x86_64/edge HTTP/1.1" 200 65 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/deltas/UP/rlWGGZnFFju5GVPwa74PtqPOXmobGk4Nw17cjK1nQ/superblock HTTP/1.1" 404 196 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/50/fae55861999c5163bb91953f06bbe0fb6a3ce5e6a1b1a4e0dc35edc8cad674.commitmeta HTTP/1.1" 404 196 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/50/fae55861999c5163bb91953f06bbe0fb6a3ce5e6a1b1a4e0dc35edc8cad674.commit HTTP/1.1" 200 16196 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/94/d70974ad2578aa914cf2a03d55214e005dee856d5de99a9ba8a1c6eeaad28d.dirtree HTTP/1.1" 200 1095 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/50/773817e4519629fb061cb3cfe4ddae0a996c12336d087042481fbeab1a380c.dirmeta HTTP/1.1" 200 59 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/93/6f751855ebe4210d3fb59d3ffca58c2270dc4d6d89c4507abe40eb530ddd69.filez HTTP/1.1" 200 87 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/77/ee5966fc3e73f3f82d324ab93c3eb07b911e986ab6f3afbbb44b2d381fa99f.dirmeta HTTP/1.1" 200 61 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/89/4b4c2aa8f00c84547b07d0c7172f3d3b84356bc964d8ca7d93ee197d76b04e.filez HTTP/1.1" 200 87 "-" "libostree/2024.4"
-172.25.250.9 - - [18/Oct/2024:14:43:21 -0400] "GET /repo/objects/12/9a1e5fa394cde56fd197d859b875017e48194e6d23bbbfa3a71ba2c8600c4c.filez HTTP/1.1" 200 89 "-" "libostree/2024.4"
-
-////
-
-
-////
-begin static deltas
-
-Starting with three commits in the branch
-
-At first. no deltas in my repo
-
-[student@servera ~]$ ostree static-delta list --repo /var/www/html/repo
-(No static deltas)
-
-[student@servera ~]$ sudo ostree static-delta generate rhel/9/x86_64/edge --repo /var/www/html/repo
-Generating static delta:
-  From: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-  To:   cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-modified: 13
-new reachable: metadata=36 content regular=53 symlink=12
-rollsum for 0/13 modified
-processing bsdiff: [0/11]
-processing bsdiff: [1/11]
-processing bsdiff: [2/11]
-processing bsdiff: [3/11]
-processing bsdiff: [4/11]
-processing bsdiff: [5/11]
-processing bsdiff: [6/11]
-processing bsdiff: [7/11]
-processing bsdiff: [8/11]
-processing bsdiff: [9/11]
-processing bsdiff: [10/11]
-Killed
-
-Was the 'killed' message expected or a sign of trouble? My disk is almost full.
-
-ostree fsck says I'm still good and ostree static-delta list returns empty
-
-scp the entire repo to workstation and doing the commands there
-
-[student@workstation ~]$ ostree static-delta generate rhel/9/x86_64/edge --repo ostree/repo/
-Generating static delta:
-  From: 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-  To:   cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-modified: 13
-new reachable: metadata=36 content regular=53 symlink=12
-rollsum for 0/13 modified
-processing bsdiff: [0/11]
-processing bsdiff: [1/11]
-processing bsdiff: [2/11]
-processing bsdiff: [3/11]
-processing bsdiff: [4/11]
-processing bsdiff: [5/11]
-processing bsdiff: [6/11]
-processing bsdiff: [7/11]
-processing bsdiff: [8/11]
-processing bsdiff: [9/11]
-processing bsdiff: [10/11]
-fallback for 02b2a4244f8b3db7248bf784237ca39b9304527ded8ee9033621b1354e069807 (6.8 MB)
-part 1 n:46 compressed:696045 uncompressed:49739412
-part 2 n:53 compressed:301665 uncompressed:1198953
-uncompressed=50938365 compressed=997710 loose=560538
-rollsum=0 objects, 0 bytes
-bsdiff=11 objects
-
-Hey, the "killed" might be because of the kernel OOM Killer, in that case I need more memory on servera.
-Confirmed, dmesg shows the OOM messages
-
-[16655.203087] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/user.slice/user-1000.slice/session-3.scope,task=ostree,pid=2270,uid=0
-[16655.204792] Out of memory: Killed process 2270 (ostree) total-vm:737900kB, anon-rss:458868kB, file-rss:0kB, shmem-rss:0kB, UID:0 pgtables:1004kB oom_score_adj:0
-
-servera is less than 1G RAM.
-
-[student@servera ~]$ free -h
-               total        used        free      shared  buff/cache   available
-Mem:           771Mi       394Mi        57Mi       6.0Mi       449Mi       376Mi
-Swap:             0B          0B          0B
-[student@servera ~]$ df -h /
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/vda4       9.4G  5.6G  3.8G  61% /
-[student@servera ~]$ sudo dd if=/dev/zero of=/swap bs=1M count=1024
-[sudo] password for student: 
-1024+0 records in
-1024+0 records out
-1073741824 bytes (1.1 GB, 1.0 GiB) copied, 4.20099 s, 256 MB/s
-[student@servera ~]$ du -sh /swap 
-1.0G    /swap
-[student@servera ~]$ sudo mkswap /swap
-mkswap: /swap: insecure permissions 0644, fix with: chmod 0600 /swap
-Setting up swapspace version 1, size = 1024 MiB (1073737728 bytes)
-no label, UUID=1ca66288-c317-41ee-9287-22708ab54c8e
-[student@servera ~]$ sudo chmod 0600 /swap 
-[student@servera ~]$ sudo swapon /swap
-[student@servera ~]$ free -h
-               total        used        free      shared  buff/cache   available
-Mem:           771Mi       378Mi        56Mi       6.0Mi       468Mi       392Mi
-Swap:          1.0Gi          0B       1.0Gi
-
-Let's see if my 1G swap was enough to prevent OOM
-
-In the meantime, trying an empty delta on workstation
-
-[student@workstation ~]$ ostree summary -u --repo ostree/repo/
-[student@workstation ~]$ ostree static-delta list  --repo ostree/repo/
-4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b-cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-
-the "empty" delta generates many more messages (because there's more stuff packed on it)
-
-[student@workstation ~]$ ostree static-delta generate --empty rhel/9/x86_64/edge --repo ostree/repo/
-Generating static delta:
-  From: empty
-  To:   cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-modified: 0
-new reachable: metadata=3503 content regular=24335 symlink=2985
-rollsum for 0/0 modified
-fallback for d1a50732d88ad80ef541ad6f51b5858abd10425622257529e8f67eee7e0e9569 (13.4 MB)
-fallback for 5316cea99d220bf7c7401d030d5522ffd6c6bb6cbc0bd94864081adc68e30925 (29.1 MB)
-fallback for 7411ad0abd796b98e28da0652bba68a284b0339923278af3fe1a2ef1f42a9136 (11.3 MB)
-fallback for b926924c33ea2a5b9b679281d89fdfc4a8828605409bf3ab99d3db2bdd1e60ec (4.4 MB)
-fallback for c985dded9ffb627058eeedd8a173c5c47c39b7469210181f2ca189f0344b8a32 (15.0 MB)
-fallback for 02b2a4244f8b3db7248bf784237ca39b9304527ded8ee9033621b1354e069807 (6.8 MB)
-fallback for b7cb81d1f257845b2cfe470e850048efe190372abbc02611b67a248de377c87f (17.5 MB)
-fallback for 083d2224f3999a45b88f26dbc1f2fe93de85e0c0b01d6b672017196ea6e8aab8 (9.0 MB)
-fallback for ab607714c1858adfcbce6ce1040d1a0f4dae861453d3da0e51fa38b5ba2ff8d9 (15.4 MB)
-fallback for a11ae6310d49791caeea4baf98d8a57b752850f1ff99fb3276d14a31ba240bc2 (26.8 MB)
-fallback for 7e493333ebe56a6eca986b674654ab3c271013541aa7df75b239e8d80360f092 (4.5 MB)
-fallback for 0816eb2ea4d2a1d5ef5f266a8f4249029af5afc497b9bfa20584830f5c28448a (10.0 MB)
-fallback for be09d97710d15310edf40a797f9e9cfca85a22cd78ccc6d1756e9e1ae3acf92f (6.7 MB)
-fallback for 5593647774d9e1b8cdd5b882688d88927b7e93dc51dc801eb18912ef06994c84 (8.5 MB)
-fallback for 899e29a5faa340f0ca2a5a232bec478a30eb9c82896a53d9bec7597778b5710e (88.2 MB)
-fallback for 04b9cebea5b708a4fc9075db37a19066384cb8f9e03bbd9c80bfa5f04a056432 (12.2 MB)
-fallback for aa043ae804cf44e8c07cf8f9efe0fa15cbe267e8140e70b17e6ec8118a418fac (4.1 MB)
-fallback for 1ee5a7d922241e5afe69ff55d12e919b1c0435305a9de1d1cac88678eaf0c354 (5.9 MB)
-fallback for 06f22a14a93b98a8cfe82bf0eb6d4b4ac7189ca40f8e5a545810e3304ed0433c (4.4 MB)
-fallback for ea1f035d97d3c5a7a32d45fac21f245d95030a8d7ee038158c1296a141e318e4 (10.1 MB)
-fallback for 043ccca292f6c1dba0b536fe58412f8f585b76c9dcbd0304cc4d7a56ae5080bd (5.2 MB)
-fallback for 9d66c7bb676b62c1affbc3b085f2dddaeefde1f7b80187d13c7d1a524862b1b4 (5.9 MB)
-fallback for 65574f925e42fd731a028923177853a0728a1a6ab2d14fe7f8a1edbf772c5540 (44.3 MB)
-fallback for 096ed81a1f7cde93e513f37c66fffb68c7083dabb4e8e6389d94d6dcf472a1eb (49.3 MB)
-fallback for cd02a062e4886c73488a5cf6499de18b24d33cbae6f26264f01dcf4d852a52bc (12.9 MB)
-fallback for c33780dae41ea260ce69d71f835940e12409a5719dfbd6bc4ea2d395956b28dc (28.4 MB)
-fallback for e9dc4a9a20f238620e8dc7f25a409c5c0a3b0b28b5e0b74eb2c97af19283cbd6 (13.4 MB)
-fallback for c9eefd0ae5115084612fb9f088cd6b39832bb334805b87dc5e9dfc8e84bee2d6 (4.7 MB)
-part 1 n:4202 compressed:17654629 uncompressed:31990891
-part 2 n:1161 compressed:18360841 uncompressed:31996811
-part 3 n:1015 compressed:15346541 uncompressed:31615570
-part 4 n:1044 compressed:18307597 uncompressed:30993008
-part 5 n:782 compressed:19239617 uncompressed:31049600
-part 6 n:972 compressed:21069445 uncompressed:31657993
-part 7 n:796 compressed:16585221 uncompressed:30196643
-part 8 n:777 compressed:19034217 uncompressed:31991665
-part 9 n:823 compressed:16713593 uncompressed:31983829
-part 10 n:973 compressed:16725301 uncompressed:31975039
-part 11 n:925 compressed:18152637 uncompressed:30256452
-part 12 n:1036 compressed:15324461 uncompressed:31864765
-part 13 n:717 compressed:16260937 uncompressed:31093667
-part 14 n:867 compressed:17973417 uncompressed:29149437
-part 15 n:894 compressed:20794105 uncompressed:31945963
-part 16 n:774 compressed:20183625 uncompressed:31925387
-part 17 n:830 compressed:19614421 uncompressed:31965231
-part 18 n:814 compressed:18673181 uncompressed:31668281
-part 19 n:865 compressed:17585705 uncompressed:30596735
-part 20 n:889 compressed:16899273 uncompressed:30864879
-part 21 n:909 compressed:15913005 uncompressed:31959207
-part 22 n:729 compressed:17482269 uncompressed:30805152
-part 23 n:807 compressed:15890525 uncompressed:31915953
-part 24 n:715 compressed:15487277 uncompressed:31416158
-part 25 n:649 compressed:16381785 uncompressed:31930191
-part 26 n:785 compressed:16790849 uncompressed:31961515
-part 27 n:896 compressed:18922693 uncompressed:31891189
-part 28 n:1080 compressed:16684673 uncompressed:31660603
-part 29 n:3068 compressed:2458729 uncompressed:5464234
-uncompressed=885786048 compressed=496510569 loose=553126637
-rollsum=0 objects, 0 bytes
-bsdiff=0 objects
-
-[student@workstation ~]$ ostree static-delta list  --repo ostree/repo/
-4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b-cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-
-end
-////
-
-////
-begin add metadata to a commit, cannot be done with image builder, would add new commits to the repo
-
-the checkout and commit trick requires sudo (just publishing could do without) and I have to check that I can install/boot from the results. Also, checkout and commit are slow :-(
-
-# first
-
-[student@servera ~]$ ostree refs --repo v1/repo
-rhel/9/x86_64/edge
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo v1/repo
-commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
-Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
-(no subject)
-
-[student@servera ~]$ rm -rf delete-me/
-[student@servera ~]$ sudo ostree checkout 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 delete-me --repo v1/repo
-[student@servera ~]$ sudo ostree commit --parent 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 --subject 'web server v1' delete-me --branch rhel/9/x86_64/edge --repo v1/repo
-71c8addf9c11707070c7f565cdff1682d4fc0849439d924d57762a63028833b0
-
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo v1/repo
-commit 71c8addf9c11707070c7f565cdff1682d4fc0849439d924d57762a63028833b0
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
-Date:  2024-10-10 21:38:43 +0000
-
-    web server v1
-
-commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
-Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
-(no subject)
-
-crap messed up, commit to the wrong repo, must start over :-(
-
-# second
-
-[student@servera ~]$ sudo rm -rf delete-me
-
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo v2/repo
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
-(no subject)
-
-<< History beyond this commit not fetched >>
-[student@servera ~]$ sudo ostree checkout 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b delete-me --repo v2/repo
-
-[student@servera ~]$ sudo ostree commit --parent 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b --subject 'web server v2' delete-me --branch rhel/9/x86_64/edge --repo v2/repo
-3f10da18855512fb69920fd14133dff1a5ef8683298a387ee18d127bbec2797b
-
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo v2/repo
-commit 3f10da18855512fb69920fd14133dff1a5ef8683298a387ee18d127bbec2797b
-Parent:  4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-10 22:19:16 +0000
-
-    web server v2
-
-commit 4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
-(no subject)
-
-<< History beyond this commit not fetched >>
-
-# third
-
-[student@servera ~]$ sudo rm -rf delete-me
-
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo v3/repo
-commit cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-Parent:  4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-ContentChecksum:  a366c9c7b9887f26356db475c62aee3197ccdb505fe90406b391b11b049e47d0
-Date:  2024-10-10 16:37:33 +0000
-Version: 9.2
-(no subject)
-
-<< History beyond this commit not fetched >>
-
-[student@servera ~]$ sudo ostree checkout cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88 delete-me --repo v3/repo
-
-[student@servera ~]$ sudo ostree commit --parent cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88 --subject 'web server v3' delete-me --branch rhel/9/x86_64/edge --repo v3/repo
-c324e0e2573aa3231d6a4be93f4ea34d5abc09d134fa51d5ae9bd0ab84ccbc4b
-
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo v3/repo
-commit c324e0e2573aa3231d6a4be93f4ea34d5abc09d134fa51d5ae9bd0ab84ccbc4b
-Parent:  cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-ContentChecksum:  a366c9c7b9887f26356db475c62aee3197ccdb505fe90406b391b11b049e47d0
-Date:  2024-10-10 22:24:30 +0000
-
-    web server v3
-
-commit cfd48bbd633b68844c4ca8122f26e5fa36d8aad929525c61331d0aab5c3d3e88
-Parent:  4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-ContentChecksum:  a366c9c7b9887f26356db475c62aee3197ccdb505fe90406b391b11b049e47d0
-Date:  2024-10-10 16:37:33 +0000
-Version: 9.2
-(no subject)
-
-<< History beyond this commit not fetched >>
-
-# looks like it installs when the repo contains only #first
-
-[student@servera ~]$ sudo ostree pull-local --repo=/var/www/html/repo v2/repo
-506 metadata, 1893 content objects imported; 0 bytes content written                                                                                                 
-[student@servera ~]$ 
-[student@servera ~]$ 
-[student@servera ~]$ ostree log rhel/9/x86_64/edge --repo /var/www/html/repo
-commit 3f10da18855512fb69920fd14133dff1a5ef8683298a387ee18d127bbec2797b
-Parent:  4caef3752842366bbeab77b57b79854c6cb7bf4f2b62e82190cfba5d1cc3c12b
-ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
-Date:  2024-10-10 22:19:16 +0000
-
-    web server v2
-
-<< History beyond this commit not fetched >>
-
-# crap, pull-local of #second deleted the history. :-(
-
-# next attempt: creating the original state (three commits in the repo) and ammend only head.d
-
-# other attempt: building the update images from the commit that got metadata. add summary to repo (not image!), get id, build v2, add metadata, upgrade device
-
-end
-////
-
-
-////
-begin
-
-Need more updates to show:
-
-1. That an edge device only keeps the latest two updates (or how to prune older from devices)
-2. That I can retire an update, after finding it failed in many devices, so other devices won't get it
-3. That retiring an update (removing a commit from an ostree repo) won't break the chain from head to previous, and I can still rollback to those olders if I find more issues or regressions -- OK if a device already rolled back, it has no previous to go. I must push whatever they need to go back to as if it's a newer one.
-
-end
-////
+7. Still on your _development machine_, verify that your _database VM_ actually fetched upgrades using static deltas.
+
+.. Search the system logs on the _database VM_. You should see two entries with a message `libostree pull`: one from checking for updates, which referes to no deltas and has a small transfer size, and another from the actual upgrade operation, which refers to a delta and with a larger transfer size.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge-db ~]$ *sudo journalctl --no-pager -t rpm-ostree -g pull*
+Oct 22 15:39:53 db rpm-ostree[1246]: libostree pull from 'db' for rhel/9/x86_64/db complete
+                                     security: GPG: disabled 
+                                     security: SIGN: disabled http: TLS
+                                     non-delta: meta: 2 content: 0
+                                     transfer: secs: 0 size: 18.5 kB
+Oct 22 15:40:45 db rpm-ostree[1246]: libostree pull from 'db' for rhel/9/x86_64/db complete
+                                     security: GPG: disabled 
+                                     security: SIGN: disabled http: TLS
+                                     delta: parts: 2 loose: 2
+                                     transfer: secs: 3 size: 993.2 kB
+-- Boot c7ab9e1e55944e17a38672c152c9106d --
+--
++
+NOTE: If you do not see any evidence of using static deltas to perform the upgrade operation, it might be because you forgot to update the summary file of the remote OSTree repository after creating the static delta. In that case, the upgrade didn't use the available static delta.
+
+.. If you seach the system log of the _test VM_ from the previous labs, your would see entries similar to the folowing.
++
+[source,subs="verbatim,quotes"]
+--
+[core@edge ~]$ sudo journalctl --no-pager -t rpm-ostree -g pull
+[sudo] password for core: 
+-- Boot f744fcc757d74cb9823d3315a3a5d373
+Oct 22 16:39:47 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86_64/edge complete
+                                       security: GPG: disabled 
+                                       security: SIGN: disabled http: TLS
+                                       non-delta: meta: 2 content: 0
+                                       transfer: secs: 0 size: 18.5 kB
+Oct 22 16:40:00 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86_64/edge complete
+                                       security: GPG: disabled 
+                                       security: SIGN: disabled http: TLS
+                                       non-delta: meta: 507 content: 1893
+                                       transfer: secs: 7 size: 121.5 MB
+-- Boot dc233afb346f4aa2b9e25d64ae9f4c3c --
+--
++
+Notice that all entries are `non-delta` pulls.
+
+7. Switch to your _web server machine_ and verify that the web server served requests for using static deltas.
+
+.. Check the last lines of the access logs of the Apache Web Server. They should include requests with a path of `/repo/deltas` which refer to the two parts of the delta as seen on the logs from the `rpm-ostree` command in the previous step.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo tail /var/log/httpd/access_log*
+172.25.250.9 - - [22/Oct/2024:15:43:42 -0400] "GET /repo/objects/74/85f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3.commitmeta HTTP/1.1" 404 196 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:43:42 -0400] "GET /repo/objects/74/85f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3.commit HTTP/1.1" 200 18260 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/summary.sig HTTP/1.1" 404 196 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/summary HTTP/1.1" 200 672 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/config HTTP/1.1" 200 58 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/delta-indexes/dI/X3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM.index HTTP/1.1" 200 205 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/deltas/NJ/F_p7mLUGVaFohIhIZAg08t_5AOM_B9alxYSLKRm44-dIX3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM/superblock HTTP/1.1" 200 25012 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/deltas/NJ/ F_p7mLUGVaFohIhIZAg08t_5AOM_B9alxYSLKRm44-dIX3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM/0 HTTP/1.1" 200 379009 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:15:44:29 -0400] "GET /repo/deltas/NJ/F_p7mLUGVaFohIhIZAg08t_5AOM_B9alxYSLKRm44-dIX3Cn2_g3m1PBFUivFiAyJgaJ5Rfsze1JjREsWUYKM/1 HTTP/1.1" 200 588953 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:16:02:35 -0400] "HEAD /repo HTTP/1.1" 301 - "-" "curl/7.76.1"
+--
+<.> Request for the summary file, from which an edge device finds about the availability of static deltas.
+<.> Request for the indexes of deltas, from which an edge device finds if there's a delta that matches its upgrade operations
+<.> Request for the superblock of the desired delta, from which an edge device finds its parts
+<.> Request for part 1 of the delta 
+<.> Request for part 2 of the delta
+
+.. If you were checking the logs from upgrading the _test VM_ from the previous lab, you would see requests similar to the following.
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo tail -f /var/log/httpd/access_log*
+...
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/summary HTTP/1.1" 200 672 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/config HTTP/1.1" 200 58 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/delta-indexes/k1/Buyn565biiarvRuIyecbXDRoMYVrzR5IcYoZFo68w.index HTTP/1.1" 404 196 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/93/506eca7e7ae5b8a26abbd1b88c9e71b5c346831856bcd1e48718a19168ebcc.commitmeta HTTP/1.1" 404 196 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/eb/049ca6ed02d59965726ea3820798c6295f72643447e40e1e70405bcee57fad.dirtree HTTP/1.1" 200 1095 "-" "libostree/2022.6" <.>
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/0c/838feff043ef5f56180b54e340733174765fb47c51341edc6937cb5b724970.dirtree HTTP/1.1" 200 815 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/56/76902fc461f868f4e2f1b214a21b582b9c941a6dfd9fcbc114d234d65c14dd.dirtree HTTP/1.1" 200 34351 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/7e/a2c5410038e1f58baeddddee3b775e64c304296f574c872f5f92e8623df2d0.dirtree HTTP/1.1" 200 9675 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/a6/5d2dc8c573696c941646077906a4984ef9ab485d565170e45940508dc96812.dirtree HTTP/1.1" 200 2699 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/a6/35c3efc51056fe97f5674427f12574b9e9ed925959afc64b1634713df02abb.dirtree HTTP/1.1" 200 32916 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/6a/66c95127808bb8c723e163b7a0557a54f010132deb04b70a15bd15d0269f74.dirtree HTTP/1.1" 200 4454 "-" "libostree/2022.6"
+172.25.250.9 - - [22/Oct/2024:16:39:52 -0400] "GET /repo/objects/13/5479584d3d98616cedfb7c334995cb819177b7c13966e7386bb39b72b2e863.dirtree HTTP/1.1" 200 19012 "-" "libostree/2022.6"
+...
+--
+<.> Request for the summary file, from which an edge device finds about the availability of static deltas.
+<.> Request for the indexes of deltas, notice it fails with HTTP error 404 because there are no deltas for the commit on the _test VM_.
+<.> Request for the commit metadata, from which an edge device gets a list of files on the OSTree commit.
+<.> From now on, many requests, one for each individual file and directory in the OSTree commit.
+
+As you see, the usage of static deltas is transparent to administrators of edge devices. Upgrades will not fail because there are no static deltas, and you wouldn't notice any performance improvement if your updates are small as in the examples of this course and network connectivity between edge devices end their remote OSTree repositories is good.
+
+== Next Steps
+
+This was the last activity in this course. Stay tuned for the reminaing Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot and FDO.
