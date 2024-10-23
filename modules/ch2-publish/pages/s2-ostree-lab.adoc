@@ -52,14 +52,14 @@ API server status:
 [source,subs="verbatim,quotes,attributes"]
 --
 $ *ls *commit.tar*
-_{compose-uuid-httpd-v1-aaaaaaaaaaaaaa}_-commit.tar
+_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_-commit.tar
 --
 
 .. To ease the following steps, copy and paste the UUID from the file name to a shell variable.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-$ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaaaa}_*
+$ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_*
 --
 
 .. If you deleted the temporary directory from the previous lab, extract the edge commit image contents again to a temporary directory.
@@ -130,7 +130,7 @@ WARNING: Production deployments usually require further customization, such as e
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-$ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaaaa}_*
+$ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_*
 --
 
 .. Install the Apache Web Server packages from RHEL.
@@ -201,7 +201,7 @@ $ *scp $UUID-commit.tar servera.lab.example.com:~*
 [source,subs="verbatim,quotes,attributes"]
 --
 $ *ls -1*
-_{compose-uuid-httpd-v1-aaaaaaaaaaaaaa}_-commit.tar
+_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_-commit.tar
 $ *sudo tar xf ~/$UUID-commit.tar -C /var/www/html*
 --
 +
