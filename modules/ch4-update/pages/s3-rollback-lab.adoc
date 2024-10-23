@@ -21,9 +21,9 @@ Finally, you need the _test VM_ that you updated in xref:s2-update-lab.adoc[the 
 
 These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
-If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. In this case, the `workstation` VM is your _development machine_, and the `servera` VM is your _web server_ machine. If not, please adapt the instructions to your test environment. 
+If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. In this case, the `workstation` VM is your _development machine_, and the `servera` VM is your _web server machine_. If not, please adapt the instructions to your test environment. 
 
-You will perform some steps of this lab on your _development machine_ and some steps on the _web server_ machine. Pay attention to the instructions at each step!
+You will perform some steps of this lab on your _development machine_ and some steps on your _web server machine_. Pay attention to the instructions at each step!
 
 == Instructions
 
