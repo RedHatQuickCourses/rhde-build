@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Publish Operating System Images for Edge Devices :: Building Red Hat Device Edge Images</title>
-    <link rel="prev" href="../ch1-build/s9-summary.html">
-    <link rel="next" href="s1-ostree.html">
+    <title>Summary :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s4-deltas-lab.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -82,21 +81,21 @@
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Publish Operating System Images for Edge Devices</a>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s1-ostree.html">Introduction to OSTree Technology</a>
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+    <a class="nav-link" href="../ch2-publish/s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s4-summary.html">Summary</a>
+    <a class="nav-link" href="../ch2-publish/s4-summary.html">Summary</a>
   </li>
 </ul>
   </li>
@@ -128,22 +127,22 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
+    <a class="nav-link" href="index.html">Update Edge Devices with New Operating System Images</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+    <a class="nav-link" href="s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch4-update/s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+    <a class="nav-link" href="s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch4-update/s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+    <a class="nav-link" href="s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+    <a class="nav-link" href="s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch4-update/s5-summary.html">Summary</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s5-summary.html">Summary</a>
   </li>
 </ul>
   </li>
@@ -186,7 +185,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
-    <li><a href="index.html">Publish Operating System Images for Edge Devices</a></li>
+    <li><a href="index.html">Update Edge Devices with New Operating System Images</a></li>
+    <li><a href="s5-summary.html">Summary</a></li>
   </ul>
 </nav>
 </div>
@@ -195,45 +195,37 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Publish Operating System Images for Edge Devices</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Goal</dt>
-<dd>
-<p>Publish RHEL for Edge images on remote OSTree repositories.</p>
-</dd>
-</dl>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
-<div class="sectionbody">
+<h1 class="page">Summary</h1>
 <div class="paragraph">
-<p>This chapter introduces OSTree repository management and OSTree concepts such as commits and remotes.</p>
+<p>In this chapter, you learned:</p>
 </div>
-<div class="paragraph">
-<p>After explaining these concepts, this chapter presents a series of hands-on activities which configure a web server to provide OSTree repositories and publish edge commit images from Image Builder on those repositories. The next chapters use those OSTree repositories to provision devices in edge locations, and delivering updates to edge devices.</p>
-</div>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>No matter how you provision your edge devices, they need access to remote OSTree repositories to fetch system updates.</p>
+</li>
+<li>
+<p>Edge commit images used for system updates must be created with a reference to an existing OSTree repository and an OSTree branch with at least one commit.</p>
+</li>
+<li>
+<p>Devices provisioned using edge installer images are <strong>NOT</strong> configured with an OSTree remote, you must configure it before applying updates.</p>
+</li>
+<li>
+<p>RPM-OSTree stages upgrades on the system disk, as a new OSTree commit, and applies then on the next boot. It also keeps the previous OSTree commit so you can rollback from the upgrade.</p>
+</li>
+<li>
+<p>Changes to files in <code>/etc</code> and <code>/var</code> are retained during system updates and rollbacks.</p>
+</li>
+<li>
+<p>OSTree static deltas between two OSTree commits make system upgrades faster and more reliable for devices with high latency or low-bandwidth network connections, and most be created manually.</p>
+</li>
+<li>
+<p>Every time you add commits or static deltas to an OSTree repository, you must update its summary file.</p>
+</li>
+</ul>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="../ch1-build/s9-summary.html">Summary</a></span>
-  <span class="next"><a href="s1-ostree.html">Introduction to OSTree Technology</a></span>
+  <span class="prev"><a href="s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a></span>
 </nav>
 </article>
   </div>

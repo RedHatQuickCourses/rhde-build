@@ -142,6 +142,9 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s5-summary.html">Summary</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -289,7 +292,7 @@ Pending SME Review &amp; Proofreading
 <p>The process for creating an edge installer image (or its simplified counterpart) requires a minimal blueprint. There are a few customizations that you could include in that blueprint, such as defining Linux users and groups, but most other customizations, and any attempt at including package information, will fail the compose.</p>
 </div>
 <div class="paragraph">
-<p>The composition for edge installer images (and also for edge simplified images) requires two arguments:</p>
+<p>The compose for creating edge installer images (and also for edge simplified images) requires two arguments:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -337,7 +340,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_file_system_layout_of_edge_systems"><a class="anchor" href="#_file_system_layout_of_edge_systems"></a>File System Layout of Edge Systems</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Just so you have an idea of what to expect in an RHEL for Edge system, and you can verify that you really booted from an Edge system image, let&#8217;s describe the RPM-OSTree file system layout.</p>
+<p>Just so you have an idea of what to expect in an RHEL for Edge system, and you can verify that you really booted from an edge system image, let&#8217;s describe the RPM-OSTree file system layout.</p>
 </div>
 <div class="paragraph">
 <p>Unlike package-based systems, which provide freedom of using multiple disk devices and partitions, LVM logical volumes, and many other choices, RPM-OSTree requires a fixed file system layout based on a read-only <code>/usr</code> directory, to ensure the pristine state of the operating system as booted from its system image.</p>
