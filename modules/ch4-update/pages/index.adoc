@@ -7,8 +7,8 @@ WARNING: Work In Progress
 
 == Introduction
 
-This chapter explains how to use RPM-OStree technoly from RHEL to apply and test edge device updates, as part of a development or CI/CD workflow.
+This chapter explains how to use RPM-OStree technology from RHEL to apply and test edge device updates, as part of a development or CI/CD workflow.
 
 This chapter presents a series of hands-on activities which update the operating system in VMs using OSTree repositories, and optimize those system updates by building static deltas.
 
-This is the final chapter of this course. Stay tuned for future courses which teach othr features included in Red Hat Device Edge, such as MicroShift and Green Boot.
+This is the final chapter of this course. Stay tuned for future courses which teach other features included in Red Hat Device Edge, such as MicroShift and Green Boot.

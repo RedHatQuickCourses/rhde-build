@@ -1,4 +1,4 @@
-:time_estimate: 11
+:time_estimate: 14
 :compose-uuid-mysql-v2-bbbbbbbbbbbb: e0722e00-9cd1-4d7f-96fc-83776eac85fc
 
 = Lab: Update Edge Devices Using Static Deltas
@@ -31,7 +31,7 @@ You will perform some steps of this lab on your _development machine_ and some s
 it seems "user" doesn't work well with ostree (at least installer images) but a %post-install script does ]
 https://bugzilla.redhat.com/show_bug.cgi?id=1838859
 
-Got confirmation that the edge installer image ships with a different Anaconda setup which doesn't enable all options. While the RHEL installer is optimized for interactive instrallation, the edge installer is optmized for unattended installation.
+Got confirmation that the edge installer image ships with a different Anaconda setup which doesn't enable all options. While the RHEL installer is optimized for interactive installation, the edge installer is optmised for unattended installation.
 https://redhat-internal.slack.com/archives/C022TDCV3FH/p1729527320272209?thread_ts=1729268869.980959&cid=C022TDCV3FH
 
 They claim users from blueprints should work and have root access (wheel group)  but that failed in my tests
@@ -380,7 +380,7 @@ nano-5.6.1-5.el9.x86_64
 
 7. Still on your _development machine_, verify that your _database VM_ actually fetched upgrades using static deltas.
 
-.. Search the system logs on the _database VM_. You should see two entries with a message `libostree pull`: one from checking for updates, which referes to no deltas and has a small transfer size, and another from the actual upgrade operation, which refers to a delta and with a larger transfer size.
+.. Search the system logs on the _database VM_. You should see two entries with a message `libostree pull`: one from checking for updates, which refers to no deltas and has a small transfer size, and another from the actual upgrade operation, which refers to a delta and with a larger transfer size.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -400,7 +400,7 @@ Oct 22 15:40:45 db rpm-ostree[1246]: libostree pull from 'db' for rhel/9/x86_64/
 +
 NOTE: If you do not see any evidence of using static deltas to perform the upgrade operation, it might be because you forgot to update the summary file of the remote OSTree repository after creating the static delta. In that case, the upgrade didn't use the available static delta.
 
-.. If you seach the system log of the _test VM_ from the previous labs, your would see entries similar to the folowing.
+.. If you search the system log of the _test VM_ from the previous labs, your would see entries similar to the following.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -471,4 +471,4 @@ As you see, the usage of static deltas is transparent to administrators of edge 
 
 == Next Steps
 
-This was the last activity in this course. Stay tuned for the reminaing Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot and FDO.
+This was the last activity in this course. Stay tuned for the remaining Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot and FDO.

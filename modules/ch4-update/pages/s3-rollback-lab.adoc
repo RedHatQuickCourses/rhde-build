@@ -130,7 +130,7 @@ $ *composer-cli compose list running*
 ID   Status   Blueprint   Version   Type
 --
 
-.. Make sure your compose finished sucessfully. Pay attention to the compose UUID and version so you don't check the status of the wrong compose. 
+.. Make sure your compose finished successfully. Pay attention to the compose UUID and version so you don't check the status of the wrong compose. 
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -233,7 +233,7 @@ Version: 9.2
 <.> Commit ID of the new edge commit image
 <.> Parent commit of the new edge commit image
 <.> Previous commit, it was the HEAD at the beginning of this lab
-<.> Parent commmit of the previous commit, it was the initial commit
+<.> Parent commit of the previous commit, it was the initial commit
 <.> Initial commit
 
 5. Still on your _development machine_, stage the new edge commit image on your _test VM_.
@@ -336,7 +336,7 @@ php-8.0.27-1.el9_1.x86_64
 
 7. Still on your _development machine_, change configurations and application data on your _test VM_, so you can verify if those changes are retained by rolling back an update.
 
-.. Change the timezone of your _test VM_.
+.. Change the time zone of your _test VM_.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -429,7 +429,7 @@ package php is not installed
 cockpit-286.1-1.el9.x86_64
 --
 
-.. Check that your _test VM_ still contains the changes to timezone and the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
+.. Check that your _test VM_ still contains the changes to the system time zone and the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
 +
 [source,subs="verbatim,quotes"]
 --
