@@ -59,7 +59,7 @@
     <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development VM</a>
+    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
@@ -228,7 +228,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
@@ -272,7 +272,7 @@ API server status:
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
 description = "blueprint-rhel9-edge"
-version = "0.0.1"
+version = "0.1.0"
 modules = [ ]
 groups = [ ]
 
@@ -308,7 +308,7 @@ rhel9-edge</code></pre>
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints show rhel9-edge</strong>
 name = "rhel9-edge"
 description = "blueprint-rhel9-edge"
-version = "0.0.1"
+version = "0.1.0"
 ...</code></pre>
 </div>
 </div>
@@ -329,12 +329,11 @@ blueprint: rhel9-edge v0.0.1
 </div>
 </div>
 <div class="paragraph">
-<p>The list of packages is very long, even for minimal blueprints. It is important to check that there are no error messages in the output.</p>
+<p>The list of packages is very long, even for minimal blueprints. It is important to check that there are no error messages in the output, which would indicate an error in the configuration of RPM repositories configured on the Image Builder service on your <em>developer machine</em>.</p>
 </div>
 </li>
 <li>
-<p>Change the blueprint to add an Apache Web Server. Suppose that your
-original intent was to include the web server as the application on this blueprint, but forgot to do so.</p>
+<p>Change the blueprint to add an Apache Web Server. Suppose that your original intent was to include a web server as the application on this blueprint, but forgot to do so.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -369,15 +368,22 @@ Red Hat does NOT recommend that you use Image Builder as the source of truth for
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
 description = "blueprint-rhel9-edge"
-version = "0.0.1"
-modules = [ ]
-groups = [ ]
+version = "0.1.0"
+modules = []
+groups = []
+distro = ""
 
-<strong>[[packages]]
-name = "httpd"</strong>
+[[packages]]
+name = "httpd"
 
 [customizations]
-hostname = "edge"</code></pre>
+hostname = "edge"
+
+[customizations.services]
+enabled = ["sshd", "httpd"]
+
+[customizations.firewall.services]
+enabled = ["ssh", "http"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -419,7 +425,7 @@ hostname = "edge"</code></pre>
 </div>
 </li>
 <li>
-<p>If you made a mistake in the package name, when you changed the blueprint, the pipe to <code>grep</code> will NOT hide error messages:</p>
+<p>If you made a mistake in a value such as a package name, when you changed the blueprint, the pipe to <code>grep</code> would <strong>NOT</strong> hide error messages. But if you made a mistake in the syntax of the TOML file, you will get an error message during the push operation.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-edge.toml</strong>
@@ -427,7 +433,7 @@ ERROR: BlueprintsError: 400 Bad Request: The browser (or proxy) sent a request t
 </div>
 </div>
 <div class="paragraph">
-<p>In that case, fix your file and upload the blueprint again.</p>
+<p>In both cases, fix your file and upload the blueprint again.</p>
 </div>
 </li>
 </ol>
@@ -436,7 +442,7 @@ ERROR: BlueprintsError: 400 Bad Request: The browser (or proxy) sent a request t
 </ol>
 </div>
 <div class="paragraph">
-<p>Now you know the basics of managing blueprints with the Image Builder Service.</p>
+<p>Now you know the basics of managing blueprints with the Image Builder service.</p>
 </div>
 </div>
 </div>
