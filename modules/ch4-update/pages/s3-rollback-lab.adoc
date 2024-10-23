@@ -19,7 +19,7 @@ You also need a _web server machine_ which serves an OSTree repository. Make sur
 
 Finally, you need the _test VM_ that you updated in xref:s2-update-lab.adoc[the previous lab]. While you could perform the focus tasks in this lab on a _test VM_ that was never updated before, that is, you can rollback the first update of an edge device, the instructions and outputs here assume that there are previous updates already applied to the _test VM_, to demonstrate that RPM-OSTree automatically prunes older system updates.
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. In this case, the `workstation` VM is your _development machine_, and the `servera` VM is your _web server machine_. If not, please adapt the instructions to your test environment. 
 
