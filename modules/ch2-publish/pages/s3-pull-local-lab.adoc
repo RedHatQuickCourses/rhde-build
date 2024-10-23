@@ -1,4 +1,5 @@
 :time_estimate: 7
+:compose-uuid-mysql-v1-aaaaaaaaaaaaaa: ff15f8cd-21da-489a-87d0-bb39df4b79ad
 
 = Lab: Publish Edge Images on Remote OSTree Repositories
 
@@ -6,7 +7,7 @@ _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Publish an Image Builder edge commit image in an existing remote OSTree repository so it is available to edge devices.
+Publish an edge commit image from Image Builder  in an existing remote OSTree repository so it is available to edge devices.
 
 WARNING: Pending SME Review & Proofreading
 
@@ -20,9 +21,11 @@ These instructions were tested on RHEL 9.4 [tentative!] but should work with min
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you will start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
+You will perform some steps of this lab on your _development machine_ and some steps on your _web server machine_. Pay attention to the instructions at each step!
+
 == Instructions
 
-// Switch everywhere to use the hostname in the prompt? ]
+// Switch everywhere to use the hostname in the prompt? No ]
 
 // It seems silly having to extrat the tar before pull-local but I didn't find a better way. Using ostree commit --tree didn't work (a VM can't boot from the commit)
 
@@ -57,10 +60,10 @@ mode=archive-z2
 +
 Alternatively, fetch the current commit ID of that branch from the command line. Your will get a different ID:
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge*
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+{commit-httpd-v1}
 --
 +
 Remember that the commit ID of an edge image in an OSTree repository does *not* match its UUID in the Image Builder service.
@@ -69,19 +72,13 @@ Remember that the commit ID of an edge image in an OSTree repository does *not* 
 
 .. Download the `rhel9-mysql.toml` blueprint file from the https://github.com/RedHatQuickCourses/rhde-build-samples/tree/main[course samples] git repository.
 +
-[source,subs="verbatim,quotes"]
---
-$ *curl https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-mysql.toml*
---
 
-.. Review the blueprint, it just installs and enables a MySQL server, which is currently uninitialized. [ Add a hard-coded sample database? ]
+.. Review the blueprint, it just installs and enables a MySQL server, which is uninitialized.
 +
 [source,subs="verbatim,quotes"]
 --
 $ *less rhel9-mysql.toml*
-name = "rhel9-mysql"
-description = "an edge database server"
-version = "0.0.1"
+include::1@samples:blueprints:example$rhel9-mysql.toml[]
 ...
 --
 
@@ -99,41 +96,41 @@ rhel9-mysql
 
 .. Create a compose from the second blueprint, but specify a different OSTree branch name for this compose, using the `--ref` option, else it will be considered by edge devices just another version of the first image, instead of a different image.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose start-ostree rhel9-mysql edge-commit --ref rhel/9/x86_64/db*
-Compose ff15f8cd-21da-489a-87d0-bb39df4b79ad added to the queue
+Compose {compose-uuid-mysql-v1-aaaaaaaaaaaaaa} added to the queue
 --
 +
 Remember that the UUID of the compose will be different for you.
 
 .. To ease the following steps, copy and paste the UUID of the compose, from the output of the previous command, to a shell variable.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
-$ *UUID=_ff15f8cd-21da-489a-87d0-bb39df4b79ad_*
+$ *UUID=_{compose-uuid-mysql-v1-aaaaaaaaaaaaaa}_*
 --
 
 .. Wait until your compose has finished successfully. You may need to repeat the following command multiple times.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose list*
 ID                                     Status     Blueprint         Version   Type
-ff15f8cd-21da-489a-87d0-bb39df4b79ad   RUNNING    rhel9-mysql       0.0.1     edge-commit
+{compose-uuid-mysql-v1-aaaaaaaaaaaaaa}   RUNNING    rhel9-mysql       0.0.1     edge-commit
 ...
 $ *composer-cli compose list*
 ID                                     Status     Blueprint         Version   Type
-ff15f8cd-21da-489a-87d0-bb39df4b79ad   FINISHED   rhel9-mysql       0.0.1     edge-commit
+{compose-uuid-mysql-v1-aaaaaaaaaaaaaa}   FINISHED   rhel9-mysql       0.0.1     edge-commit
 ...
 --
 
 .. Download the edge commit image from your compose.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose image $UUID*
-ff15f8cd-21da-489a-87d0-bb39df4b79ad-commit.tar
+{compose-uuid-mysql-v1-aaaaaaaaaaaaaa}-commit.tar
 --
 
 .. Copy the edge commit image to your home directory on the web server machine.
@@ -148,10 +145,10 @@ $ *scp $UUID-commit.tar servera.lab.example.com:~*
 
 .. On another terminal, start an SSH session on your web server machine (`servera`), and copy the shell variable from the first terminal.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *ssh servera*
-$ *UUID=_ff15f8cd-21da-489a-87d0-bb39df4b79ad_*
+$ *UUID=_{compose-uuid-mysql-v1-aaaaaaaaaaaaaa}_*
 --
 
 .. Extract the edge commit image to a temporary directory.
@@ -198,10 +195,10 @@ $ *rm -rf delete-me*
 
 5. Back to your _development machine_, verify that a remote client can fetch the new edge commit image from the web server by checking that you can fetch the commit ID of the new OSTree branch.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db*
-12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
+{commit-mysql-v1}
 --
 +
 Your commit ID will be different than the one above.
@@ -213,22 +210,5 @@ Now you have a web server configured to serve an OSTree repository with contains
 == Next Steps
 
 The next activity will provision local VMs from the two edge system images, using either the standard RHEL installation media or a customized edge installer image.
-
-//Tentative: Before proceeding to test the edge image using a virtual machine, the next activity demonstates using Red Hat Ansible Automation Platform to automate building and publishing edge images.
-
-// Do I need to specify the remote (--url) during an "compose start-ostree" command? Is it required to preconfigure the remote for updates? My test VMs got a remote, probably from kickstart
-
-////
-
-$ virt-install --name edge-db-1 --os-variant rhel9.2 \
- --memory 4096 --vcpus 2 --disk size=40 \
---location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
---graphics=none \
---extra-args inst.ks=http://servera.lab.example.com/rhel9-mysql.ks \
---extra-arg console=ttyS0 -v
-
-TODO include a firstboot script to configure the database? Is this the best approach? Or a good approach?
-
-////
 
 
