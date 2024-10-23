@@ -18,7 +18,7 @@ You also need a _web server machine_ which serves an OSTree repository. Make sur
 
 Finally, you need the database image that you created and published in xref:ch2-publish:s2-ostree-lab.adoc[another lab].
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
@@ -62,7 +62,7 @@ repo_version=1
 mode=archive-z2
 --
 
-.. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s3-pull-local-lab.adoc[a previous lab]. Your will get a different ID:
+.. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s3-pull-local-lab.adoc[a previous lab]. You will get a different ID:
 +
 [source,subs="verbatim,quotes"]
 --
@@ -72,7 +72,7 @@ $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db*
 +
 Pay attention to the final path element of the URL, which should be "db".
 
-.. Check that you can manage local VMs, and there's a VM left from the xref:s2-boot-lab:[previous lab].
+.. Check that you can manage local VMs, and that there's a VM left from the xref:s2-boot-lab:[previous lab].
 +
 [source,subs="verbatim,quotes"]
 --
@@ -82,7 +82,7 @@ $ *virsh list --all*
  1    edge-test-1   shut-off
 --
 +
-It's fine the existing VM displays an status of "running" instead of "shut off". You do not need the existing VM for this lab, but you will use it in a future lab.
+It's fine the existing VM displays a status of "running" instead of "shut off". You do not need the existing VM for this lab, but you will use it in a future lab.
 
 2. Create an edge installer image.
 
@@ -95,7 +95,7 @@ description = "blueprint-mysql-installer"
 version = "0.0.1"
 --
 +
-You can also downlod the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/mysql-installer.toml[installer blueprint] from sample applications repository in GitHub.
+You can also download the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/blueprints/mysql-installer.toml[installer blueprint] from the sample applications repository in GitHub.
 
 .. Upload the blueprint to the Image Builder service.
 +
@@ -203,7 +203,7 @@ $ *sudo umount temp-iso*
 
 4. Replace the kickstart in the edge installer image with one designed for unattended installation.
 
-.. Verify that you have the `mkisofs` command. If you don't, install the `xorriso` package. It's fine if have a different version than shown bellow.
+.. Verify that you have the `mkisofs` command. If you don't, install the `xorriso` package. It's fine if have a different version than shown below.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -212,7 +212,7 @@ xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
 ...
 --
 
-.. Create a new kickstart file with uses the same `ostreesetup` command from the minimal kickstart file you see in the edge installer image, but adding other commands so it can run unattended. Save the new kickstart file as `rhel9-mysql-installer.ks`
+.. Create a new kickstart file with uses the same `ostreesetup` command from the minimal kickstart file you see in the edge installer image, but adds other commands so it can run unattended. Save the new kickstart file as `rhel9-mysql-installer.ks`
 +
 [source,subs="verbatim,quotes"]
 --
@@ -275,9 +275,9 @@ timezone Etc/UTC --isUtc
 $ *sudo umount temp-iso*
 --
 
-5. Create a a _database VM_ that boots from the edge installer image.
+5. Create a _database VM_ that boots from the edge installer image.
 
-.. Create a local VM using the edge installer image from previous steps. You can choose one the following:
+.. Create a local VM using the edge installer image from the previous steps. You can choose one of the following:
 +
 * Use a graphical boot, from a virtual CD-ROM reader.
 +
@@ -289,7 +289,7 @@ $ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --
 --cdrom /home/student/new-installer.iso -v*
 --
 +
-* Use a virtual serial console and direct kernel loading, plus a reference the kickstart in the ISO image.
+* Use a virtual serial console and direct kernel loading, plus a reference to the kickstart file in the ISO image.
 +
 NOTE: You can do this from a secure shell session.
 +
@@ -366,7 +366,7 @@ active
 +--------------------+
 --
 +
-Later in this course you will update your database image to include a starter database.
+Later in this course, you will update your database image to include a starter database.
 
 8. Return to your _developer machine_, and optionally stop your _database VM_.
 +
@@ -393,9 +393,9 @@ $ *virsh list --all*
  2    edge-db-1     shut-off
 --
 
-.. If you had issues with booting or accessing your _database VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command. It may also help trying a different VM creation method, for example, if you used `--location`, try using `--cdrom`.
+.. If you had issues with booting or accessing your _database VM_, please review the xref:s2-boot-lab.adoc[previous lab] for Libvirt troubleshooting hints using the `virsh` command. It may also help to try a different VM creation method, for example, if you used `--location`, try using `--cdrom`.
 
-You just learned how to create an edge installer image and boot a test VM from an it. Notice that, unlike the xref:s2-boot-lab.adoc[previous lab], you only accessed the _web server machine_ to create the edge installer image but didn't need it to create a test VM.
+You just learned how to create an edge installer image and boot a test VM from it. Notice that, unlike the xref:s2-boot-lab.adoc[previous lab], you only accessed the _web server machine_ to create the edge installer image but didn't need it to create a test VM.
 
 == Next Steps
 
