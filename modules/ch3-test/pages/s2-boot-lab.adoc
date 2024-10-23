@@ -20,7 +20,7 @@ These instructions were tested on RHEL 9.4 [tentative!] but should work with min
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
-You will perform most steps in this lab alternating between your _development machine_ and your _web server_ machine. You will also perform a few steps from a _test VM_ that you will create as part of this lab.
+You will perform most steps in this lab alternating between your _development machine_ and your _web server machine_. You will also perform a few steps from a _test VM_ that you will create as part of this lab.
 
 == Instructions
 
@@ -41,29 +41,19 @@ API server status:
 ...
 --
 
-.. Check that a remote client can access the OSTree repository in the web server machine.
-+
-[source,subs="verbatim,quotes"]
---
-$ *curl http://servera.lab.example.com/repo/config*
-[core]
-repo_version=1
-mode=archive-z2
---
-
 .. Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in xref:ch2-publish:s2-ostree-lab.adoc[a previous lab]. You will get a different ID:
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge*
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+{commit-httpd-v1}
 --
 +
 Pay attention to the final path element of the URL, which should be "edge".
 
 2. On your _development machine_, install the Libvirtd tools and its Cockpit module, if they are not already installed.
 
-.. Install the "Virtualization Host" package group to get the libvirtd, KVM, and Qemu daemons and tools.
+.. Install the "Virtualization Host" package group to get the Libvirt, KVM, and Qemu daemons and tools.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -75,7 +65,7 @@ $ *dnf install -y cockpit-machines*
 Complete!
 --
 
-.. Grant an unprivileged user with permission to create and manage KVM/Qemu virtual machines (VMs).
+.. Grant an unprivileged user with permission to create and manage virtual machines (VMs).
 +
 [source,subs="verbatim,quotes"]
 --
@@ -90,29 +80,16 @@ $ *sudo groupmod libvirt -a -U student*
 +
 [source,subs="verbatim,quotes"]
 --
-lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --utc
-text
-
-zerombr
-clearpart --all --initlabel
-autopart --type=plain
-rootpw --lock
-user --name=core --group=wheel --password=redhat123
-
-reboot
-
-network --bootproto=dhcp 
-ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
+include::1@samples:ks:example$rhel9-httpd.ks[]
 --
 +
 You can also download the https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks[kickstart file] from sample applications repository in GitHub.
 +
-Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are two really important pieces:
+Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are three really important pieces:
 +
 ** The `autopart` command, which creates a disk partitioning scheme without using LVM. Else, your edge system would get a disk partitioning which is incompatible with RPM-OSTree and fail in a later installation stage.
 ** The `ostreesetup` command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.
+** The `%post` block, which replaces the `user` directive in a regular kickstart file.  A `user` directive would work here but it would not for edge installer images.
 
 .. Copy the Kickstart file to your home directory on the web server machine.
 +
@@ -126,10 +103,10 @@ $ *scp rhel9-httpd.ks servera.lab.example.com:~*
 
 .. Copy the kickstart file to the web server content directory.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *ls -1*
-_575d8ddc-2902-4de3-a0d5-82f5f194f5d8_-commit.tar
+{commit-httpd-v1}-commit.tar
 rhel9-httpd.ks
 $ *sudo cp rhel9-httpd.ks /var/ww/html*
 --
@@ -157,15 +134,13 @@ $ *sudo restorecon -R /var/www/html*
 [source,subs="verbatim,quotes"]
 --
 $ *curl http://servera.lab.example.com/rhel9-httpd.ks*
-lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --isUtc
+include::1@samples:ks:example$rhel9-httpd.ks[lines=1..3]
 ...
 --
 
 6. Still on your _development machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
 
-.. Download the standard RHEL installation ISO from the customer portal, or download a copy in the classroom environment at [TBD].
+.. Download the standard https://access.redhat.com/downloads/content/rhel[RHEL installation ISO] from the customer portal, from https://developers.redhat.com/products/rhel/download#getredhatenterpriselinux7163[Red Hat Developers], or download a copy in the classroom environment at [TBD]. Choose either the Network Install Image or the RHEL Server ISO for a smaller download. You do *NOT* need an Offline Install Image.
 +
 Ensure you have a complete and consistent RHEL installation ISO in the `/home/student/Downloads/rhel-9.4-x86_64-boot.iso` file before proceeding.
 
@@ -176,7 +151,7 @@ The following is a long command, it is broken into multiple lines for readabilit
 [source,subs="verbatim,quotes"]
 --
 $ *virt-install --name edge-test-1 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=40 --graphics=none \
+--memory 4096 --vcpus 2 --disk size=20 --graphics=none \
 --location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
 --extra-arg inst.ks=http://servera.lab.example.com/rhel9-httpd.ks \
 --extra-arg console=ttyS0 -v*
@@ -202,27 +177,27 @@ Password:
 
 .. Use the `rpm-ostree` command to see its deployed branch and commit.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 [core@edge ~]$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
                   Version: 9.2 (2024-09-06T22:07:45Z)
-                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+                   Commit: {commit-httpd-v1}
 --
 +
 Notice that the commit ID you see matches the one from the `curl` command at the beginning of this lab.
 
 .. You can get similar information from the `ostree` command, using its default system repository.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 [core@edge ~]$ *ostree refs*
 edge:rhel/9/x86_64/edge
 ostree/0/1/0
 [core@edge ~]$ *ostree log rhel/9/x86_64/edge*
-commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+commit {commit-httpd-v1}
 ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
 Date:  2024-09-06 22:07:45 +0000
 Version: 9.2
@@ -285,20 +260,12 @@ active
                 <title>Test Page for the HTTP Server on Red Hat Enterprise Linux</title>
 ...
 --
-+
-Later in this course, you will update your edge image to include a static web site.
 
 9. Return to your _developer machine_, and optionally stop your _test VM_.
 +
 WARNING: Do not delete (undefine) your _test VM_, you will use it during the next chapter to perform system updates.
 
-.. Detach from the serial console of the VM by typing `Ctrl+]`.
-+
-[source,subs="verbatim,quotes"]
---
-[core@edge ~]$ *^]*
-$
---
+.. Detach from the serial console of the VM by typing kbd:[Ctrl+\]].
 +
 Later you can reattach a VM serial console using the `virsh console` command.
 
@@ -325,8 +292,6 @@ Domain 'edge-test-1' destroyed
 $ *virsh undefine --remove-all-storage edge-test-1*
 Domain 'edge-test-1' has been undefined
 --
-+
-Depending on the installation and boot stage that your VM failed, you may need the `--nvram`` and `--managed-state` options of the `virsh undefine` command.
 
 You just learned how to create and check a local VM from an edge commit image that was published in a remote OSTree repository.
 
