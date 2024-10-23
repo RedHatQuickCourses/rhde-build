@@ -240,7 +240,7 @@ Pending SME Review &amp; Proofreading
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>You will perform most steps in this lab alternating between your <em>development machine</em> and your <em>web server</em> machine. You will also perform a few steps from a <em>test VM</em> that you will create as part of this lab.</p>
+<p>You will perform most steps in this lab alternating between your <em>development machine</em> and your <em>web server machine</em>. You will also perform a few steps from a <em>test VM</em> that you will create as part of this lab.</p>
 </div>
 </div>
 </div>
@@ -270,22 +270,11 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that a remote client can access the OSTree repository in the web server machine.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/config</strong>
-[core]
-repo_version=1
-mode=archive-z2</code></pre>
-</div>
-</div>
-</li>
-<li>
 <p>Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. You will get a different ID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -300,7 +289,7 @@ mode=archive-z2</code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Install the "Virtualization Host" package group to get the libvirtd, KVM, and Qemu daemons and tools.</p>
+<p>Install the "Virtualization Host" package group to get the Libvirt, KVM, and Qemu daemons and tools.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf group install -y "Virtualization Host"</strong>
@@ -313,7 +302,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Grant an unprivileged user with permission to create and manage KVM/Qemu virtual machines (VMs).</p>
+<p>Grant an unprivileged user with permission to create and manage virtual machines (VMs).</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo groupmod libvirt -a -U student</strong></code></pre>
@@ -343,19 +332,25 @@ zerombr
 clearpart --all --initlabel
 autopart --type=plain
 rootpw --lock
-user --name=core --group=wheel --password=redhat123
 
 reboot
 
-network --bootproto=dhcp
-ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge</code></pre>
+network --bootproto=dhcp 
+ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example.com/repo/ --ref=rhel/9/x86_64/edge
+
+%post --log=/var/log/anaconda/post-install.log --erroronfail
+
+useradd -g wheel core
+echo "core:redhat123" | chpasswd
+
+%end</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>You can also download the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/ks/rhel9-httpd.ks">kickstart file</a> from sample applications repository in GitHub.</p>
 </div>
 <div class="paragraph">
-<p>Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are two really important pieces:</p>
+<p>Most lines on that kickstart file can be changed according to your needs, and real-world deployments would include items such as SSH keys for remote management. There are three really important pieces:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -364,6 +359,9 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 </li>
 <li>
 <p>The <code>ostreesetup</code> command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.</p>
+</li>
+<li>
+<p>The <code>%post</code> block, which replaces the <code>user</code> directive in a regular kickstart file.  A <code>user</code> directive would work here but it would not for edge installer images.</p>
 </li>
 </ul>
 </div>
@@ -389,7 +387,7 @@ ostreesetup --nogpg --osname=rhel --remote=edge --url=http://servera.lab.example
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -1</strong>
-<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em>-commit.tar
+7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746-commit.tar
 rhel9-httpd.ks
 $ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
 </div>
@@ -425,7 +423,7 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/rhel9-httpd.ks</strong>
 lang en_US.UTF-8
 keyboard us
-timezone Etc/UTC --isUtc
+timezone Etc/UTC --utc
 ...</code></pre>
 </div>
 </div>
@@ -435,7 +433,7 @@ timezone Etc/UTC --isUtc
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Download the standard RHEL installation ISO from the customer portal, or download a copy in the classroom environment at [TBD].</p>
+<p>Download the standard <a href="https://access.redhat.com/downloads/content/rhel">RHEL installation ISO</a> from the customer portal, from <a href="https://developers.redhat.com/products/rhel/download#getredhatenterpriselinux7163">Red Hat Developers</a>, or download a copy in the classroom environment at [TBD]. Choose either the Network Install Image or the RHEL Server ISO for a smaller download. You do <strong>NOT</strong> need an Offline Install Image.</p>
 <div class="paragraph">
 <p>Ensure you have a complete and consistent RHEL installation ISO in the <code>/home/student/Downloads/rhel-9.4-x86_64-boot.iso</code> file before proceeding.</p>
 </div>
@@ -448,7 +446,7 @@ timezone Etc/UTC --isUtc
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-test-1 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=40 --graphics=none \
+--memory 4096 --vcpus 2 --disk size=20 --graphics=none \
 --location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
 --extra-arg inst.ks=http://servera.lab.example.com/rhel9-httpd.ks \
 --extra-arg console=ttyS0 -v</strong></code></pre>
@@ -499,7 +497,7 @@ State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
                   Version: 9.2 (2024-09-06T22:07:45Z)
-                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -514,7 +512,7 @@ Deployments:
 edge:rhel/9/x86_64/edge
 ostree/0/1/0
 [core@edge ~]$ <strong>ostree log rhel/9/x86_64/edge</strong>
-commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
 Date:  2024-09-06 22:07:45 +0000
 Version: 9.2
@@ -588,9 +586,6 @@ active</code></pre>
 ...</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Later in this course, you will update your edge image to include a static web site.</p>
-</div>
 </li>
 </ol>
 </div>
@@ -612,13 +607,7 @@ Do not delete (undefine) your <em>test VM</em>, you will use it during the next 
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Detach from the serial console of the VM by typing <code>Ctrl+]</code>.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>^]</strong>
-$</code></pre>
-</div>
-</div>
+<p>Detach from the serial console of the VM by typing <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>]</kbd></span>.</p>
 <div class="paragraph">
 <p>Later you can reattach a VM serial console using the <code>virsh console</code> command.</p>
 </div>
@@ -657,9 +646,6 @@ Domain 'edge-test-1' destroyed
 $ <strong>virsh undefine --remove-all-storage edge-test-1</strong>
 Domain 'edge-test-1' has been undefined</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Depending on the installation and boot stage that your VM failed, you may need the <code>--nvram`</code> and <code>--managed-state</code> options of the <code>virsh undefine</code> command.</p>
 </div>
 </li>
 </ol>

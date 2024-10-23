@@ -243,7 +243,7 @@ Pending SME Review &amp; Proofreading
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>You will perform most steps in this lab from your <em>development machine</em>. You have no need to log in on the <em>web server</em> machine if it was prepared correctly by previous labs. You will also perform a few steps from a <em>database VM</em> that you will create as part of this lab.</p>
+<p>You will perform most steps in this lab from your <em>development machine</em>. You have no need to log in on the <em>web server machine</em> if it was prepared correctly by previous labs. You will also perform a few steps from a <em>database VM</em> that you will create as part of this lab.</p>
 </div>
 </div>
 </div>
@@ -257,7 +257,7 @@ Pending SME Review &amp; Proofreading
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Verify that the Image Builder service is active and that the current Linux user can submit requests to it.</p>
+<p>Check that the Image Builder service is active and that the current Linux user can submit requests to it.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli status show</strong>
@@ -273,18 +273,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that a remote client can access the OSTree repository in the web server machine.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/config</strong>
-[core]
-repo_version=1
-mode=archive-z2</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Check that you can get the current commit ID the OSTree branch with the httpd edge system image that you created in <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">a previous lab</a>. You will get a different ID:</p>
+<p>Check that you can get the current commit ID the OSTree branch with the MySQL system image that you created in <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">a previous lab</a>. You will get a different ID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db</strong>
@@ -322,7 +311,7 @@ mode=archive-z2</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "mysql-installer"
 description = "blueprint-mysql-installer"
-version = "0.0.1"</code></pre>
+version = "0.1.0"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -479,12 +468,18 @@ zerombr
 clearpart --all --initlabel
 autopart --type=plain
 rootpw --lock
-user --name=core --group=wheel --password=redhat123
 
 reboot
 
 network --bootproto=dhcp
-ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/9/x86_64/db --nogpg</code></pre>
+ostreesetup --osname=rhel --remote=db --url=file:///run/install/repo/ostree/repo --ref=rhel/9/x86_64/db --nogpg
+
+%post --log=/var/log/anaconda/post-install.log --erroronfail
+
+useradd -g wheel core
+echo "core:redhat123" | chpasswd
+
+%end</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -512,12 +507,19 @@ Writing to 'stdio:new-installer.iso' completed successfully.</code></pre>
 </div>
 </li>
 <li>
-<p>Ensure that your bootable ISO is compatible with UEFI firmware.</p>
+<p>Ensure that your bootable ISO is compatible with UEFI firmware and has a checksum for media checks. You will get a different MD5 checksum.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>isohybrid --uefi new-installer.iso</strong>
 isohybrid: Warning: more than 1024 cylinders: 2220
-isohybrid: Not all BIOSes will be able to boot this device</code></pre>
+isohybrid: Not all BIOSes will be able to boot this device
+$ <strong>implantisomd5 new-installer.iso</strong>
+Inserting md5sum into iso image...
+md5 = 0f4dbe4cf8235c24b29477d2acbbb943
+Inserting fragment md5sums into iso image...
+fragmd5 = 938f9cf2c2967feaa5944a8be971126197a684a278739579f68ff45f48c6
+frags = 20
+Setting supported flag to 0</code></pre>
 </div>
 </div>
 </li>
@@ -562,7 +564,7 @@ You must do this from a graphics desktop.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=40 \
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=20 \
 --cdrom /home/student/new-installer.iso -v</strong></code></pre>
 </div>
 </div>
@@ -583,7 +585,7 @@ You can do this from a secure shell session.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=40 \
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=20 \
 --location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 \
 --extra-arg inst.ks=hd:LABEL=$LABEL:/osbuild.ks -v</strong></code></pre>
 </div>
@@ -636,7 +638,7 @@ Deployments:
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>ostree remote list --show-urls</strong>
-rhel  file:///run/install/repo/ostree/repo</code></pre>
+db  file:///run/install/repo/ostree/repo</code></pre>
 </div>
 </div>
 </li>
@@ -674,9 +676,6 @@ active</code></pre>
 +--------------------+</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Later in this course, you will update your database image to include a starter database.</p>
-</div>
 </li>
 </ol>
 </div>
@@ -698,16 +697,10 @@ Do not delete (<code>virsh undefine</code>) your <em>database VM</em>, you will 
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Detach from the serial console of the VM by typing <code>Ctrl+]</code>.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>^]</strong>
-$</code></pre>
-</div>
-</div>
+<p>Detach from the serial console of the VM by typing <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>]</kbd></span>.</p>
 </li>
 <li>
-<p>Optionally, stop the <em>database VM</em>. You will still use that VM in a future lab, when we apply updates to edge images.</p>
+<p>Optionally, stop your <em>database VM</em>. You will still use that VM in a future lab, when we apply updates to edge images.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh destroy edge-db-1</strong>
