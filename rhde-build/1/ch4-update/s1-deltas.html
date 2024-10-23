@@ -240,13 +240,13 @@ Work In Progress
 <p>RPM-OSTree keeps two system images side-by-side in a system, and only switches from the current to the new system image with a reboot&#8201;&#8212;&#8201;contrast that with RPM package updates, which alter files which may be in use by running processes and may produce unpredictable results.</p>
 </div>
 <div class="paragraph">
-<p>You can rollback an RPM-OSTree system into a previous known good image&#8201;&#8212;&#8201;contrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, some of which may depend on the kernel version. With an image-baed system using RPM-OStree you revert to the the kernel, libraries, and binaries of a previous system image all at one.</p>
+<p>You can rollback an RPM-OSTree system into a previous known good image&#8201;&#8212;&#8201;contrast that with rolling back an update of multiple RPM packages. With package-based systems, you can select an older kernel at boot, but you cannot easily revert all system binaries and dependency libraries, some of which may depend on the kernel version. With an image-based system using RPM-OStree you revert to the the kernel, libraries, and binaries of a previous system image all at one.</p>
 </div>
 <div class="paragraph">
 <p>You must use the <code>rpm-ostree</code> command on an edge device to download (stage) a new system image, and then reboot the system to deploy the new image. The same command allows you to rollback to the previous system image. In case you download further system updates, the one not currently active is discarded to give room to the new updates, so there&#8217;s at most two system images in edge devices and you don&#8217;t need to prune old updates nor risk exhausting disk space on the devices.</p>
 </div>
 <div class="paragraph">
-<p>Both on disk and during download, RPM-OStree takes advatage of OSTree capabilities to not store nor download files which didn&#8217;t change between the current and the new system image. But the process of checking file changes can still take multiple network transactions and be slow for systems with low-bandwidth or high-latency network connections. In that case, you&#8217;re advised to crate a static delta on your OSTree repository for faster download of updates.</p>
+<p>Both on disk and during download, RPM-OStree takes advantage of OSTree capabilities to not store nor download files which didn&#8217;t change between the current and the new system image. But the process of checking file changes can still take multiple network transactions and be slow for systems with low-bandwidth or high-latency network connections. In that case, you&#8217;re advised to crate a static delta on your OSTree repository for faster download of updates.</p>
 </div>
 </div>
 </div>
@@ -270,7 +270,7 @@ Work In Progress
 <p>The goal is, on one side, to preserve application data in <code>/var</code> across system updates, while at the same time enabling applications to include initial data in a system image; and on the other side, enable new system images to bring new configuration files and change configuration defaults, while preserving local customizations applied to the running system.</p>
 </div>
 <div class="paragraph">
-<p>If a system update requires changes to application data, for example migrating data to a new database schema, this is responsability of the application. It could run a first boot job to perform the database migration or use any other strategy. Just do not rely on RPM-OSTree itself to make application data compatible with a new version of an application and its dependencies.</p>
+<p>If a system update requires changes to application data, for example migrating data to a new database schema, this is responsibility of the application. It could run a first boot job to perform the database migration or use any other strategy. Just do not rely on RPM-OSTree itself to make application data compatible with a new version of an application and its dependencies.</p>
 </div>
 </div>
 </div>
@@ -293,7 +293,7 @@ Work In Progress
 <p>You must start Image Builder composes for updates of edge images with a reference to a remote OSTree repository and a branch. That way, the new edge commit image records the current head of the branch as its parent.</p>
 </div>
 <div class="paragraph">
-<p>An edge commit image built with a reference to a parent commit is still a complete system image. It contains all files on the image, and the edge commit image contains an OSTree repo with a single commit, without previous history. But, when it&#8217;s pulled into a remote OSTree repository, it can link to its parent there and the remove repository will deduplicate files between those commit and other commits on it.</p>
+<p>An edge commit image built with a reference to a parent commit is still a complete system image. It contains all files on the image, and the edge commit image contains an OSTree repo with a single commit, without previous history. But, when it&#8217;s pulled into a remote OSTree repository, it can link to its parent there and the remote repository will deduplicate files between those commit and other commits on it.</p>
 </div>
 </div>
 </div>
@@ -340,10 +340,10 @@ Work In Progress
 <div class="title">Figure 6. New edge image, failed some tests so it&#8217;s not promoted to production and discarded, and optionally purged from test repositories</div>
 </div>
 <div class="paragraph">
-<p>So, instead of using the latest test image (latest OSTree commit from test repositories) as the parent of the next image you build for testing, you keep using the latest production image (latest successfuly delivered to production) as the patent of all test images, until one of them is promoted all the way to production and becomes the new latest. A way of enforcing that is using, during image build, a reference production OSTree repository, even if that image might never be pulled into the production repository.</p>
+<p>So, instead of using the latest test image (latest OSTree commit from test repositories) as the parent of the next image you build for testing, you keep using the latest production image (latest successfully delivered to production) as the patent of all test images, until one of them is promoted all the way to production and becomes the new latest. A way of enforcing that is using, during image build, a reference production OSTree repository, even if that image might never be pulled into the production repository.</p>
 </div>
 <div class="paragraph">
-<p>It is perfectly fine if an edge commit image contains a remote which points to an OSTree repository which is not the one serving it. During testing you usually deploy a test VM (or phisical device) as that&#8217;s being provisioned for the first time. But, if you testing requires the RPM-OSTree update process, to perform tasks such as data schema migration, you can override the remote reference on the test machine before applying an update.</p>
+<p>It is perfectly fine if an edge commit image contains a remote which points to an OSTree repository which is not the one serving it. During testing you usually deploy a test VM (or physical device) as that&#8217;s being provisioned for the first time. But, if you testing requires the RPM-OSTree update process, to perform tasks such as data schema migration, you can override the remote reference on the test machine before applying an update.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -375,7 +375,7 @@ Edge devices provisioned using edge installer images are <strong>not</strong> co
 <p>OSTree commits are considered derived data: the source of truth of an edge commit image is not the image itself, but the source code used to build its applications, its blueprint, and package list from RPM repositories. It is assumed that you could rebuild an old edge image exactly as it were, by providing the same inputs. So, unlike a source code repository, there is no need to keep historical data on an OSTree repository.</p>
 </div>
 <div class="paragraph">
-<p>You may need manually prune an OStree repository of its latest commit. Remember that happens automatically in a test repository, when you pull in a newer test image which uses the same parent as the previous test image. But what if an image was alrey promoted all the way into production, and only then you find an issue? Pruning the latest image in a branch of a production repository prevents more edge devices from pulling that image as a system update. For devices that already applied the update, you rollback them to the previous image. And, when you fix whatever issue required you to remove the latest commit, you provide a fix as a new system image, which is just another image update to all edge devices.</p>
+<p>You may need manually prune an OStree repository of its latest commit. Remember that happens automatically in a test repository, when you pull in a newer test image which uses the same parent as the previous test image. But what if an image was already promoted all the way into production, and only then you find an issue? Pruning the latest image in a branch of a production repository prevents more edge devices from pulling that image as a system update. For devices that already applied the update, you rollback them to the previous image. And, when you fix whatever issue required you to remove the latest commit, you provide a fix as a new system image, which is just another image update to all edge devices.</p>
 </div>
 </div>
 </div>
@@ -386,13 +386,13 @@ Edge devices provisioned using edge installer images are <strong>not</strong> co
 <p>OSTree static delta helps edge devices with bad network connectivity downloading system updates in a more efficient way.</p>
 </div>
 <div class="paragraph">
-<p>The standard process for downloading OSTree updates is similar to what Rsync, Git, DNF, and similarsystems perform, which is basically a file-by-file check. If a system already has the file, move to the next. If it doesn&#8217;t, download it. This process allows a device to skip updates and move straight to the latest one, instead of having to pass through multiple intermediate updates.</p>
+<p>The standard process for downloading OSTree updates is similar to what Rsync, Git, DNF, and similar systems perform, which is basically a file-by-file check. If a system already has the file, move to the next. If it doesn&#8217;t, download it. This process allows a device to skip updates and move straight to the latest one, instead of having to pass through multiple intermediate updates.</p>
 </div>
 <div class="paragraph">
 <p>Unfortunately, the standard process requires many network transactions, as a device checks individual files on a remote repository. It does not require lots of bandwidth, as each file check sends very little data over the network but, if anything delays some of requests or their responses, the overall update may take a long time.</p>
 </div>
 <div class="paragraph">
-<p>OSTree offers the possibility of precomputing and storing static deltas between any two commits as part of an OSTree repository. OSTree clients will discover and use these precomputed deltas, called <strong>static deltas</strong>, transparently, saving network capacity and reducing the time to download updates.</p>
+<p>OSTree offers the possibility of pre-computing and storing static deltas between any two commits as part of an OSTree repository. OSTree clients will discover and use these pre-computed deltas, called <strong>static deltas</strong>, transparently, saving network capacity and reducing the time to download updates.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -404,13 +404,13 @@ Edge devices provisioned using edge installer images are <strong>not</strong> co
 <p>If it happens that an edge device skips an update, for example because it was offline for too long, It will just download changes the usual way, without using the deltas between the current and the previous commit. If you expect this to be a frequent event, you could build static deltas between the current latest and multiple previous commits: one delta for latest → latest-1, another delta for latest → latest-2, one more for latest → latest-3, and so on.</p>
 </div>
 <div class="paragraph">
-<p>Each static delta takes up disk space on OSTree repository servers, but we usually consider that disk space on servers is cheaper than at edge devices or than network bandwith to edge devices.</p>
+<p>Each static delta takes up disk space on OSTree repository servers, but we usually consider that disk space on servers is cheaper than at edge devices or than network bandwidth to edge devices.</p>
 </div>
 <div class="paragraph">
 <p>Having static deltas reduces the memory and CPU requirements of servers when updating edge devices. If you consider that an OSTree server has a potentially large population of client edge devices, compared to the population of developers using a Git repository, the efficiency gains can be large, not to mention a lower cloud bill for running your OSTree servers.</p>
 </div>
 <div class="paragraph">
-<p>Precomputed static deltas also saves CPU and memory from edge devices while downloading and deploying system updates. The gains are especially wellcome by smaller edge devices, which have slower CPUs and less memory than office workstations, and are expected to contine performing their regular tasks while downloading and staging system updates.</p>
+<p>Pre-computed static deltas also saves CPU and memory from edge devices while downloading and deploying system updates. The gains are especially welcome by smaller edge devices, which have slower CPUs and less memory than office workstations, and are expected to continue performing their regular tasks while downloading and staging system updates.</p>
 </div>
 <div class="paragraph">
 <p>In fact, static deltas may be so good for some devices and networks that some RPM-OStree users create empty deltas: they store the difference between a commit and nothing, which is is the entire commit. But that empty delta can be queried and downloaded as a single unit, instead of a file-by-file basis, which saves memory, CPU, and network capacity between an edge device and a remote OSTree repository.</p>
@@ -424,7 +424,7 @@ Edge devices provisioned using edge installer images are <strong>not</strong> co
 <p>Every time you update an OSTree repository with multiple branches, updates, and static deltas, you must also update its summary file. Most OSTree clients, such as RPM-OSTree, will check only that summary for information on remote repositories. If that file is outdated, such clients will not be aware of updates or static deltas.</p>
 </div>
 <div class="paragraph">
-<p>You do not need a sumary file for provisioning edge systems or building edge commit images because they either work with a predefined commit, which is the latest in a predefined branch. Those processes do not query a remote OSTree repository for the availability of other commits, deltas, or branches.</p>
+<p>You do not need a summary file for provisioning edge systems or building edge commit images because they either work with a predefined commit or with the latest in a predefined branch. Those processes do not query a remote OSTree repository for the availability of other commits, deltas, or branches.</p>
 </div>
 </div>
 </div>
@@ -432,13 +432,13 @@ Edge devices provisioned using edge installer images are <strong>not</strong> co
 <h2 id="_rebasing_an_edge_device"><a class="anchor" href="#_rebasing_an_edge_device"></a>Rebasing an Edge Device</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>It&#8217;s common to use an OSTree banch to represent a major version of an operating system + applications, and major updates of each become different OSTree branches. This is consistent with the fact that you don&#8217;t usually phase out major application releases immediately, but keep supporting them with updates and bugfixes for a while. You cannot force all users to switch to a new major release all at once.</p>
+<p>It&#8217;s common to use an OSTree branch to represent a major version of an operating system + applications, and major updates of each become different OSTree branches. This is consistent with the fact that you don&#8217;t usually phase out major application releases immediately, but keep supporting them with updates and bug fixes for a while. You cannot force all users to switch to a new major release all at once.</p>
 </div>
 <div class="paragraph">
 <p>A RHEL for Edge system can use the RPM-OStree rebase operation to switch between OSTree branches and thus update to a new operating system or application major release.</p>
 </div>
 <div class="paragraph">
-<p>Another scenario for performing rebases could be repurposing an existing edge device to run a differnent application, by switching it to a different branch of the same OSTree repository. It may be worthwhile, compared to reprovisioning devices from scratch, if the branches share a same base operating system and similar dependency libraries.</p>
+<p>Another scenario for performing rebases could be repurposing an existing edge device to run a different application, by switching it to a different branch of the same OSTree repository. It may be worthwhile, compared to reprovisioning devices from scratch, if the branches share a same base operating system and similar dependency libraries.</p>
 </div>
 <div class="paragraph">
 <p>We are not performing rebases in the hands-on activities, as this is a somewhat rare event&#8201;&#8212;&#8201;a major new release frequently requires a hardware refresh. We also do not exercise other RPM-OSTree features, such as applying a mutable layer over <code>/usr</code> to install RPM packages outside its system images, but we encourage people to use the <code>--help</code> option to explore the verbs of the <code>rpm-ostree</code> command and explore its possibilities.</p>
@@ -449,7 +449,7 @@ Edge devices provisioned using edge installer images are <strong>not</strong> co
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The final series of hands-on activties in this course builds, installs and rolls backs updates to edge system images using test VMs that were provisioned using different methods.</p>
+<p>The final series of hands-on activities in this course builds, installs and rolls backs updates to edge system images using test VMs that were provisioned using different methods.</p>
 </div>
 </div>
 </div>
