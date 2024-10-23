@@ -1,4 +1,5 @@
 :time_estimate: 6
+:compose-uuid-canceled-aaaaaaaaaaaa: 01f3796b-85fd-4383-bbe8-eefc9550acdc
 
 = Lab: Create and Manage Composes for Edge Images
 
@@ -12,7 +13,7 @@ WARNING: Pending SME Review & Proofreading
 
 == Before you Begin
 
-You need a development machine with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your _development machine_ was configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
 
 You also need the blueprint that was created and uploaded to the Image Builder service by the xref:s5-blueprint-lab.adoc[previous lab].
 
@@ -39,14 +40,13 @@ API server status:
 ...
 --
 
-.. Verify that your Image Builder service has a blueprint named `rhe9-edge` that includes the `httpd` package, from the xref:s5-blueprint-lab.adoc[previous lab].
+.. Verify that your Image Builder service has a blueprint named `rhe9-edge` that includes the `httpd` package, from the xref:s6-blueprint-lab.adoc[previous lab].
 +
 [source,subs="verbatim,quotes"]
 --
 $ *composer-cli blueprint show rhel9-edge*
 ...
-*[[packages]]
-name = "httpd"*
+include::1@samples:blueprints:example$rhel9-httpd.toml[lines=8..9]
 ...
 --
 
@@ -54,38 +54,38 @@ name = "httpd"*
 
 .. Start an OSTree compose from the blueprint.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose start-ostree rhel9-edge edge-commit*
-Compose 01f3796b-85fd-4383-bbe8-eefc9550acdc added to the queue
+Compose {compose-uuid-canceled-aaaaaaaaaaaa} added to the queue
 --
 
 .. To ease the following steps, copy and paste the UUID from the previous command output to a shell variable.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
-$ *UUID=_01f3796b-85fd-4383-bbe8-eefc9550acdc_*
+$ *UUID=_{compose-uuid-canceled-aaaaaaaaaaaa}_*
 --
 
 .. While the Image Builder service builds the image, its compose will show a status of `RUNNING`:
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose list*
 ID                                     Status    Blueprint    Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   RUNNING   rhel9-edge   0.0.1     edge-commit
+{compose-uuid-canceled-aaaaaaaaaaaa}   RUNNING   rhel9-edge   0.0.1     edge-commit
 --
 +
 If your Image Builder service has many composes, you can filter the listing by appending `finished` or `running` to the `compose list` command.
 
 .. Before a compose finishes running, you can cancel it:
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose cancel $UUID*
 $ *composer-cli compose list*
 ID                                     Status     Blueprint    Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FAILED     rhel9-edge   0.0.1     edge-commit
+{compose-uuid-canceled-aaaaaaaaaaaa}   FAILED     rhel9-edge   0.0.1     edge-commit
 --
 +
 If you took too long to cancel the compose, you can start another one and cancel it. Or just move forward, because you won't need that canceled compose for the remaining of this activity and this course.
@@ -94,37 +94,37 @@ If you took too long to cancel the compose, you can start another one and cancel
 
 .. Start a new OSTree compose from the blueprint.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose start-ostree rhel9-edge edge-commit*
-Compose 575d8ddc-2902-4de3-a0d5-82f5f194f5d8 added to the queue
+Compose {compose-uuid-httpd-v1-aaaaaaaaaaaa} added to the queue
 --
 
 .. Copy and paste the UUID from the previous command output to a shell variable, overriding its previous value.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
-$ *UUID=_575d8ddc-2902-4de3-a0d5-82f5f194f5d8_*
+$ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_*
 --
 
 .. Repeat the command that list composes until you see that the latest changed its status to `FINISHED`.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose list*
 ID                                     Status     Blueprint    Version   Type
-01f3796b-85fd-4383-bbe8-eefc9550acdc   FAILED     rhel9-edge   0.0.1     edge-commit
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8   FINISHED   rhel9-edge   0.0.1     edge-commit
+{compose-uuid-canceled-aaaaaaaaaaaa}   FAILED     rhel9-edge   0.1.0     edge-commit
+{compose-uuid-httpd-v1-aaaaaaaaaaaa}   FINISHED   rhel9-edge   0.1.0     edge-commit
 --
 
 4. Fetch metadata from the compose.
 
 .. Get information such as requested and dependency packages from the compose.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *compose-cli info $UUID | less*
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8 FINISHED rhel9-edge      0.0.1 edge-commit      
+{compose-uuid-httpd-v1-aaaaaaaaaaaa} FINISHED rhel9-edge      0.1.0 edge-commit      
 Packages:
     httpd-
 Modules:
@@ -158,13 +158,13 @@ libgcc-11.3.1-4.3.el9.x86_64
 
 .. Download the image to your home directory.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ *composer-cli compose image $UUID*
-575d8ddc-2902-4de3-a0d5-82f5f194f5d8-commit.tar
+{compose-uuid-httpd-v1-aaaaaaaaaaaa}-commit.tar
 --
 +
-You could use the `--filename` option to specify a name for the image file, instead of using the default generated name based on the UUID of its compose.
+NOTE: You could use the `--filename` option to specify a name for the image file, instead of using the default generated name based on the UUID of its compose.
 
 .. Extract the image contents to a temporary directory.
 +
@@ -176,10 +176,10 @@ $ *tar xf $UUID-commit.tar -C delete-me*
 
 .. Check that the `rpm-ostree` command can use the temporary directory as an OSTree repository and list RPM packages inside the image.
 +
-[source,subs="verbatim,quotes"]
+[source,subs="verbatim,quotes,attributes"]
 --
 $ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
-ostree commit: rhel/9/x86_64/edge (4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b)
+ostree commit: rhel/9/x86_64/edge ({commit-httpd-v1})
  ModemManager-1.20.2-1.el9.x86_64
  ModemManager-glib-1.20.2-1.el9.x86_64
  NetworkManager-1:1.42.2-1.el9.x86_64
@@ -197,4 +197,4 @@ Now you know the basics of managing composes and building images with the Image 
 
 == Next Steps
 
-The next activity, in the next chapter, pushes the edge commit image to an OSTree repository, making it available to edge systems, and them you provision a local virtual machine, as a stand in for an edge device, from that OSTree repository.
+The next activity, in the next chapter, pushes the edge commit image to an OSTree repository, making it available to edge systems, and in later activities you provision a local virtual machine, as a stand in for an edge device, from that OSTree repository.
