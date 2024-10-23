@@ -48,7 +48,7 @@ Red Hat also recommends that you do not abuse the possibilities of kickstart and
 
 The process for creating an edge installer image (or its simplified counterpart) requires a minimal blueprint. There are a few customizations that you could include in that blueprint, such as defining Linux users and groups, but most other customizations, and any attempt at including package information, will fail the compose.
 
-The composition for edge installer images (and also for edge simplified images) requires two arguments:
+The compose for creating edge installer images (and also for edge simplified images) requires two arguments:
 
 1. The URL of a remote OSTree repository
 2. The branch name of an OSTree commits inside that repository. 
@@ -71,7 +71,7 @@ Once a system boots into an OSTree deployment, you can pull updates, as a new OS
 
 == File System Layout of Edge Systems
 
-Just so you have an idea of what to expect in an RHEL for Edge system, and you can verify that you really booted from an Edge system image, let's describe the RPM-OSTree file system layout.
+Just so you have an idea of what to expect in an RHEL for Edge system, and you can verify that you really booted from an edge system image, let's describe the RPM-OSTree file system layout.
 
 Unlike package-based systems, which provide freedom of using multiple disk devices and partitions, LVM logical volumes, and many other choices, RPM-OSTree requires a fixed file system layout based on a read-only `/usr` directory, to ensure the pristine state of the operating system as booted from its system image.
 

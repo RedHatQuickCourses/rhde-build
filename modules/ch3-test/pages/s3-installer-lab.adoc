@@ -130,7 +130,7 @@ ERROR: ManifestCreationFailed: failed to create osbuild manifest: unsupported bl
 $ *UUID=7a5036e1-4037-4edc-82ff-4c632c0a84fc*
 --
 
-.. Wait until the composition finishes.
+.. Wait until the compose finishes.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -288,7 +288,7 @@ $ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --
 --cdrom /home/student/new-installer.iso -v*
 --
 +
-* Use a virtual serial console and direct kernel loading, plus a reference to kickstart in the ISO image.
+* Use a virtual serial console and direct kernel loading, plus a reference to the kickstart file in the ISO image.
 +
 NOTE: You can do this from a secure shell session.
 +

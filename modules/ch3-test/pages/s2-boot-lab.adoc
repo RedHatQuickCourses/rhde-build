@@ -163,7 +163,7 @@ timezone Etc/UTC --isUtc
 ...
 --
 
-6. Still, on your _development machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
+6. Still on your _development machine_, create a _test VM_ which boots from the RHEL installation ISO and fetches an edge commit image from a web server.
 
 .. Download the standard RHEL installation ISO from the customer portal, or download a copy in the classroom environment at [TBD].
 +
