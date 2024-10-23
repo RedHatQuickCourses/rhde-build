@@ -112,7 +112,7 @@
     <a class="nav-link" href="s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repostories</a>
+    <a class="nav-link" href="s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
@@ -240,7 +240,7 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 1. End of an edge device installation workflow the standard RHEL installation media</div>
 </div>
 <div class="paragraph">
-<p>Alternatively, you can use the Image Builder service to create an edge installer image, which embeds an OSTree commit, and copy the generated edge installer image to an USB media. Then you provision edge systems using the edge installer image.</p>
+<p>Alternatively, you can use the Image Builder service to create an edge installer image, which embeds an OSTree commit, and copy the generated edge installer image to a USB media. Then you provision edge systems using the edge installer image.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -252,7 +252,7 @@ Pending SME Review &amp; Proofreading
 <p>There&#8217;s a third alternative, which we do not cover in this course: you can use Image Builder to create an edge cloud image, which embeds an OSTree commit, and upload that image to a cloud provider. Then you provision edge cloud instances using the edge cloud image.</p>
 </div>
 <div class="paragraph">
-<p>The two alternatives described here can be used with either PXE or UEFI network boot. The details will be presented by a future course. Here we focus on testing our edge images by provision local virtual machines using the KVM technology fgrom RHEL.</p>
+<p>The two alternatives described here can be used with either PXE or UEFI network boot. The details will be presented in a future course. Here we focus on testing our edge images by provisioning local virtual machines using the KVM technology from RHEL.</p>
 </div>
 </div>
 </div>
@@ -275,13 +275,13 @@ Pending SME Review &amp; Proofreading
 </dl>
 </div>
 <div class="paragraph">
-<p>The main difference between those two types of edge installer images is the syntax for applying installation-time customizations: the edge installer image uses the familiar kickstart syntax from RHEL, while the edige simplified installer image uses the ignition syntax from RHEL CoreOS.</p>
+<p>The main difference between those two types of edge installer images is the syntax for applying installation-time customizations: the edge installer image uses the familiar kickstart syntax from RHEL, while the edge simplified installer image uses the ignition syntax from RHEL CoreOS.</p>
 </div>
 <div class="paragraph">
-<p>There is some overlap between customizations that could be specified in an Image Builder blueprint, a kickstart file, or an  ignition configuration. Red Hat recommends that you use blueprint customizations as much as possible, reserving kickstart and ignition for settings you wish to change in an individual edge device or edge site basis. Also consider if other kinds of automation, such as Red Hat Ansible Automation Platform, may be best suited for applying customizations as a day-2 activity instead of as a installation or first boot basis.</p>
+<p>There is some overlap between customizations that could be specified in an Image Builder blueprint, a kickstart file, or an  ignition configuration. Red Hat recommends that you use blueprint customizations as much as possible, reserving kickstart and ignition for settings you wish to change in an individual edge device or edge site basis. Also consider if other kinds of automation, such as Red Hat Ansible Automation Platform, may be best suited for applying customizations as a day-2 activity instead of as an installation or first boot basis.</p>
 </div>
 <div class="paragraph">
-<p>Red Hat also recommends that you do not abuse the possibilities of kickstart and ignition: both could be used to run arbitrary scripts and even download executable files from remote servers. It&#8217;s generally better if you follow a "shift left" approach and perform as many customizations as you can at image building time instead of at installation time.</p>
+<p>Red Hat also recommends that you do not abuse the possibilities of kickstart and ignition: both could be used to run arbitrary scripts and even download executable files from remote servers. It&#8217;s generally better if you follow a "shift left" approach and perform as many customizations as you can at image-building time instead of at installation time.</p>
 </div>
 </div>
 </div>
@@ -292,7 +292,7 @@ Pending SME Review &amp; Proofreading
 <p>The process for creating an edge installer image (or its simplified counterpart) requires a minimal blueprint. There are a few customizations that you could include in that blueprint, such as defining Linux users and groups, but most other customizations, and any attempt at including package information, will fail the compose.</p>
 </div>
 <div class="paragraph">
-<p>The compose for edge installer images (and also for edge simplified images) requires two arguments:</p>
+<p>The compose for creating edge installer images (and also for edge simplified images) requires two arguments:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -300,7 +300,7 @@ Pending SME Review &amp; Proofreading
 <p>The URL of a remote OSTree repository</p>
 </li>
 <li>
-<p>The branch name of an OSTree commit inside that repository.</p>
+<p>The branch name of an OSTree commits inside that repository.</p>
 </li>
 </ol>
 </div>
@@ -316,7 +316,7 @@ Pending SME Review &amp; Proofreading
 <p>An edge device could pull multiple OSTree commits, but only one of those commits is active, or <strong>deployed</strong>. Deploying an OSTree commit with RPM-OSTree also installs the boot loader, kernel, and initial ram disk (initrd) from the files inside the commit.</p>
 </div>
 <div class="paragraph">
-<p>When provisioning an edge system, OSTree deployment can happen in different moments:</p>
+<p>When provisioning an edge system, OSTree deployment can happen at different moments:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -324,15 +324,15 @@ Pending SME Review &amp; Proofreading
 <p>At installation time, when using the standard RHEL installation media: the standard RHEL installer creates an empty OSTree repository on the root disk, pulls an OSTree commit from a remote OSTree repository, and deploys the commit;</p>
 </li>
 <li>
-<p>At at installation, when using an edge installer image: the standard RHEL installer copies the OSTree repository from the image itself to the system root disk, and deploys the only commit in that repository.</p>
+<p>At installation, when using an edge installer image: the standard RHEL installer copies the OSTree repository from the image itself to the system root disk, and deploys the only commit in that repository.</p>
 </li>
 <li>
-<p>At image build time, when using a simplified edge installer image: the simplified edge installer image contains a raw disk image which an OSTree repository and an already deployed OSTree commit. The RHEL CoreOS installer just copies that raw disk image to the system boot disk.</p>
+<p>At image build time, when using a simplified edge installer image: the simplified edge installer image contains a raw disk image which is an OSTree repository and an already deployed OSTree commit. The RHEL CoreOS installer just copies that raw disk image to the system boot disk.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Once a system boots into an OSTree deployment, you can pull updates, as a new OSTree commits, from a remote OSTree repository to its local OSTree repository branch and deploy the new OSTree commit. The update process, which we see in details later in this course, does not change based on how the system was initially provisioned.</p>
+<p>Once a system boots into an OSTree deployment, you can pull updates, as a new OSTree commits, from a remote OSTree repository to its local OSTree repository branch and deploy the new OSTree commit. The update process, which we see in detail later in this course, does not change based on how the system was initially provisioned.</p>
 </div>
 </div>
 </div>
@@ -340,7 +340,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_file_system_layout_of_edge_systems"><a class="anchor" href="#_file_system_layout_of_edge_systems"></a>File System Layout of Edge Systems</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Just so you have an idea of what to expect in a RHEL for Edge system, and you can verify that you really booted from an edge system image, let&#8217;s describe the RPM-OSTree file system layout.</p>
+<p>Just so you have an idea of what to expect in an RHEL for Edge system, and you can verify that you really booted from an edge system image, let&#8217;s describe the RPM-OSTree file system layout.</p>
 </div>
 <div class="paragraph">
 <p>Unlike package-based systems, which provide freedom of using multiple disk devices and partitions, LVM logical volumes, and many other choices, RPM-OSTree requires a fixed file system layout based on a read-only <code>/usr</code> directory, to ensure the pristine state of the operating system as booted from its system image.</p>
@@ -358,7 +358,7 @@ Pending SME Review &amp; Proofreading
 <p>Operations which require changing the actual root filesystem, such as deploying a new system image, must happen early in the boot sequence, before it chroots to the deployed RPM-OSTree system image.</p>
 </div>
 <div class="paragraph">
-<p>An RPM-OSTree system has only two writable file systems: <code>/etc</code> and <code>/var</code>. That is sufficient to store local system configurations and application data on edge devices. Later in this course we will learn how those directories are treated during system installation and updates.</p>
+<p>An RPM-OSTree system has only two writable file systems: <code>/etc</code> and <code>/var</code>. That is sufficient to store local system configurations and application data on edge devices. Later in this course, we will learn how those directories are treated during system installation and updates.</p>
 </div>
 <div class="paragraph">
 <p>Many other top-level directories, which would be writable, are actually symlinks to a directory under <code>/var</code>. For example, <code>/home</code> is a symlink to <code>/var/home</code> and <code>/usr/local</code> is a synlink to <code>/var/usrlocal</code>.</p>
@@ -376,7 +376,7 @@ Pending SME Review &amp; Proofreading
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-It is not expected that production edge systems make use of the RPM-OSTree capability of installing additional packages, but it can be handy during development and troubleshooting of edge images.
+It is not expected that production edge systems make use of the RPM-OSTree capability of installing additional packages, but it can be handy during the development and troubleshooting of edge images.
 </td>
 </tr>
 </table>
@@ -387,7 +387,7 @@ It is not expected that production edge systems make use of the RPM-OSTree capab
 <h2 id="_testing_edge_system_images_using_vms"><a class="anchor" href="#_testing_edge_system_images_using_vms"></a>Testing Edge System Images using VMs</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Most times the end goal of producing an edge system image is provisioning and booting physical edge devices, but it is very convenient testing edge images using virtualization technology, such as IaaS cloud instances and Red Hat OpenShift Virtualization. Virtualization technologies also come in handy when performing automated integration testing, as part of a CI/CD pipeline.</p>
+<p>Most times the end goal of producing an edge system image is provisioning and booting physical edge devices, but it is very convenient to test edge images using virtualization technology, such as IaaS cloud instances and Red Hat OpenShift Virtualization. Virtualization technologies also come in handy when performing automated integration testing, as part of a CI/CD pipeline.</p>
 </div>
 <div class="paragraph">
 <p>Depending on your virtualization technology of choice, it may be possible to emulate special kinds of hardware expected on your physical edge devices, or provide pass-through of physical devices from your development machine to its virtual machines.</p>
@@ -410,7 +410,7 @@ It is not expected that production edge systems make use of the RPM-OSTree capab
 <p>Unattended installation using the standard RHEL installation media, or edge installer images, requires providing a kickstart file that answers all prompts required by the RHEL installation program. You could create a custom RHEL installation media including such kickstart file and also a custom boot loader configuration that references your kickstart file.</p>
 </div>
 <div class="paragraph">
-<p>An edge installer image already comes with a kickstart file and a boot loader configuration that uses it. But it includes only a minimal kickstart file, which is not sufficient for unattended installation. It provides just enough so the RHEL installation program uses the OSTree commit from the image itself as its installation source.</p>
+<p>An edge installer image already comes with a kickstart file and a boot loader configuration that uses it. But, it includes only a minimal kickstart file, which is not sufficient for unattended installation. It provides just enough so the RHEL installation program uses the OSTree commit from the image itself as its installation source.</p>
 </div>
 <div class="paragraph">
 <p>For unattended installation, you would amend the kickstart file generated by the Image Builder service and create a custom edge installer image, outside of Image Builder, that includes your longer kickstart file.</p>
@@ -433,21 +433,21 @@ It is not expected that production edge systems make use of the RPM-OSTree capab
 <p>If none of the applications in your edge system image require a graphical desktop to function, you may configure your edge images with a text-only boot and configure your test VMs with a serial virtual console. That way you can do testing over an SSH connection, without requiring any kind of remote graphical display, and you can also easily redirect all boot messages to a text file for troubleshooting boot issues.</p>
 </div>
 <div class="paragraph">
-<p>As much as text mode boot and serial consoles may be convenient during testing, a graphical boot and desktop are probably be easier for field personnel. In that case, you let your edge images boot with a graphical console, by default, and provide Libvirt with extra kernel arguments to configure a virtual serial console and boot in text mode. Be aware that providing extra kernel arguments at VM creation file also requires using direct kernel loading.</p>
+<p>As much as text mode boot and serial consoles may be convenient during testing, a graphical boot and desktop are probably easier for field personnel. In that case, you let your edge images boot with a graphical console, by default, and provide Libvirt with extra kernel arguments to configure a virtual serial console and boot in text mode. Be aware that providing extra kernel arguments at VM creation file also requires using direct kernel loading.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_tools_to_manage_local_vms_in_rhel"><a class="anchor" href="#_tools_to_manage_local_vms_in_rhel"></a>Tools to Manage local VMs in RHEL</h2>
+<h2 id="_tools_to_manage_local_vms_in_rhel"><a class="anchor" href="#_tools_to_manage_local_vms_in_rhel"></a>Tools to Manage Local VMs in RHEL</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Libvirt is the management API in RHEL for virtual machines using Linux KVM and Qemu technologies. It is the foundation of more sophisticated VM management from Red Hat, such as OpenShift Virtualization, but it is usable by itself and very popular among developers and for single-host virtualization.</p>
 </div>
 <div class="paragraph">
-<p>The main command-line tool to manage VMs from Libvirt is <code>virsh</code>. If you are new to Libvirt and RHEL virtualization, take the time to familiarize yourself with that command and its terminology. You must know that Libvirt uses the "domain" term to refer to the definition of a VMs, and "virtual machine" to refer to an active domain, that is, a running VM (or at least paused in memory).</p>
+<p>The main command-line tool to manage VMs from Libvirt is <code>virsh</code>. If you are new to Libvirt and RHEL virtualization, take the time to familiarize yourself with that command and its terminology. You must know that Libvirt uses the "domain" term to refer to the definition of a VMs, and "virtual machine" refers to an active domain, that is, a running VM (or at least paused in memory).</p>
 </div>
 <div class="paragraph">
-<p>Libvirt also provides a number of helper commands, such as the <code>virt-install</code> command to create new VMs. It generates VM configuration files required by Libvirtd from command-line options, so you do not have to learn its XML syntax. The common workflow is using the <code>virt-install</code> command to create VMs, them you manage those VMs using <code>virsh</code>.</p>
+<p>Libvirt also provides a number of helper commands, such as the <code>virt-install</code> command to create new VMs. It generates VM configuration files required by Libvirtd from command-line options, so you do not have to learn its XML syntax. The common workflow is using the <code>virt-install</code> command to create VMs, then you manage those VMs using <code>virsh</code>.</p>
 </div>
 <div class="paragraph">
 <p>It is worth noticing that RHEL 9 deprecated the <code>virt-manager</code> graphical tool to manage Libvirt VMs, and is keeping only the <code>virt-viewer</code> tool to interact with the graphical console of a VM. If all you need is the serial console of a VM, you can use the <code>virsh console</code> command to attach to it.</p>
@@ -467,7 +467,7 @@ It is not expected that production edge systems make use of the RPM-OSTree capab
 </div>
 <nav class="pagination">
   <span class="prev"><a href="index.html">Test Operating System Images for Edge Devices</a></span>
-  <span class="next"><a href="s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repostories</a></span>
+  <span class="next"><a href="s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a></span>
 </nav>
 </article>
   </div>
