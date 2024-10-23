@@ -206,7 +206,7 @@
 <dl>
 <dt class="hdlist1">Objective</dt>
 <dd>
-<p>Publish an Image Builder edge commit image in a remote HTTP server so it is available to edge devices.</p>
+<p>Publish an edge commit image from Image Builder in a remote HTTP server so it is available to edge devices.</p>
 </dd>
 </dl>
 </div>
@@ -233,8 +233,17 @@ Pending SME Review &amp; Proofreading
 <div class="paragraph">
 <p>You also need a second machine, the <em>web server machine</em>, to run a web server, on which you have unrestricted sudo access to install packages and configure system services.</p>
 </div>
-<div class="paragraph">
-<p>You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server accessible to remote edge devices in multiple locations.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server accessible to remote edge devices in multiple locations.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>.</p>
@@ -244,6 +253,9 @@ Pending SME Review &amp; Proofreading
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you will start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
+</div>
+<div class="paragraph">
+<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step!</p>
 </div>
 </div>
 </div>
@@ -290,7 +302,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>If you deleted the temporary directory from the previous lab, extract the image contents again to a temporary directory.</p>
+<p>If you deleted the temporary directory from the previous lab, extract the edge commit image contents again to a temporary directory.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
@@ -311,7 +323,7 @@ $ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>COMMIT=$(jq -r '.["ostree-commit"]' &lt; delete-me/compose.json)</strong>
 $ <strong>echo $COMMIT</strong>
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 $ <strong>REF=$(jq -r '.["ref"]' &lt; delete-me/compose.json)</strong>
 $ <strong>echo $REF</strong>
 rhel/9/x86_64/edge</code></pre>
@@ -324,7 +336,7 @@ rhel/9/x86_64/edge</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You would not need the commit ID nor branch name for an OSTree repository with a single commit, as the one you got from your only edge commit image. But as you build more edge images, or update existing images, you will need to be able to differentiate between multiple edge images, that is, multiple OSTree commits, in the same OSTree repository.
+You would not need the commit ID nor branch name for an OSTree repository with a single commit, as the one you got from your first and only edge commit image. But as you build more edge images, or update existing images, you will need to be able to differentiate between multiple edge images, that is, multiple OSTree commits, in the same OSTree repository.
 </td>
 </tr>
 </table>
@@ -335,7 +347,7 @@ You would not need the commit ID nor branch name for an OSTree repository with a
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo log $REF</strong>
-commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
 Date:  2024-09-06 22:07:45 +0000
 Version: 9.2
@@ -372,7 +384,7 @@ object fsck of 1 commits completed successfully - no errors found.</code></pre>
 <li>
 <p>Switch to your <em>web server machine</em> and configure a web server dedicated to providing OSTree repositories.</p>
 <div class="paragraph">
-<p>The instructions bellow configure an Apache Web Server as a system service on the <code>servera</code> machine. You could use the NGinx web server and run the web server as a container, among other variations.</p>
+<p>The instructions bellow configure an Apache Web Server as a system service on the <em>web server machine</em>. You could use the NGinx web server and run the web server as a container, among other variations.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -389,11 +401,10 @@ Production deployments usually require further customization, such as enabling T
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>On another terminal, start an SSH session on your web server machine (<code>servera</code>), and copy the shell variable from the first terminal.</p>
+<p>Open another terminal, log in on your <em>web server machine</em>, and copy the shell variable from the first terminal.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ssh servera</strong>
-$ <strong>UUID=<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em></strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>575d8ddc-2902-4de3-a0d5-82f5f194f5d8</em></strong></code></pre>
 </div>
 </div>
 </li>
@@ -443,11 +454,11 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Back to your <em>development machine</em>, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>, to the web server.</p>
+<p>Back to your <em>development machine</em>, check that you have access to the web server machine and copy the edge commit image, generated in the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>, to the <em>web server machine</em>.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Use a web browser or any web client to access the default welcome page from the Apache Web Server.</p>
+<p>Check that the web server is up by using a web browser or any web client to access the default welcome page from the Apache Web Server.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com</strong>

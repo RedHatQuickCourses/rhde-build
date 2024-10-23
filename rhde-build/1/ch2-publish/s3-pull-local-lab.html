@@ -206,7 +206,7 @@
 <dl>
 <dt class="hdlist1">Objective</dt>
 <dd>
-<p>Publish an Image Builder edge commit image in an existing remote OSTree repository so it is available to edge devices.</p>
+<p>Publish an edge commit image from Image Builder  in an existing remote OSTree repository so it is available to edge devices.</p>
 </dd>
 </dl>
 </div>
@@ -238,6 +238,9 @@ Pending SME Review &amp; Proofreading
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you will start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
+</div>
+<div class="paragraph">
+<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step!</p>
 </div>
 </div>
 </div>
@@ -285,7 +288,7 @@ mode=archive-z2</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
-4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -301,20 +304,30 @@ mode=archive-z2</code></pre>
 <ol class="loweralpha" type="a">
 <li>
 <p>Download the <code>rhel9-mysql.toml</code> blueprint file from the <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/tree/main">course samples</a> git repository.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-mysql.toml</strong></code></pre>
-</div>
-</div>
 </li>
 <li>
-<p>Review the blueprint, it just installs and enables a MySQL server, which is currently uninitialized. [ Add a hard-coded sample database? ]</p>
+<p>Review the blueprint, it just installs and enables a MySQL server, which is uninitialized.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>less rhel9-mysql.toml</strong>
 name = "rhel9-mysql"
 description = "an edge database server"
-version = "0.0.1"
+version = "0.1.0"
+modules = []
+groups = []
+distro = ""
+
+[[packages]]
+name = "mysql-server"
+
+[customizations]
+hostname = "db"
+
+[customizations.services]
+enabled = ["sshd", "mysqld"]
+
+[customizations.firewall.services]
+enabled = ["ssh", "mysql"]
 ...</code></pre>
 </div>
 </div>
