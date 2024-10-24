@@ -304,7 +304,7 @@ Pending SME Review &amp; Proofreading
 <p>You can also store either an edge installer image or a standard RHEL installation media in a network boot server and provision edge devices from the network, without using physical boot media.</p>
 </div>
 <div class="paragraph">
-<p>If you wish to generate an edge installer or cloud image, you must create another blueprint which does not specify packages and only specify minimal customizations (or no customizations at all), and provide a reference the OSTree commit to embed in the image and its origin web server as arguments to the compose.</p>
+<p>If you wish to generate an edge installer image, you must create another blueprint which does not specify packages and only specify minimal customizations (or no customizations at all), and provide, as arguments to the compose, a URL to a web server and an OSTree reference from which to pull OSTree commit to embed in the image.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -313,16 +313,13 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 3. Edge device installation and update Workflow using an edge installer image</div>
 </div>
 <div class="paragraph">
-<p>If you wish to generate an edge cloud image, you may not require another blueprint, but instead you specify the OSTree commit and repository as arguments to the compose.</p>
+<p>If you wish to generate an edge cloud image, you also require another blueprint plus a web server URL and a OSTree reference as arguments to the compose.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="_images/s7-compose-fig-4.svg" alt="s7 compose fig 4">
 </div>
 <div class="title">Figure 4. Edge device installation and update Workflow using an edge cloud image</div>
-</div>
-<div class="paragraph">
-<p>Some types of edge cloud images, which target hypervisor platforms and their edge or remote compute nodes, may require a blueprint that specify only first boot settings for Ignition or Cloud-Init.</p>
 </div>
 <div class="paragraph">
 <p>Whatever the boot method and compose type you use for installing an edge system, it requires access to a remote OSTree repository to fetch and deploy system updates. Image Builder cannot build anything similar to an "edge update image", which would boot from local media or network boot and apply a system update. Such feature is currently in development, as part of the <a href="https://www.redhat.com/en/blog/red-hat-vehicle-os-hardware-enablement-program">Red Hat In Vehicle Operating System (RHIVOS)</a>, but it is not supported yet by Image Builder on RHEL.</p>
