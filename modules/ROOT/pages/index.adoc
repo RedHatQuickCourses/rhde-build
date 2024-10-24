@@ -6,13 +6,13 @@
 This course teaches how to create *Red Hat Device Edge* images for edge devices and kiosk computers using Red Hat Enterprise Linux (RHEL), more specifically its *RHEL for Edge* features. It focus on:
 
 * Using the Image Builder tool to create and deploy edge images based on the RPM-OSTree technology.
-* OSTree repository management to deliver updates to edge devices.
+* Performing OSTree repository management to deliver updates to edge devices.
 
 == Audience
 
 Operations-focused customer roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
 
-* System Administrations (IT and OT)
+* System Administrations (IT - Information Technology, and OT - Operations Technology)
 * Site Reliability Engineers (SREs)
 * DevOps Engineers
 
@@ -28,9 +28,13 @@ Red Hat and Partner roles that support Red Hat Device Edge on customers, such as
 
 * Familiarity with web server administration, such as Apache Web Server or NGinx, is useful but not required.
 
+* Familiarity with KVM virtual machine management using Libvirt, is useful but not required.
+
 == Classroom Environment
 
-For initial testing and development, use the https://role.rhu.redhat.com/rol-rhu/app/courses/hol007-9.2/pages/pr01[HOL007: Red Hat Enterprise Linux (RHEL): Create the RHEL for Edge Image] classroom in ROLE, until we get a new classroom which addressess all requirments of this course. 
+You can perform all activities in this course using the virtual classroom from https://role.rhu.redhat.com/rol-rhu/app/courses/hol007-9.2/pages/pr01[HOL007: Red Hat Enterprise Linux (RHEL): Create the RHEL for Edge Image], based on RHEL 9.2.
+
+A new classroom in is the works, featuring a newer RHEL release, and which will be shared by future Red Hat Device Edge courses. This page will be updated with links and details about the new classroom, when it is available.
 
 == Other Sources of Information About Red Hat Device Edge
 
@@ -51,3 +55,7 @@ We also recommend the community upstream documentation of the technologies in RH
 *Fernando Lozano* +
 Training Content Architect +
 Red Hat - Product Portfolio Marketing & Learning
+
+Special thanks to *Micah Abbott* for all his support while writing this course and testing its hands-on activities.
+
+Many thanks to Daniel Froehlich, Eric Lavarde, Jeff Ligon, Lester Claudio, Luis Arizmendi, Mourad Nakib, Sayan Paul, and Shauna Diaz for their support reviewing the course design, its outline, work-in-progress contents, and answering my newbie questions.
