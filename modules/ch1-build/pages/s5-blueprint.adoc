@@ -18,7 +18,7 @@ image::s5-blueprint-fig-1.svg[title="Blueprints in an edge device installation a
 
 Before detailing the structure and usage of blueprints, we must understand a few concepts about Image Builder, in special the concepts of blueprints and composes.
 
-You provide to Image Builder a _blueprint_ that defines characteristics of the system image, such as installed packages and enabled system services. It also defines customizations such as predefined users, enabled system services, and open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
+You provide to Image Builder a _blueprint_ that defines characteristics of the system image, such as installed packages and package groups. It may also be used to configure users, enable systemd services, or open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.
 
 Using blueprint as input, Image Builder runs a _compose_, which is a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances of images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.
 

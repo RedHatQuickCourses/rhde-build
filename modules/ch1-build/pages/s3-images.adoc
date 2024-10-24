@@ -68,7 +68,7 @@ Once you build a system image with the Image Builder service, no matter if it's 
 
 You either use OSTree repository management commands to copy (or push) the OSTree commit, or you automate that process publishing edge images using Ansible.
 
-Your development system, which you use to build and test RHEL for Edge system images, must include the OSTree tooling, so you can publish images and updates to remote OSTree repositories, in addition to the Image Builder service and its clients. More specifically, you need the `ostree` command.
+Your development system, which you use to build and test RHEL for Edge system images, may include the OSTree tooling, in addition to the Image Builder service and its clients, so you can publish images and updates to a test OSTree repository. Alternatively, you could have a dedicated system, which you use to set up and manage OSTree repositories, separate from the system you run the Image Builder service. In any of these cases, you need the `ostree` command.
 
 Once you automate provisioning and updates of edge devices using Ansible, it makes sense to also automate edge image creation and publishing using Ansible, so that you have an end-to-end, automated process, for building and deploying edge system images. Ideally, you would integrate that automation with the CI/CD system that builds applications you run on your edge devices.
 

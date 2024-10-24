@@ -56,15 +56,13 @@ Both types of derived edge composes can install an edge system without network a
 
 You can also store either an edge installer image or a standard RHEL installation media in a network boot server and provision edge devices from the network, without using physical boot media.
 
-If you wish to generate an edge installer or cloud image, you must create another blueprint which does not specify packages and only specify minimal customizations (or no customizations at all), and provide a reference the OSTree commit to embed in the image and its origin web server as arguments to the compose.
+If you wish to generate an edge installer image, you must create another blueprint which does not specify packages and only specify minimal customizations (or no customizations at all), and provide, as arguments to the compose, a URL to a web server and an OSTree reference from which to pull OSTree commit to embed in the image.
 
 image::s7-compose-fig-3.svg[title="Edge device installation and update Workflow using an edge installer image"]
 
-If you wish to generate an edge cloud image, you may not require another blueprint, but instead you specify the OSTree commit and repository as arguments to the compose.
+If you wish to generate an edge cloud image, you also require another blueprint plus a web server URL and a OSTree reference as arguments to the compose.
 
 image::s7-compose-fig-4.svg[title="Edge device installation and update Workflow using an edge cloud image"]
-
-Some types of edge cloud images, which target hypervisor platforms and their edge or remote compute nodes, may require a blueprint that specify only first boot settings for Ignition or Cloud-Init. 
 
 Whatever the boot method and compose type you use for installing an edge system, it requires access to a remote OSTree repository to fetch and deploy system updates. Image Builder cannot build anything similar to an "edge update image", which would boot from local media or network boot and apply a system update. Such feature is currently in development, as part of the https://www.redhat.com/en/blog/red-hat-vehicle-os-hardware-enablement-program[Red Hat In Vehicle Operating System (RHIVOS)], but it is not supported yet by Image Builder on RHEL.
 

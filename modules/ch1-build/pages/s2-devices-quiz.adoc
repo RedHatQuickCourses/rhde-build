@@ -77,13 +77,13 @@ For each of the following scenarios, which favor of RHEL would be most adequate?
 .❑ Traditional RHEL
 [%collapsible]
 ====
-✔ *Correct: Depending on the hardware requirements of its AI model, this might require entitlements from a traditional RHEL subscription, but be deployed and managed using RHEL for Edge technologies. It could use compute device which is rugged for factory floor conditions and provides compute capacity similar to a data center server, as opposed to a leaner edge device, and may not meet the criteria for Red Hat Device Edge subscriptions.*
+✔ *Correct: Depending on the hardware requirements of its image recognition application, this might require entitlements from a traditional RHEL subscription, but be deployed and managed using RHEL for Edge technologies. It could use compute device which is rugged for factory floor conditions and provides compute capacity similar to a data center server, as opposed to a leaner edge device, and may not meet the criteria for Red Hat Device Edge subscriptions.*
 ====
 +
 .❑ RHEL for Edge.
 [%collapsible]
 ====
-✔ *Correct: As a single-purpose appliance, this is better suited to be deployed and managed as an image-based system. Beware that, to be entitled using Red Hat Device Edge Subscriptions, it must use a leaner AI model which runs in edge systems with a single CPU core and reduced memory. Some of those devices do offer GPUs and other kinds of hardware accelerators suitable for optimized AI models. In fact, the https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/ai[RHEL AI] subscription is an image-based operating system and its technologies support both data center and edge deployments.*
+✔ *Correct: As a single-purpose appliance, this is better suited to be deployed and managed as an image-based system. Beware that, to be entitled using Red Hat Device Edge Subscriptions, its image recognition application must fit edge systems with a single CPU core and reduced memory. Some of those devices do offer GPUs and other kinds of hardware accelerators suitable for this kind of applications.*
 ====
 
 ////

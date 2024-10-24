@@ -15,7 +15,7 @@ WARNING: Pending SME Review & Proofreading
 
 Red Hat Device Edge is a software and support subscription that bundles three components:
 
-. Red Hat Enterprise Linux (RHEL) and its RHEL for Edge feature.
+. Red Hat Enterprise Linux (RHEL), which includes a feature set known as *RHEL for Edge*.
 . Red Hat build of MicroShift.
 . Red Hat Ansible Automation Platform.
 
@@ -27,7 +27,7 @@ image::s1-devices-fig-1.svg[title="Components of Red Hat Device Edge"]
 
 All of these three components can be purchased as part of a number of other subscriptions from Red Hat. For example, RHEL and Ansible are frequently purchased as their own subscriptions, instead of as part of a bundle, and MicroShift is also available as part of Red Hat OpenShift Container Platform and Red Hat OpenShift Plus.
 
-In the end, you may purchase Red Hat Device Edge to use the RHEL for Edge feature in an army of small edge devices, but you could also find out that your edge machines are "large" and best suited to another subscription which also includes RHEL, OpenShift, and other Red Hat products, and still take advantage of the RHEL for Edge feature.
+In the end, you may purchase Red Hat Device Edge to use the RHEL for Edge feature in an army of small edge devices, but you could also find out that your edge machines are "large" and best suited to another subscription which also includes RHEL, OpenShift, and other Red Hat products, and still take advantage of the RHEL for Edge feature. You could also mix entitlements from differnet subscriptions, for example some from RHEL for Edge and other from regular RHEL, on an same edge site that contains multiple kinds of machines.
 
 In this course, we focus on the technical capabilities provided by RHEL for Edge, while other courses in this learning path focus on MicroShift and Ansible management of edge devices.
 
@@ -55,7 +55,7 @@ The Green Boot technology enables performing health checks at system boot and, i
 
 FIDO Device Onboard (FDO)::
 
-The FDO standard enables installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms and with central IT systems. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart, Cloud-Init, and ignition, but the FDO standard is gaining traction in the Internet-of-Things (IoT) community and vendors.
+The FDO standard enables installing secrets and configuration data into a device so that the device is able to connect and interact securely with cloud and edge management platforms and with central IT systems. RHEL for Edge supports many alternatives to FDO for performing local device and site configuration, such as Kickstart and ignition, but the FDO standard got strong traction in the Internet-of-Things (IoT) community and vendors.
 
 Notice that the components of RHEL for Edge depend on each other, for example: Green Boot can only rollback a system update because RPM-OSTree keeps the previous OSTree image on disk, unchanged.
 
@@ -67,27 +67,27 @@ To understand how these components address the needs of edge devices, you must c
 
 Edge devices, sometimes called edge endpoints, edge gateways, and edge servers, come in varying shapes and forms. Some of them  look like standard computers, maybe in a rugged and smaller form factory, which connect to varying kinds of sensors and machinery. They could also take unique form factors which integrate sensors, servo mechanisms, and other kinds machinery with an Intel or ARM computer in the same system board and might not look, from the outside, anything like a "personal computer", despite being built on the same fundamental architecture, processors, chipsets, and peripheral busses.
 
-image::s1-devices-fig-2.svg[title="Representative images of edge devices and traditional computers"]
+image::s1-devices-fig-2.svg[title="Illustrative images of edge devices and traditional computers"]
 
-RHEL for Edge is not designed to support any kind of edge device. It is designed to run in devices which are close in hardware architecture to standard personal computers and servers. It benefits from the large ecosystem of software and hardware certified for RHEL and the fact that the economy of edge devices got to a point where a "standard computer" is cost-effective and brings a lot more flexibility and power than a custom processor and interface design.
+Some kinds of computers, such as mini-PCs, are blurring the line between what looks like a traditional computer and an edge device. They might be elligble for Red Hat Device Edge subscriptions, or might require another subscription which provides Red Hat Enterprise Linux, depending on their capacity and intended applications.
+
+RHEL for Edge is designed to support devices which are close in hardware architecture to standard personal computers and servers. It benefits from the large ecosystem of software and hardware certified for RHEL and the fact that the economy of edge devices got to a point where a "standard computer" is cost-effective and brings a lot more flexibility and power than a custom processor and chipset design.
 
 For example you cannot run RHEL directly in a surveillance camera, even if many security cameras do indeed run Linux. But you could run RHEL in edge devices that monitor the video feed from a surveillance camera (or from multiple cameras) to detect potential security threats and fire an alarm to call security or the police.
 
 A similar edge device could use a video camera to perform quality control in a factory, identifying defective pieces and reducing the need for human inspection, and also reroute the defective pieces for either disposal or recycling without manual intervention.
 
-Now imagine that the same edge device controls a robotic arm with a spray gun: instead being programmed with a fixed path for only a few pieces known in advance, an edge device could adapt and optimize the paint process based on the specific piece it sees.
+Now imagine that the same edge device controls a robotic arm with a spray gun: instead of being programmed with a fixed path to paint only a few pieces known in advance, an edge device could adapt and optimize the paint process based on the whatever piece it sees.
 
 Each of the scenarios above requires some specialized hardware, but they are more about the application software which controls the hardware than about custom chips and peripherals. Having a common and standard foundation for that software, based on Red Hat Device Edge, reduces the development and maintenance effort.
 
 There are many more potential scenarios for edge devices than we can describe here. Most times, edge devices co-exist with more traditional computers and applications in the same site. Edge devices usually connect to traditional computers in remote sites such as corporate headquarters or a regional distribution center. For more information on the applicability of RHEL for Edge and Red Hat Device Edge to different edge scenarios, we invite you to explore https://www.redhat.com/en/products/edge/hatville[HatVille, the miniature city where edge computing comes to life].
 
-Another set of factors to consider in assessing your edge device use case is the infrastructure available on an edge site. Edge devices may exist by themselves, in a site where the owner has little control of anything, like an pick-up locker location or an ATM machine at a drugstore. But edge devices might exist in a location which has a server room, uninterruptible power supplies, and reasonable cooling, such as a large department store.
+Another set of factors to consider in assessing your edge device use case is the infrastructure available on an edge site. Edge devices may exist by themselves, in a site where the owner has little control of anything, like a pick-up locker location or an ATM machine at a drugstore. But edge devices might exist in a location which has a server room, uninterruptible power supplies, and reasonable cooling, such as in a large department store.
 
 image::s1-devices-fig-3.svg[title="Generic edge site with many classes of edge devices"]
 
-The following table compares edge devices with more traditional computers to help you distinguish when you might have a case of RHEL for Edge versus a case for traditional RHEL. Parts of it may become quickly outdated as hardware evolve and costs come down, so instead of focus on hard facts, focus on relative differences and check the https://www.redhat.com/en/resources/red-hat-enterprise-linux-subscription-guide[RHEL Subscription Guide] or ask your Red Hat Account Manager for pricing and eligibility of the many edge and non-edge product SKUs.
-
-// Looks like images do not work in tables with Antora or asciidoc :-(
+The following table compares edge devices with more traditional computers to help you distinguish when you might have a case of RHEL for Edge versus a case for traditional RHEL. Parts of it may become quickly outdated as hardware evolve and costs come down, so instead of focus on fixed numbers, focus on relative differences and check the https://www.redhat.com/en/resources/red-hat-enterprise-linux-subscription-guide[RHEL Subscription Guide] or ask your Red Hat Account Manager for pricing and eligibility for the many edge and non-edge product SKUs.
 
 [options="header",cols="1,1, 1"]  
 |===
@@ -95,9 +95,9 @@ The following table compares edge devices with more traditional computers to hel
 | RHEL Workstation
 | RHEL Server
 
-| Mini-PC, rugged mini-server, and many custom form factors
-| desktop or laptop PC
-| rack-mounted or blade enclosure
+| Mini PC, rugged mini-server, and many custom form factors
+| Desktop, Tower, laptop, or mini PC
+| Tower, rack-mounted, or blade enclosure
 
 .^a| image::edge-device.png[]
 .^a| image::pc.png[]
@@ -171,8 +171,8 @@ The following table compares common actions for deploying and managing tradition
 | Download and deploy a complete OSTree system image, while retaining the previous system image unchanged. You end up keeping the previous system image or switching to the new system image.
 | Update individual RPM packages using DNF. You might update some packages and not others, either on purpose, by mistake, or because some package updates could not be downloaded or applied.
 
-| You know the state of the entire system: it corresponds to one and only one of the available system images.
-| You can never be sure about the state of a package-based system, as a whole: it could be in any permutation of the many packages and versions available.
+| Eady to check the state of the entire system: it corresponds to one and only one of the available system images.
+| Hard to track the state of a package-based system, as a whole: it could be in any permutation of the many packages and versions available.
 
 | Install all operating system components and applications at once, as part of the system image.
 | Install individual operating system components or applications one by one, from individual RPM packages and OCI container images.
