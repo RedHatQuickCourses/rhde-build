@@ -1,4 +1,4 @@
-:time_estimate: 4
+:time_estimate: 5
 
 = Quiz: Use Cases for Edge Devices and RHEL for Edge
 

@@ -1,4 +1,4 @@
-:time_estimate: 7
+:time_estimate: 6
 :compose-uuid-mysql-v1-aaaaaaaaaaaaaa: ff15f8cd-21da-489a-87d0-bb39df4b79ad
 
 = Lab: Publish Edge Images on Remote OSTree Repositories

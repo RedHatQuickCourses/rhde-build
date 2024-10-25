@@ -1,4 +1,4 @@
-:time_estimate: 6
+:time_estimate: 5
 :compose-uuid-canceled-aaaaaaaaaaaa: 01f3796b-85fd-4383-bbe8-eefc9550acdc
 
 = Lab: Create and Manage Composes for Edge Images

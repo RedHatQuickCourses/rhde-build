@@ -1,4 +1,4 @@
-:time_estimate: 7
+:time_estimate: 8
 
 = Lab: Create a Remote OSTree Repository
 

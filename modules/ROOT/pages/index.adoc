@@ -10,7 +10,7 @@ This course teaches how to create *Red Hat Device Edge* images for edge devices 
 
 == Audience
 
-Operations-focused customer roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
+Operations-focused roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
 
 * System Administrations (IT - Information Technology, and OT - Operations Technology)
 * Site Reliability Engineers (SREs)
