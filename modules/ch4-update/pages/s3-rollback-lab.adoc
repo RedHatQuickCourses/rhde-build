@@ -7,15 +7,13 @@ _Estimated reading time: *{time_estimate} minutes*._
 
 Objective::
 
-Rollback a test VM to a previous known good RHEL for Edge system image.
-
-WARNING: Work in Progress
+Rollback a test VM to a previously known good RHEL for Edge system image.
 
 == Before you Begin
 
-You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the `weldr` group. Make sure your development machine is configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
-You also need a _web server machine_ which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
+You also need a _web server machine_ which serves an OSTree repository. Make sure that the machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
 
 Finally, you need the _test VM_ that you updated in xref:s2-update-lab.adoc[the previous lab]. While you could perform the focus tasks in this lab on a _test VM_ that was never updated before, that is, you can rollback the first update of an edge device, the instructions and outputs here assume that there are previous updates already applied to the _test VM_, to demonstrate that RPM-OSTree automatically prunes older system updates.
 
@@ -44,7 +42,7 @@ API server status:
 ...
 --
 
-.. Check that you can get the current commit ID the OSTree branch with the Apache Web Server system image update that you created in xref:s2-update-lab.adoc[the previous lab]. You will get a different ID:
+.. Check that you can get the current commit ID of the OSTree branch with the Apache Web Server system image update that you created in xref:s2-update-lab.adoc[the previous lab]. You will get a different ID:
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -54,7 +52,7 @@ $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge*
 +
 Pay attention to the final path element of the URL, which should be "edge". The commit ID you get should be the active commit in your _test VM_ and it will be the parent commit of the new update image you are building during this lab.
 
-.. Check that you can manage local VMs, and there's a VM left from the xref:s2-update-lab:[previous lab] named `edge-test-1`.
+.. Check that you can manage local VMs, and that there's a VM left from the xref:s2-update-lab:[previous lab] named `edge-test-1`.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -65,15 +63,15 @@ $ *virsh list --all*
  2    edge-db-1     shut-off
 --
 +
-It's fine if the existing VM displays an status of "running" instead of "shut off".
+It's fine if the existing VM displays a status of "running" instead of "shut off".
 
 2. Make changes to the edge image blueprint to add the PHP packages.
 +
-This similar to what you did in the previous lab. It's just another update image, which should pick whatever is the current HEAD of the remote OSTree repository as its parent.
+This is similar to what you did in the previous lab. It's just another update image, which should pick whatever is the current HEAD of the remote OSTree repository as its parent.
 
 .. Open the `rhel9-httpd.toml` file which you edited in the xref:s2-update-lab.adoc[previous lab], with any text editor.
 
-.. Increment the version number, in tbe beginning of the TOML file, and add two `packages` sections, one for the PHP interpreter and another for the PHP-FastCGI engine. There is no need to change any of the `customizations` section. After your edits, the TOML file should look like the following:
+.. Increment the version number, at the beginning of the TOML file, and add two `packages` sections, one for the PHP interpreter and another for the PHP-FastCGI engine. There is no need to change any of the `customizations` section. After your edits, the TOML file should look like the following:
 +
 [source,subs="verbatim"]
 --
@@ -82,7 +80,7 @@ include::1@samples:blueprints:example$rhel9-httpd-v3.toml[lines=1..18]
 ...
 --
 +
-You can also download a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v3.toml[TOML file with all edits] from the course samples repository in GitHub. Beware that the file in the samples repository have different file names, but the same blueprint name, so they can be used as-is, without renaming.
+You can also download a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v3.toml[TOML file with all edits] from the course samples repository in GitHub. Beware that the files in the samples repository have different file names, but the same blueprint name, so they can be used as-is, without renaming.
 
 
 .. Push the updated blueprint.
@@ -105,7 +103,7 @@ include::1@samples:blueprints:example$rhel9-httpd-v3.toml[lines=1..3]
 ...
 --
 
-3. Still on your _development machine_, build another new edge commit image from your changed blueprint.
+3. Still, on your _development machine_, build another new edge commit image from your changed blueprint.
 +
 This is similar to what you did in the previous lab. You just need something different from the previous images so you later can verify that your _test VM_ got the right updates.
 
@@ -144,7 +142,7 @@ ID                                     Status     Blueprint     Version   Type
 NOTE: You can alternatively use a https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh[simple Bash script] that returns the status of a compose given its UUID.
 
 
-.. Download the edge commit image and copy it to your _web sever machine_.
+.. Download the edge commit image and copy it to your _web server machine_.
 +
 Be careful to not overwrite the TAR files of previous edge commit images, because you might need them to reconstruct your remote OSTree repository in case you make mistakes.
 +
@@ -236,7 +234,7 @@ Version: 9.2
 <.> Parent commit of the previous commit, it was the initial commit
 <.> Initial commit
 
-5. Still on your _development machine_, stage the new edge commit image on your _test VM_.
+5. Still, on your _development machine_, stage the new edge commit image on your _test VM_.
 
 .. If your _test VM_ is shut down, start it. Then connect to its console and log in as the user `core` with password `redhat123`.
 +
@@ -441,9 +439,9 @@ Timezone=Etc/UTC
 include::1@samples:html:example$info.php[]
 --
 
-As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it.
+As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could be marked active again, until a future upgrade removes it.
 
-Also notice that a system rollback does NOT rollbacks changes to configuration and application data. If your upgrade required special handling of application data, your rollback will also require it.
+Also, notice that a system rollback does NOT rollbacks changes to configuration and application data. If your upgrade requires special handling of application data, your rollback will also require it.
 
 == Next Steps
 

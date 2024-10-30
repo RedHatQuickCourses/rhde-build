@@ -9,13 +9,11 @@ Objective::
 
 Update a test VM, that was provisioned using an edge installer image, using OSTree static deltas.
 
-WARNING: Work in Progress
-
 == Before you Begin
 
-You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the `weldr` group. Make sure your development machine is configured and verified by following the instructions from the xref:ch1-build:s4-install-lab.adoc[first lab].
 
-You also need a _web server machine_ which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
+You also need a _web server machine_ which serves an OSTree repository. Make sure that the machine was configured and verified by following the instructions from xref:ch2-publish:s2-ostree-lab.adoc[a previous lab].
 
 Finally, you need the _database VM_ that you created in xref:ch3-test:s3-installer-lab.adoc[another lab].
 
@@ -54,7 +52,7 @@ API server status:
 ...
 --
 
-.. Check that you can get the current commit ID the OSTree branch with the database edge system image that you created in xref:ch2-publish:s3-pull-local-lab.adoc[a previous lab]. Your will get a different ID.
+.. Check that you can get the current commit ID of the OSTree branch with the database edge system image that you created in xref:ch2-publish:s3-pull-local-lab.adoc[a previous lab]. You will get a different ID.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -64,7 +62,7 @@ $ *curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db*
 +
 Pay attention to the final path element of the URL, which should be "db".
 
-.. Check that you can manage local VMs, and there's a VM left from a xref:ch3-test:s3-installer-lab:[previous lab] named `edge-db-1`.
+.. Check that you can manage local VMs, and that there's a VM left from a xref:ch3-test:s3-installer-lab:[previous lab] named `edge-db-1`.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -75,13 +73,13 @@ $ *virsh list --all*
  2    edge-db-1     shut-off
 --
 +
-It's fine the existing VM displays an status of "running" instead of "shut off".
+It's fine the existing VM displays a status of "running" instead of "shut off".
 
 2. On your _development machine_, make changes to the edge image blueprint to add the Nano text editor.
 
 .. Open the `rhel9-mysql.toml` file which you created in a xref:ch2-publish:s3-pull-local-lab.adoc[previous lab], with any text editor.
 
-.. Increment the version number, in tbe beginning of the TOML file, and add a `packages` section which refer to packages from Nano.
+.. Increment the version number, at the beginning of the TOML file, and add a `packages` section that refers to packages from Nano.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -139,7 +137,7 @@ ID                                     Status     Blueprint     Version   Type
 ...
 --
 
-.. Download the edge commit image and copy it to your _web sever machine_.
+.. Download the edge commit image and copy it to your _web server machine_.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -216,7 +214,7 @@ Version: 9.2
 
 --
 
-5. Still on your _web server machine_, create an static delta on the remote OSTree repository.
+5. Still, on your _web server machine_, create a static delta on the remote OSTree repository.
 
 .. If you're using the HOL007 classroom, its `servera` VM has too little memory (less than 1GiB) and will fail to build static deltas. Work around that by creating and activating a swap file.
 +
@@ -326,7 +324,7 @@ package nano is not installed
 db  file:///run/install/repo/ostree/repo
 --
 
-.. Configure you _database VM_ with an OSTree remote that points to your _web server_ machine.
+.. Configure your _database VM_ with an OSTree remote that points to your _web server_ machine.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -378,7 +376,7 @@ nano-5.6.1-5.el9.x86_64
 --
 +
 
-7. Still on your _development machine_, verify that your _database VM_ actually fetched upgrades using static deltas.
+7. Still, on your _development machine_, verify that your _database VM_ actually fetched upgrades using static deltas.
 
 .. Search the system logs on the _database VM_. You should see two entries with a message `libostree pull`: one from checking for updates, which refers to no deltas and has a small transfer size, and another from the actual upgrade operation, which refers to a delta and with a larger transfer size.
 +
@@ -400,7 +398,7 @@ Oct 22 15:40:45 db rpm-ostree[1246]: libostree pull from 'db' for rhel/9/x86_64/
 +
 NOTE: If you do not see any evidence of using static deltas to perform the upgrade operation, it might be because you forgot to update the summary file of the remote OSTree repository after creating the static delta. In that case, the upgrade didn't use the available static delta.
 
-.. If you search the system log of the _test VM_ from the previous labs, your would see entries similar to the following.
+.. If you search the system log of the _test VM_ from the previous labs, you will see entries similar to the following.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -471,4 +469,4 @@ As you see, the usage of static deltas is transparent to administrators of edge 
 
 == Next Steps
 
-This was the last activity in this course. Stay tuned for the remaining Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot and FDO.
+This was the last activity in this course. Stay tuned for the remaining Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot, and FDO.
