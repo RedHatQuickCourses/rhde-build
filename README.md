@@ -14,6 +14,8 @@ Figures on this course are designed using Google Slides, and the deck is availab
 
 Refer to the [Red Hat Quick Courses Contributor Guide](https://redhatquickcourses.github.io/welcome/1/guide/overview.html) for instructions about collaborating in this repository.
 
+The course now borrows a virtual classroom environment from another course, see [here](https://docs.google.com/document/d/1WzCPaNG-IPubtlqYtvQlz6XHVVWtDZscWSBqwgLDzmo/edit?usp=sharing) notes about the progress on creating a classroom environment customized for the requirements of this and other RHDE courses.
+
 ## Experimentation with Antora
 
 This course is trying new features of Antora and AsciiDoc (new for the Product Enablement Team, at least) so it requires some settings that are different from other Red Hat Training Quick Courses:
