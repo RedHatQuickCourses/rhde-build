@@ -281,7 +281,7 @@
 <p>If you build an update image without a reference to a parent commit, when you pull it into a remote OSTree repository it will clean all the previous history of its branch. That may cause issues for edge devices that need to rollback to previous images and eliminate the possibility of creating static deltas for updating edge devices on slow networks.</p>
 </div>
 <div class="paragraph">
-<p>You must start Image Builder composed for updates of edge images with a reference to a remote OSTree repository and a branch. That way, the new edge commit image records the current head of the branch as its parent.</p>
+<p>You must start Image Builder composes for updates of edge images with a reference to a remote OSTree repository and a branch. That way, the new edge commit image records the current head of the branch as its parent.</p>
 </div>
 <div class="paragraph">
 <p>An edge commit image built as an upgrade image, that is, by specifying a reference to a parent commit, is still a complete system image. It contains all files on the image, and the edge commit image contains an OSTree repo with a single commit, without previous history but with metadata about the (missing) parent commit. When it&#8217;s pulled into a remote OSTree repository, it links to its parent there and the remote repository deduplicates files between the new commit and previous commits already on the repository.</p>
