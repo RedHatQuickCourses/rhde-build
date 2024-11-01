@@ -210,28 +210,16 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Work in Progress
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your development machine is configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
+<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that the machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>Finally, you need the <em>database VM</em> that you created in <a href="../ch3-test/s3-installer-lab.html" class="xref page">another lab</a>.</p>
@@ -273,7 +261,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that you can get the current commit ID the OSTree branch with the database edge system image that you created in <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">a previous lab</a>. Your will get a different ID.</p>
+<p>Check that you can get the current commit ID of the OSTree branch with the database edge system image that you created in <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">a previous lab</a>. You will get a different ID.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/db</strong>
@@ -285,7 +273,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that you can manage local VMs, and there&#8217;s a VM left from a <a href="#ch3-test:s3-installer-lab:">previous lab</a> named <code>edge-db-1</code>.</p>
+<p>Check that you can manage local VMs, and that there&#8217;s a VM left from a <a href="#ch3-test:s3-installer-lab:">previous lab</a> named <code>edge-db-1</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh list --all</strong>
@@ -296,7 +284,7 @@ API server status:
 </div>
 </div>
 <div class="paragraph">
-<p>It&#8217;s fine the existing VM displays an status of "running" instead of "shut off".</p>
+<p>It&#8217;s fine the existing VM displays a status of "running" instead of "shut off".</p>
 </div>
 </li>
 </ol>
@@ -310,7 +298,7 @@ API server status:
 <p>Open the <code>rhel9-mysql.toml</code> file which you created in a <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 </li>
 <li>
-<p>Increment the version number, in tbe beginning of the TOML file, and add a <code>packages</code> section which refer to packages from Nano.</p>
+<p>Increment the version number, at the beginning of the TOML file, and add a <code>packages</code> section that refers to packages from Nano.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-mysql"
@@ -410,7 +398,7 @@ e0722e00-9cd1-4d7f-96fc-83776eac85fc   FINISHED   rhel9-db      0.2.0     edge-c
 </div>
 </li>
 <li>
-<p>Download the edge commit image and copy it to your <em>web sever machine</em>.</p>
+<p>Download the edge commit image and copy it to your <em>web server machine</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID --filename rhel9-mysql-v2-commit.tar</strong>
@@ -498,7 +486,7 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Still on your <em>web server machine</em>, create an static delta on the remote OSTree repository.</p>
+<p>Still, on your <em>web server machine</em>, create a static delta on the remote OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -625,7 +613,7 @@ db  file:///run/install/repo/ostree/repo</code></pre>
 </div>
 </li>
 <li>
-<p>Configure you <em>database VM</em> with an OSTree remote that points to your <em>web server</em> machine.</p>
+<p>Configure your <em>database VM</em> with an OSTree remote that points to your <em>web server</em> machine.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>sudo ostree remote delete db</strong>
@@ -682,7 +670,7 @@ nano-5.6.1-5.el9.x86_64</code></pre>
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, verify that your <em>database VM</em> actually fetched upgrades using static deltas.</p>
+<p>Still, on your <em>development machine</em>, verify that your <em>database VM</em> actually fetched upgrades using static deltas.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -717,7 +705,7 @@ If you do not see any evidence of using static deltas to perform the upgrade ope
 </div>
 </li>
 <li>
-<p>If you search the system log of the <em>test VM</em> from the previous labs, your would see entries similar to the following.</p>
+<p>If you search the system log of the <em>test VM</em> from the previous labs, you will see entries similar to the following.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">Oct 22 16:39:47 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86_64/edge complete
@@ -841,7 +829,7 @@ Oct 22 16:40:00 edge rpm-ostree[1232]: libostree pull from 'edge' for rhel/9/x86
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This was the last activity in this course. Stay tuned for the remaining Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot and FDO.</p>
+<p>This was the last activity in this course. Stay tuned for the remaining Red Hat Device Edge courses, which feature MicroShift, Ansible Automation, Green Boot, and FDO.</p>
 </div>
 </div>
 </div>

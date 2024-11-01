@@ -211,13 +211,13 @@
 <p>Devices provisioned using edge installer images are <strong>NOT</strong> configured with an OSTree remote, you must configure it before applying updates.</p>
 </li>
 <li>
-<p>RPM-OSTree stages upgrades on the system disk, as a new OSTree commit, and applies then on the next boot. It also keeps the previous OSTree commit so you can rollback from the upgrade.</p>
+<p>RPM-OSTree stages an upgrade on the system disk, as a new OSTree commit, and applies it on the next boot. It also keeps the previous OSTree commit so you can rollback from the upgrade.</p>
 </li>
 <li>
 <p>Changes to files in <code>/etc</code> and <code>/var</code> are retained during system updates and rollbacks.</p>
 </li>
 <li>
-<p>OSTree static deltas between two OSTree commits make system upgrades faster and more reliable for devices with high latency or low-bandwidth network connections, and most be created manually.</p>
+<p>OSTree static deltas between two OSTree commits make system upgrades faster and more reliable for devices with high latency or low-bandwidth network connections, and must be created manually.</p>
 </li>
 <li>
 <p>Every time you add commits or static deltas to an OSTree repository, you must update its summary file.</p>

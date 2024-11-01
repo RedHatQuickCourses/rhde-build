@@ -210,28 +210,16 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Work in Progress
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your development machine is configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
+<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that the machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>Finally, you need the <em>test VM</em> that you created and published in <a href="../ch3-test/s2-boot-lab.html" class="xref page">another lab</a>.</p>
@@ -273,7 +261,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that a remote client can access the OSTree repository in the <em>web server machine</em> and get the current commit ID the OSTree branch with the Apache Web Server system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. You will get a different ID:</p>
+<p>Check that a remote client can access the OSTree repository in the <em>web server machine</em> and get the current commit ID of the OSTree branch with the Apache Web Server system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. You will get a different ID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
@@ -285,7 +273,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that you can manage local VMs, and there&#8217;s a VM left from the <a href="#ch3-test:s2-boot-lab:">previous lab</a> named <code>edge-test-1</code>.</p>
+<p>Check that you can manage local VMs, and that there&#8217;s a VM left from the <a href="#ch3-test:s2-boot-lab:">previous lab</a> named <code>edge-test-1</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh list --all</strong>
@@ -296,7 +284,7 @@ API server status:
 </div>
 </div>
 <div class="paragraph">
-<p>It&#8217;s fine if the existing VM displays an status of "running" instead of "shut off".</p>
+<p>It&#8217;s fine if the existing VM displays a status of "running" instead of "shut off".</p>
 </div>
 </li>
 </ol>
@@ -309,7 +297,7 @@ API server status:
 <li>
 <p>Open the <code>rhel9-httpd.toml</code> file, which you created in a <a href="../ch1-build/s6-blueprint-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 <div class="paragraph">
-<p>Increment the minor version number, in the beginning of the TOML file, add a new <code>packages</code> section, and makes changes to its <code>services</code> and <code>firewall</code> customization sections. The file should look like the following, after all edits:</p>
+<p>Increment the minor version number, at the beginning of the TOML file, add a new <code>packages</code> section, and make changes to its <code>services</code> and <code>firewall</code> customization sections. The file should look like the following, after all edits:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -370,7 +358,7 @@ version = "0.2.0"
 <li>
 <p>Still on your <em>development machine</em>, build a new edge commit image from your changed blueprint.</p>
 <div class="paragraph">
-<p>This is very similar to what you done in previous labs, but pay attention to the differences required for update images and a few hints about the usage of the <code>composer-cli</code> command.</p>
+<p>This is very similar to what you did in the previous labs, but pay attention to the differences required for updating images and a few hints about the usage of the <code>composer-cli</code> command.</p>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -410,7 +398,7 @@ ID   Status   Blueprint   Version   Type</code></pre>
 </div>
 </li>
 <li>
-<p>Once the list of running composes is empty, it means your compose job either finished or failed. You could filter the list of composes on those statuses, but after some time both lists could become too large for visual inspection. Let&#8217;s see how to filter the JSON output of <code>composer-cli</code> to get the status of just one compose by its UUID:</p>
+<p>Once the list of running composes is empty, it means your compose job is either finished or failed. You could filter the list of composes on those statuses, but after some time both lists could become too large for visual inspection. Let&#8217;s see how to filter the JSON output of <code>composer-cli</code> to get the status of just one compose by its UUID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list -j | jq -r ".[1].body.finished[] | select(.id==\"$UUID\").queue_status"</strong>
@@ -436,16 +424,16 @@ FAILED</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You can download, from the source samples repository in GitHub, a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh">simple Bash script</a> that returns the status of a compose gives its UUID. The script contains the <code>jq</code> from previous commands and also a couple other queries.
+You can download, from the source samples repository in GitHub, a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh">simple Bash script</a> that returns the status of a compose and gives its UUID. The script contains the <code>jq</code> from previous commands and also a couple of other queries.
 </td>
 </tr>
 </table>
 </div>
 </li>
 <li>
-<p>Download the edge commit image and copy it to your <em>web sever machine</em>.</p>
+<p>Download the edge commit image and copy it to your <em>web server machine</em>.</p>
 <div class="paragraph">
-<p>Because you have to track two sets of hashes, one for compose UUIDs, another for OSTree commit IDs, use the <code>--filename</code> option to give a mnemonic name to the TAR file of your edge commit image. This way, you won&#8217;t be lost trying to figure out which of your many TAR files corresponds to each edge image, specially after they are moved to a different machine than the one where you run the Image Builder service.</p>
+<p>Because you have to track two sets of hashes, one for compose UUIDs, and another for OSTree commit IDs, use the <code>--filename</code> option to give a mnemonic name to the TAR file of your edge commit image. This way, you won&#8217;t be lost trying to figure out which of your many TAR files corresponds to each edge image, especially after they are moved to a different machine than the one where you run the Image Builder service.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -464,7 +452,7 @@ $ <strong>scp rhel9-httpd-v2-commit.tar servera:~</strong>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Check that the new edge commit image exists on your home folder.</p>
+<p>Check that the new edge commit image exists in your home folder.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls rhel9-httpd-v2.tar</strong>
@@ -515,7 +503,7 @@ Version: 9.2
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Commit ID of parent of the new edge commit image</td>
+<td>Commit ID of the parent of the new edge commit image</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -525,7 +513,7 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Now that you verified that your new edge commit image can connect to the existing history of your OSTree repository, pull the new edge commit image into the OSTree repository on the web server.</p>
+<p>Now that you have verified that your new edge commit image can connect to the existing history of your OSTree repository, pull the new edge commit image into the OSTree repository on the web server.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo ostree pull-local --repo=/var/www/html/repo delete-me/repo</strong>
@@ -568,7 +556,7 @@ Version: 9.2
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Commit ID of parent of the new edge commit image</td>
+<td>Commit ID of the parent of the new edge commit image</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -605,7 +593,7 @@ running</code></pre>
 </div>
 </li>
 <li>
-<p>Attach to the console of your <em>test VM</em> and log in as the user <code>core</code> with password <code>redhat123</code>. It may be necessary to press <kbd>Enter</kbd> a few times to get a login prompt</p>
+<p>Attach to the console of your <em>test VM</em> and log in as the user <code>core</code> with password <code>redhat123</code>. It may be necessary to press <kbd>Enter</kbd> a few times to get a login prompt.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh console edge-test-1</strong>
@@ -615,7 +603,7 @@ edge login:</code></pre>
 </div>
 </li>
 <li>
-<p>Change the hostname of your <em>test VM</em> and verify that change is stored in a file under the <code>/etc/</code> directory.</p>
+<p>Change the hostname of your <em>test VM</em> and verify that the change is stored in a file under the <code>/etc/</code> directory.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo hostnamectl set-hostname microweb</strong>
@@ -751,7 +739,7 @@ You can safely ignore the SELinux errors during staging of a new system image. T
 </div>
 </li>
 <li>
-<p>You can verify that the new system image is not active (its the second deployment) but it is marked for the next reboot (notice the bullet).</p>
+<p>You can verify that the new system image is not active (it&#8217;s the second deployment) but it is marked for the next reboot (notice the bullet).</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
@@ -772,7 +760,7 @@ Deployments:
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, apply the upgrade to your <em>test VM</em> and verify it is running the new edge commit image you built during this lab.</p>
+<p>Still, on your <em>development machine</em>, apply the upgrade to your <em>test VM</em> and verify it is running the new edge commit image you built during this lab.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>

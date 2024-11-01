@@ -206,21 +206,9 @@
 <dl>
 <dt class="hdlist1">Objective</dt>
 <dd>
-<p>Rollback a test VM to a previous known good RHEL for Edge system image.</p>
+<p>Rollback a test VM to a previously known good RHEL for Edge system image.</p>
 </dd>
 </dl>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Work in Progress
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -228,10 +216,10 @@ Work in Progress
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your development machine is configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
+<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that the machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>Finally, you need the <em>test VM</em> that you updated in <a href="s2-update-lab.html" class="xref page">the previous lab</a>. While you could perform the focus tasks in this lab on a <em>test VM</em> that was never updated before, that is, you can rollback the first update of an edge device, the instructions and outputs here assume that there are previous updates already applied to the <em>test VM</em>, to demonstrate that RPM-OSTree automatically prunes older system updates.</p>
@@ -273,7 +261,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that you can get the current commit ID the OSTree branch with the Apache Web Server system image update that you created in <a href="s2-update-lab.html" class="xref page">the previous lab</a>. You will get a different ID:</p>
+<p>Check that you can get the current commit ID of the OSTree branch with the Apache Web Server system image update that you created in <a href="s2-update-lab.html" class="xref page">the previous lab</a>. You will get a different ID:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
@@ -285,7 +273,7 @@ API server status:
 </div>
 </li>
 <li>
-<p>Check that you can manage local VMs, and there&#8217;s a VM left from the <a href="#s2-update-lab:">previous lab</a> named <code>edge-test-1</code>.</p>
+<p>Check that you can manage local VMs, and that there&#8217;s a VM left from the <a href="#s2-update-lab:">previous lab</a> named <code>edge-test-1</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh list --all</strong>
@@ -296,7 +284,7 @@ API server status:
 </div>
 </div>
 <div class="paragraph">
-<p>It&#8217;s fine if the existing VM displays an status of "running" instead of "shut off".</p>
+<p>It&#8217;s fine if the existing VM displays a status of "running" instead of "shut off".</p>
 </div>
 </li>
 </ol>
@@ -305,7 +293,7 @@ API server status:
 <li>
 <p>Make changes to the edge image blueprint to add the PHP packages.</p>
 <div class="paragraph">
-<p>This similar to what you did in the previous lab. It&#8217;s just another update image, which should pick whatever is the current HEAD of the remote OSTree repository as its parent.</p>
+<p>This is similar to what you did in the previous lab. It&#8217;s just another update image, which should pick whatever is the current HEAD of the remote OSTree repository as its parent.</p>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -313,7 +301,7 @@ API server status:
 <p>Open the <code>rhel9-httpd.toml</code> file which you edited in the <a href="s2-update-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 </li>
 <li>
-<p>Increment the version number, in tbe beginning of the TOML file, and add two <code>packages</code> sections, one for the PHP interpreter and another for the PHP-FastCGI engine. There is no need to change any of the <code>customizations</code> section. After your edits, the TOML file should look like the following:</p>
+<p>Increment the version number, at the beginning of the TOML file, and add two <code>packages</code> sections, one for the PHP interpreter and another for the PHP-FastCGI engine. There is no need to change any of the <code>customizations</code> section. After your edits, the TOML file should look like the following:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
@@ -339,7 +327,7 @@ name = "php-fpm"
 </div>
 </div>
 <div class="paragraph">
-<p>You can also download a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v3.toml">TOML file with all edits</a> from the course samples repository in GitHub. Beware that the file in the samples repository have different file names, but the same blueprint name, so they can be used as-is, without renaming.</p>
+<p>You can also download a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v3.toml">TOML file with all edits</a> from the course samples repository in GitHub. Beware that the files in the samples repository have different file names, but the same blueprint name, so they can be used as-is, without renaming.</p>
 </div>
 </li>
 <li>
@@ -370,7 +358,7 @@ version = "0.3.0"
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, build another new edge commit image from your changed blueprint.</p>
+<p>Still, on your <em>development machine</em>, build another new edge commit image from your changed blueprint.</p>
 <div class="paragraph">
 <p>This is similar to what you did in the previous lab. You just need something different from the previous images so you later can verify that your <em>test VM</em> got the right updates.</p>
 </div>
@@ -424,7 +412,7 @@ You can alternatively use a <a href="https://raw.githubusercontent.com/RedHatQui
 </div>
 </li>
 <li>
-<p>Download the edge commit image and copy it to your <em>web sever machine</em>.</p>
+<p>Download the edge commit image and copy it to your <em>web server machine</em>.</p>
 <div class="paragraph">
 <p>Be careful to not overwrite the TAR files of previous edge commit images, because you might need them to reconstruct your remote OSTree repository in case you make mistakes.</p>
 </div>
@@ -559,7 +547,7 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, stage the new edge commit image on your <em>test VM</em>.</p>
+<p>Still, on your <em>development machine</em>, stage the new edge commit image on your <em>test VM</em>.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -809,10 +797,10 @@ This is PHP version: &lt;?= phpversion() ?&gt;
 </ol>
 </div>
 <div class="paragraph">
-<p>As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could me marked active again, until a future upgrade removes it.</p>
+<p>As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could be marked active again, until a future upgrade removes it.</p>
 </div>
 <div class="paragraph">
-<p>Also notice that a system rollback does NOT rollbacks changes to configuration and application data. If your upgrade required special handling of application data, your rollback will also require it.</p>
+<p>Also, notice that a system rollback does NOT rollbacks changes to configuration and application data. If your upgrade requires special handling of application data, your rollback will also require it.</p>
 </div>
 </div>
 </div>
