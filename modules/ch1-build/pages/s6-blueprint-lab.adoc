@@ -8,13 +8,11 @@ Objective::
 
 Create, validate, and update Image Builder blueprints for building edge images.
 
-WARNING: Pending SME Review & Proofreading
-
 == Before you Begin
 
-You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the `weldr` group. Make sure your development machine was configured and verified by following the instructions from the xref:s4-install-lab.adoc[previous lab].
+You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the `weldr` group. Make sure your development machine is configured and verified by following the instructions from the xref:s4-install-lab.adoc[previous lab].
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`. If not, please adapt the instructions to your test environment.
 
@@ -101,7 +99,7 @@ IMPORTANT: Red Hat does NOT recommend that you use Image Builder as the source o
 
 .. Use your preferred text editor to change the `rhel9-httpd.toml` file as follows. Make sure you do NOT change its `name` attribute!
 +
-Add Services and Firewall customizations, so the service is readily available on the device?
+Add Services and Firewall customizations, so the service is readily available on the device.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -151,4 +149,4 @@ Now you know the basics of managing blueprints with the Image Builder service.
 
 == Next Steps
 
-The next activity builds an edge commit image from the blueprint you just created, and later in this course you will use that image to provision virtual edge devices.
+The next activity builds an edge commit image from the blueprint you just created, and later in this course, you will use that image to provision virtual edge devices.

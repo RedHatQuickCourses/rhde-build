@@ -2,14 +2,14 @@
 
 In this chapter, you learned:
 
-* Red Hat Device Edge offers a way to subscribe and entitle edge systems to use RHEL, MicroShift, and Ansible that is more adequate to scale and requirements of edge devices, as opposed to data center servers and office workstations.
+* Red Hat Device Edge offers a way to subscribe and entitle edge systems to use RHEL, MicroShift, and Ansible which is more adequate to the scale and requirements of edge devices, as opposed to data center servers and office workstations.
 
 * RHEL for Edge is a feature designed to provision and maintain edge systems as image-based systems, using the RHEL Image Builder and RPM-OSTree technologies.
 
-* Image Builder accepts blueprints which describe packages and customizations to include in edge system images.
+* Image Builder accepts blueprints that describe packages and customizations to include in edge system images.
 
 * Image Builder composes can create different kinds of edge images, and the most important kind is the edge commit image which contains an OSTree commit to publish in an OSTree repository.
 
-* Image Builder composes that produce edge installer and edge cloud images, for provisioning edge devices, require an OSTree commit and an OSTree repository.
+* Image Builder composes that produce edge installer and edge cloud images, for provisioning edge devices, requires an OSTree commit and an OSTree repository.
 
 * OSTree commits must be published on remote OSTree repositories so edge devices can fetch system updates.
