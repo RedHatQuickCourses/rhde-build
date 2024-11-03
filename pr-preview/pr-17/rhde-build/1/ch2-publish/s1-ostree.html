@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Introduction to OSTree Technology :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="s2-ostree-lab.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch1-build/index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Publish Operating System Images for Edge Devices</a></li>
+    <li><a href="s1-ostree.html">Introduction to OSTree Technology</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Introduction to OSTree Technology</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>6 minutes</strong>.</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Understand how OSTree repositories represent operating system images</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ostree_commits_and_edge_images"><a class="anchor" href="#_ostree_commits_and_edge_images"></a>OSTree Commits and Edge Images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Publishing an OSTree commit on a remote OSTree repository is the final step before you can provision edge systems.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-ostree-fig1.svg" alt="s1 ostree fig1">
+</div>
+<div class="title">Figure 1. OSTree commits in an edge device installation and updates the workflow</div>
+</div>
+<div class="paragraph">
+<p>The contents of an edge commit image produced by the Image Builder is a single OSTree commit, packaged as a TAR archive. That OSTree commit is, by itself, a valid OSTree repository, but it will likely be published in a larger OSTree repository, which contains multiple edge images and multiple versions of each edge image.</p>
+</div>
+<div class="paragraph">
+<p>The RPM-OSTree technology is used by the Image Builder service to build OSTree commits and is also the technology used by edge devices to deploy OSTree commits as the bootable system images and to download and apply system updates. But RPM-OSTree alone does not provide capabilities for OSTree repository management, which is the focus of this section.</p>
+</div>
+<div class="paragraph">
+<p>The OSTree technology is used by more than RPM-OSTree and RHEL for Edge. It is a core technology of many innovative community projects, such as <a href="https://fedoraproject.org/iot/">Fedora IoT</a> and <a href="https://flatpak.org/">Flatpack</a>. It is also a core technology of <a href="https://docs.openshift.com/container-platform/4.16/architecture/architecture-rhcos.html">RHEL CoreOS</a> which powers cluster nodes of Red Hat OpenShift 4.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction_to_ostree_repositories"><a class="anchor" href="#_introduction_to_ostree_repositories"></a>Introduction to OSTree Repositories</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OSTree is, conceptually, very similar to Git: both are designed to manage the state of file trees as atomic units, providing transactional management, including updates and rollbacks, of those trees. Both are designed to manage multiple concurrent branches and to be efficient on both disk space and network bandwidth when handling deltas between two states (or two commits) of the same file tree.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s1-ostree-fig-2.svg" alt="s1 ostree fig 2">
+</div>
+<div class="title">Figure 2. OSTree repository, branches, commits, and remotes</div>
+</div>
+<div class="paragraph">
+<p>If OSTree and Git are so similar, Why not just use Git? Because OSTree adds the following features, which are required to manage bootable Linux file systems but are not needed to manage application source code:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Recording SELinux labels and POSIX extended attributes</p>
+</li>
+<li>
+<p>Installing boot loaders, Linux Kernels, and initial RAM disks</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files with Git. This is consistent with its purpose: OSTree is designed to manage file system trees which contain operating system binaries, while Git is designed to manage file system trees which contain source code.</p>
+</div>
+<div class="paragraph">
+<p>With RPM-OSTree, each branch of an OSTree repository is a system image. Updating an image means adding a new commit to the head of a branch. If you store, in the same OSTree repository, multiple system images based on the same RHEL release, each image adding a different set of applications and configurations file, those images share the same files for the Linux kernel, system binaries, and system libraries, for efficient use of disk space.</p>
+</div>
+<div class="paragraph">
+<p>On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to different sets of packages from RHEL. OSTree branches are not required to share files, but will not store duplicated files from other branches. Users of an OSTree repository do not need to be aware of the branches from other users: deduplication of files happens automatically.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ostree_clients_and_remote_repositories"><a class="anchor" href="#_ostree_clients_and_remote_repositories"></a>OSTree Clients and Remote Repositories.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Similar to Git, a client OSTree system, such as an RPM-OSTree system, contains a copy (or a clone) of a remote OSTree repository, and it can pull changes from the remote repository. An OSTree repository records the URL of its remote repositories.</p>
+</div>
+<div class="paragraph">
+<p>Another practical difference between OSTree and Git is the fact that OSTree provides no specialized server software: OSTree remote repositories are just files served by a standard HTTP server. All changes to an OSTree repository require using local file system access, and remote access over HTTP only works for downloading (pulling) updates from a remote repository to a local repository.</p>
+</div>
+<div class="paragraph">
+<p>While this means that managing remote OSTree repositories requires more effort than with Git, it also means you don&#8217;t need to learn how to deploy and manage special server software: you just need to learn how to use the client-side OSTree tools, in addition to managing any web server software.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rpm_ostree_deployments"><a class="anchor" href="#_rpm_ostree_deployments"></a>RPM-OSTree Deployments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An edge device contains a local OSTree repository, which could contain multiple OSTree commits, but only one of those commits is active, or <strong>deployed</strong>. The deployed commit is similar to the active branch of a Git repository: you can read and write directly to its files, as in an exploded archive.</p>
+</div>
+<div class="paragraph">
+<p>Edge devices can pull many commits from a remote OSTree repository, and that&#8217;s how they get system updates. You can switch to, or deploy, a different OSTree commit present in the local OSTree repository of the device, which requires a reboot. The process is basically the same for applying updates and rolling back them.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_ostree_tooling"><a class="anchor" href="#_the_ostree_tooling"></a>The OSTree tooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You must perform OSTree repository management from the command line, using the <code>ostree</code> command. Most of the OSTree commands are single-level, and each subcommand takes its own options and arguments, as in:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">ostree <em>command</em> [<em>options</em>] [<em>arguments</em>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, the following command lists the commit history in a branch named <code>rhel/9/x86_64/edge</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree log rhel/9/x86_64/edge</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>ostree</code> command defaults to using the system OSTree repository at <code>/sysroot/ostree/repo</code>, which is the local repository of an RHEL for Edge system. In a development machine, such as the one where you run the Image Builder service, or in a web server which hosts remote OSTree repositories for edge devices, you must include the <code>--repo</code> option to specify the path to your OSTree repository, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=<em>/path/to/my_repository</em> log rhel/9/x86_64/edge</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A few commands, such as <code>ostree admin</code> have their own subcommands. For example, the following command shows the differences between the current configuration directory (<code>/etc</code>) in a live system and its OSTree commit, effectively showing what was changed after the commit was deployed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree admin config-diff</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At any level, you can use the <code>--help</code> option to display online help for the available command, subcommands, options, and arguments. All the following are valid examples of getting online help from the <code>ostree</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --help</strong>
+$ <strong>ostree log --help</strong>
+$ <strong>ostree admin --help</strong>
+$ <strong>ostree admin config-diff --help</strong></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you have been introduced to the essential concepts of OSTree repositories, a series of hands-on activities install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course, you will test those edge images using local VMs, and then update those VMs to use new system images.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Publish Operating System Images for Edge Devices</a></span>
+  <span class="next"><a href="s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
