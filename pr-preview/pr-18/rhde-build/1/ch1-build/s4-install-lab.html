@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab: Install Image Builder on a Development Machine :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s3-images.html">
+    <link rel="next" href="s5-blueprint.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s4-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Build Operating System Images for Edge Devices</a></li>
+    <li><a href="s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab: Install Image Builder on a Development Machine</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>7 minutes</strong>.</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Install and configure Image Builder in a RHEL machine for creating edge images.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need a <em>development machine</em> running RHEL, to which you have unrestricted sudo rights and also access to RHEL package repositories. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable installation images.</p>
+</div>
+<div class="paragraph">
+<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code> and grant that same user access to the Image Builder service. If not, please adapt the instructions to your test environment.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install the packages for the Image Builder service and its clients on your development machine.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Install the RPM packages for the Image Builder service and its CLI.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install osbuild-composer composer-cli</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the RPM packages for the Cockpit service and its Composer module.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install cockpit-composer</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Enable the Image Builder and Cockpit services.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Enable and activate the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable osbuild-composer</strong>
+Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.service → /usr/lib/systemd/system/osbuild-composer.service.
+$ <strong>sudo systemctl start osbuild-composer</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Enable and activate the Cockpit service, if not already enabled on your development machine.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable cockpit</strong>
+Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → /usr/lib/systemd/system/cockpit.service.
+$ <strong>sudo systemctl start cockpit</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Enable remote access to the Cockpit service, if not already enabled on your development machine.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo firewall-cmd --add-service=cockpit --permanent</strong>
+success
+$ <strong>sudo firewall-cmd --reload</strong>
+success</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Grant an unprivileged user access to Image Builder.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Add the <code>student</code> user to the <code>weldr</code> group so it can submit requests to the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo usermod -a -G weldr student</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the user with bash command autocompletion for the Image Builder CLI.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>echo 'source /etc/bash_completion.d/composer-cli' &gt;&gt; $HOME/.bashrc</strong></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Verify that an unprivileged user can access Image Builder using its CLI.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Log out and log in again, then verify that the <code>student</code> belongs to the <code>weldr</code> group.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>id</strong>
+uid=1000(student) gid=1000(student) groups=1000(student),10(wheel),972(weldr) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that autocompletion works for the Image Builder CLI by pressing <kbd>Tab</kbd> twice.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli <kbd>Tab</kbd><kbd>Tab</kbd></strong>
+blueprints  compose     distros     help        modules     projects    sources     upload</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>List image types known to the Image Builder service. The list varies depending on the RHEL release, but notice there are many "edge" image types.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose types</strong>
+ami
+edge-commit
+edge-container
+edge-installer
+edge-raw-image
+edge-simplified-installer
+gce
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If your user is not a member of the <code>weldr</code> group, or you forgot to log off and log in again, you will see a permission error message:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose types</strong>
+ERROR: Types Error: you do not have permission to access /run/weldr/api.socket.  Check to make sure that you are a member of the weldr group</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Verify that an unprivileged user can access the Image Builder service from Cockpit.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Open a web browser and go to https://127.0.0.1:9090. Accept the insecure TLS certificate from Cockpit, if you need, and log in as the same unprivileged user that you configured in previous steps.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-login.png" alt="s4 cockpit login">
+</div>
+</div>
+</li>
+<li>
+<p>After you log in, click <b class="button">Image Builder</b> to the left to enter the Image Builder web UI.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-image-builder.png" alt="s4 cockpit image builder">
+</div>
+</div>
+</li>
+<li>
+<p>If your user is not a member of the <code>weldr</code> group, you will see a misleading error message stating that the Image Builder service was not started.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-error.png" alt="s4 cockpit error">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Configure Image Builder to access package repositories from the local network.</p>
+<div class="paragraph">
+<p>This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but it may be necessary depending on your organization&#8217;s policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a directory to store your repository overrides.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo mkdir -p /etc/osbuild-composer/repositories</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copy the example configuration file for your distribution from the <code>/usr/share/osbuild-composer/</code> directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo cp /usr/share/osbuild-composer/repositories/rhel-92.json /etc/osbuild-composer/repositories/</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Modify the configuration file to match your local DNF repository. Pay attention to attributes such as <code>baseurl</code>, <code>rhsm</code> and <code>check_gpg</code>.</p>
+<div class="paragraph">
+<p>In the classroom environment, you should make the following edits:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">...
+  "x86_64": [
+    {
+      "name": "baseos",
+      "baseurl": "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS",
+...
+    {
+      "name": "appstream",
+      "baseurl": "http://content.example.com/rhel9.2/x86_64/dvd/AppStream",
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can download a <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-92.json">configuration file</a> with all changes done from the sample applications repository in GitHub.</p>
+</div>
+</li>
+<li>
+<p>Restart the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl restart osbuild-composer</strong></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check that the Image Builder service is using your RHEL repository overides.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Verify that the repository overrides are in effect, using the Image Builder CLI.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli sources list</strong>
+appstream
+baseos
+$ <strong>composer-cli sources info baseos</strong>
+check_gpg = false
+check_repogpg = false
+...
+rhsm = false
+system = true
+type = "yum-baseurl"
+url = "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS"
+$ <strong>composer-cli sources info appstream</strong>
+check_gpg = false
+check_repogpg = false
+...
+rhsm = false
+system = true
+type = "yum-baseurl"
+url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
+<div class="paragraph">
+<p>Enter the <b class="button">Image Builder</b> item in Cockpit and click <b class="button">Sources</b>. Then, for both the <b class="button">BaseOS</b> and the <b class="button">AppStreams</b> channels, click <b class="button">&gt;</b> to expand the URL and verify it matches your configuration override.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s4-cockpit-repository-url.png" alt="s4 cockpit repository url">
+</div>
+</div>
+<div class="paragraph">
+<p>If you have Cockpit open in your web browser, you must reload the web page to see the changes.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Add the JQ command-line JSON processor, because it&#8217;s useful for scripting Image Builder tasks.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install -y jq</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that you have the RPM-OStree and OSTree tools, which were installed as dependencies from image Builder. You may see different versions than the following output, depending on your RHEL release and package updates.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rpm-ostree --version</strong>
+rpm-ostree:
+ Version: '2022.19'
+...
+$ <strong>ostree --version</strong>
+libostree:
+ Version: '2023.1'
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Now your test system should be fully configured to build edge image using the Image Builder service.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The next activity creates and validates a blueprint for an edge device.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="s3-images.html">Design, Build, and Publish Edge Images</a></span>
+  <span class="next"><a href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

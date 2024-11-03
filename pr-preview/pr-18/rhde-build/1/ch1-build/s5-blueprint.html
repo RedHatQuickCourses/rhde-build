@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Create and Manage Blueprints for Edge Images :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s4-install-lab.html">
+    <link rel="next" href="s6-blueprint-lab.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s4-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch4-update/index.html">Update Edge Devices with New Operating System Images</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-update/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Build Operating System Images for Edge Devices</a></li>
+    <li><a href="s5-blueprint.html">Create and Manage Blueprints for Edge Images</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Create and Manage Blueprints for Edge Images</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>8 minutes</strong>.</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Understand the syntax and usage of Image Builder blueprint to produce edge images.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_image_builder_blueprints_and_composes"><a class="anchor" href="#_image_builder_blueprints_and_composes"></a>Image Builder Blueprints and Composes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Creating a blueprint is the first step in the process of building an edge system image, which can be published into an OSTree repository, and optionally embedded into installation media to provision edge devices.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/s5-blueprint-fig-1.svg" alt="s5 blueprint fig 1">
+</div>
+<div class="title">Figure 1. Blueprints in an edge device installation and update workflow</div>
+</div>
+<div class="paragraph">
+<p>Before detailing the structure and usage of blueprints, we must understand a few concepts about Image Builder, in particular the concepts of blueprints and composes.</p>
+</div>
+<div class="paragraph">
+<p>You provide the Image Builder a <em>blueprint</em> that defines characteristics of the system image, such as installed packages and package groups. It may also be used to configure users, enable systemd services, or open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.</p>
+</div>
+<div class="paragraph">
+<p>Using a blueprint as input, Image Builder runs a <em>compose</em>, which is a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances of images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.</p>
+</div>
+<div class="paragraph">
+<p>All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to create composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual edge systems.</p>
+</div>
+<div class="paragraph">
+<p>As a convenience, Image Builder can upload images by itself to a limited set of remote image stores. For example, it can take AWS API credentials as input and upload AMI images to AWS S3 so you can use them to create AWS EC2 instances.</p>
+</div>
+<div class="paragraph">
+<p>The remaining of this section focuses on blueprints, and the next section focuses on composes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_blueprints_with_image_builder"><a class="anchor" href="#_using_blueprints_with_image_builder"></a>Using Blueprints with Image Builder</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Blueprint is a text file using the <a href="https://toml.io/en/">TOML</a> syntax, which is very similar to INI files from Windows and Samba. The TOML syntax was designed for ease of processing by code and ease of converting to and from JSON. Keys in a TOML file can be composed of dot notation, supporting nested attributes, and multiple sections of the same name are grouped in arrays.</p>
+</div>
+<div class="paragraph">
+<p>You upload the TOML file to the Image Builder service, and the copy in Image Builder storage serves as input for composes. If you change a blueprint file, you must upload the changed file to Image Builder to be able to run new composes with the changes.</p>
+</div>
+<div class="paragraph">
+<p>Once you upload (or push) a blueprint to Image Builder, its file name is forgotten. You must refer to the blueprint by its <code>name</code> attribute.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction_to_blueprint_syntax"><a class="anchor" href="#_introduction_to_blueprint_syntax"></a>Introduction to Blueprint Syntax</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A blueprint starts with a few metadata attributes, which specify the name, and version, and provide a description of the blueprint itself. These attributes are simple <code>name = value</code> pairs, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">name = "test-blueprint"
+description = "My first test blueprint for RHEL Image Builder"
+version = "1.0.0"
+distro = "rhel-92"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>distro</code> attribute enables using a newer RHEL release to build images using kernels and packages from older RHEL releases, for example using a RHEL 9.4 machine to build a RHEL 9.2 image. You can use the image Builder service from a RHEL 9 machine to build a RHEL 8 image, if you need.</p>
+</div>
+<div class="paragraph">
+<p>Sections named with double square brackets, such as <code>[[section]]</code>, enable listing packages, package groups, and container images to be included in the image, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[[packages]]
+name = "httpd"
+version= "2.4.*"
+
+[[packages]]
+name = "mysql"
+version= "8.0.*"
+
+[[packages]]
+name = "mysql-server"
+version= "8.0.*"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that you can have multiple sections of the same name and you can use UNIX glob syntax to specify a partial version number for packages.</p>
+</div>
+<div class="paragraph">
+<p>Finally, you can provide a number of customizations, that specify system settings such as predefined users, firewall settings, and SSH keys, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[customizations.firewall]
+ports = ["22:tcp", "80:tcp"]
+
+[customizations.services]
+enabled = ["sshd", "cockpit.socket", "httpd"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that not all customizations are valid for all types of composes. Also, when you build derived images, such as an edger installer image, it does not make sense to specify packages and package groups, because these are already provided by a preexisting edge image and its OSTree commit.</p>
+</div>
+<div class="paragraph">
+<p>You can review more details about blueprint syntax in the <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_a_customized_rhel_system_image/creating-system-images-with-composer-command-line-interface_composing-a-customized-rhel-system-image#composer-blueprint-format_creating-system-images-with-composer-command-line-interface">RHEL product documentation</a> and the <a href="https://osbuild.org/docs/user-guide/blueprint-reference/">upstream documentation</a> of Image Builder. The <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/composing_installing_and_managing_rhel_for_edge_images/composing-a-rhel-for-edge-image-using-image-builder-command-line_composing-installing-managing-rhel-for-edge-images#image-customizations_composing-a-rhel-for-edge-image-using-image-builder-command-line">RHEL for Edge product documentation</a> describes which customizations are valid for edge composes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_composer_cli_client"><a class="anchor" href="#_the_composer_cli_client"></a>The Composer CLI client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>composer-cli</code> command provides the Image Builder command-line client. It submits requests to the Image Builder service through the <code>/run/weldr/api.socket</code> UNIX socket, wich is accessible to the <code>weldr</code> group. So, any user that is member of the <code>weldr</code> group can build RHEL for Edge images using the Image Builder service.</p>
+</div>
+<div class="paragraph">
+<p>The general syntax of Image Builder CLI client commands consists of an <em>object</em> and a <em>verb</em>, where the object is an entity managed by Image Builder, such as <code>blueprints</code>, <code>compose</code>, and <code>projects</code>, and the verb is an action to perform on the entity or set of entities.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">composer-cli <em>object</em> <em>verb</em> [<em>options</em>] [<em>arguments</em>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Not all commands start with an object, sometimes there&#8217;s just a verb.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>The <code>compose</code> object is singular, while most other objects, such as <code>blueprints</code> and <code>projects</code>, are plural.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>For example, the following command lists all blueprints known to Image Builder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints list</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following command lists the types of composes that Image Builder recognizes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose types</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use the <code>--help</code> option with any object or verb, and you can also use the <code>help</code> command, so all the following are examples of ways of getting online help from the Image Builder CLI:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli help</strong>
+$ <strong>composer-cli --help</strong>
+$ <strong>composer-cli help blueprints</strong>
+$ <strong>composer-cli blueprints --help</strong>
+$ <strong>composer-cli help blueprints list</strong>
+$ <strong>composer-cli blueprints list --help</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Take your time to study the on-line help of the Image Builder CLI. There are some operations there which are not available from the Cockpit module.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_composer_cockpit_module"><a class="anchor" href="#_the_composer_cockpit_module"></a>The Composer Cockpit Module</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Composer Cockpit module provides the Image Builder web user interface. It adds an <strong>Image Builder</strong> item to the left navigation pane of the Cockpit user interface with three tabs:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Blueprints</dt>
+<dd>
+<p>Manages blueprints and creates images from blueprints.</p>
+</dd>
+<dt class="hdlist1">Images</dt>
+<dd>
+<p>Manages images and access the build logs from creating an image.</p>
+</dd>
+<dt class="hdlist1">Sources</dt>
+<dd>
+<p>Manages package repositories used to download RPM packages from RHEL and third-party applications.</p>
+</dd>
+</dl>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cockpit-image-builder.png" alt="cockpit image builder">
+</div>
+<div class="title">Figure 2. The Composer Cockpit module in the blueprints page.</div>
+</div>
+<div class="paragraph">
+<p>Notice that the Image Builder CLI uses the <code>compose</code> command to refer to images, while the Image Builder web UI uses the term "image" to refer to composes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cockpit-image-builder-images.png" alt="cockpit image builder images">
+</div>
+<div class="title">Figure 3. The Composer Cockpit module on the images page, lists composes.</div>
+</div>
+<div class="paragraph">
+<p>Notice that the Image Builder web UI is designed for large monitors and requires wide horizontal resolution, else headings and data may be truncated in the images page.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you know the Image Builder blueprint syntax and its client tools, you can create, push, and validate a blueprint that you will, later in this course, use to generate images to provision and update edge devices.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a></span>
+  <span class="next"><a href="s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
