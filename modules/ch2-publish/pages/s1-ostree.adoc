@@ -12,7 +12,7 @@ Understand how OSTree repositories represent operating system images
 
 Publishing an OSTree commit on a remote OSTree repository is the final step before you can provision edge systems.
 
-image::s1-ostree-fig1.svg[title="OSTree commits in an edge device installation and updates the workflow"]
+image::s1-ostree-fig1.svg[title="OSTree commits in the workflow for installing and updating edge devices"]
 
 The contents of an edge commit image produced by the Image Builder is a single OSTree commit, packaged as a TAR archive. That OSTree commit is, by itself, a valid OSTree repository, but it will likely be published in a larger OSTree repository, which contains multiple edge images and multiple versions of each edge image. 
 
