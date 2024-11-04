@@ -206,21 +206,9 @@
 <dl>
 <dt class="hdlist1">Objective</dt>
 <dd>
-<p>Undestand the syntax and usage of Image Builder blueprints to produce edge images.</p>
+<p>Understand the syntax and usage of Image Builder blueprint to produce edge images.</p>
 </dd>
 </dl>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -237,13 +225,13 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 1. Blueprints in an edge device installation and update workflow</div>
 </div>
 <div class="paragraph">
-<p>Before detailing the structure and usage of blueprints, we must understand a few concepts about Image Builder, in special the concepts of blueprints and composes.</p>
+<p>Before detailing the structure and usage of blueprints, we must understand a few concepts about Image Builder, in particular the concepts of blueprints and composes.</p>
 </div>
 <div class="paragraph">
-<p>You provide to Image Builder a <em>blueprint</em> that defines characteristics of the system image, such as installed packages and package groups. It may also be used to configure users, enable systemd services, or open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.</p>
+<p>You provide the Image Builder a <em>blueprint</em> that defines characteristics of the system image, such as installed packages and package groups. It may also be used to configure users, enable systemd services, or open firewall ports. You can think of a blueprint as a response file for the prompts and options you would get from the RHEL installation program, Anaconda.</p>
 </div>
 <div class="paragraph">
-<p>Using blueprint as input, Image Builder runs a <em>compose</em>, which is a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances of images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.</p>
+<p>Using a blueprint as input, Image Builder runs a <em>compose</em>, which is a job that produces a system image. You can build different types of images from the same blueprint. And you can build multiple instances of images of the same type, from the same blueprint, to include recent package updates. A compose enables you to access the end result, that is, the image raw data, and other information such as build logs and the exact versions of packages included in a compose.</p>
 </div>
 <div class="paragraph">
 <p>All blueprints and composes are kept in the Image Builder service storage, and you must upload blueprints to create composes, download blueprints to make changes, and download composes so you can publish them somewhere suitable as a boot source for your physical or virtual edge systems.</p>
@@ -260,13 +248,13 @@ Pending SME Review &amp; Proofreading
 <h2 id="_using_blueprints_with_image_builder"><a class="anchor" href="#_using_blueprints_with_image_builder"></a>Using Blueprints with Image Builder</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Blueprint is a text file using the <a href="https://toml.io/en/">TOML</a> syntax, which is very similar to INI files from Windows and Samba. The TOML syntax was designed for ease of processing by code and ease of converting to and from JSON. Keys in a TOML file can be composed of dot notation, supporting nested attributes, and multiple sections of same name are grouped in arrays.</p>
+<p>A Blueprint is a text file using the <a href="https://toml.io/en/">TOML</a> syntax, which is very similar to INI files from Windows and Samba. The TOML syntax was designed for ease of processing by code and ease of converting to and from JSON. Keys in a TOML file can be composed of dot notation, supporting nested attributes, and multiple sections of the same name are grouped in arrays.</p>
 </div>
 <div class="paragraph">
 <p>You upload the TOML file to the Image Builder service, and the copy in Image Builder storage serves as input for composes. If you change a blueprint file, you must upload the changed file to Image Builder to be able to run new composes with the changes.</p>
 </div>
 <div class="paragraph">
-<p>Once you upload (or push) a blueprint to Image Builder, it&#8217;s file name is forgotten. You must refer to the blueprint by its <code>name</code> attribute.</p>
+<p>Once you upload (or push) a blueprint to Image Builder, its file name is forgotten. You must refer to the blueprint by its <code>name</code> attribute.</p>
 </div>
 </div>
 </div>
@@ -274,7 +262,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_introduction_to_blueprint_syntax"><a class="anchor" href="#_introduction_to_blueprint_syntax"></a>Introduction to Blueprint Syntax</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A blueprint starts with a few metadata attributes, which specify the name, version, and provide a description of the blueprint itself. These attributes are simple <code>name = value</code> pairs, for example:</p>
+<p>A blueprint starts with a few metadata attributes, which specify the name, and version, and provide a description of the blueprint itself. These attributes are simple <code>name = value</code> pairs, for example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -288,7 +276,7 @@ distro = "rhel-92"</code></pre>
 <p>The <code>distro</code> attribute enables using a newer RHEL release to build images using kernels and packages from older RHEL releases, for example using a RHEL 9.4 machine to build a RHEL 9.2 image. You can use the image Builder service from a RHEL 9 machine to build a RHEL 8 image, if you need.</p>
 </div>
 <div class="paragraph">
-<p>Sections named with double square brackets, such as <code>[[section]]</code>, enable listing packages, package groups, and container images to include in the image, for example:</p>
+<p>Sections named with double square brackets, such as <code>[[section]]</code>, enable listing packages, package groups, and container images to be included in the image, for example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -335,7 +323,7 @@ enabled = ["sshd", "cockpit.socket", "httpd"]</code></pre>
 <p>The <code>composer-cli</code> command provides the Image Builder command-line client. It submits requests to the Image Builder service through the <code>/run/weldr/api.socket</code> UNIX socket, wich is accessible to the <code>weldr</code> group. So, any user that is member of the <code>weldr</code> group can build RHEL for Edge images using the Image Builder service.</p>
 </div>
 <div class="paragraph">
-<p>The general syntax of Image Builder CLI client commands consists of an <em>object</em> and a <em>verb</em>, where object is an entity managed by Image Builder, such as <code>blueprints</code>, <code>compose</code>, and <code>projects</code>, and verb is an action to perform on the entity or set of entities.</p>
+<p>The general syntax of Image Builder CLI client commands consists of an <em>object</em> and a <em>verb</em>, where the object is an entity managed by Image Builder, such as <code>blueprints</code>, <code>compose</code>, and <code>projects</code>, and the verb is an action to perform on the entity or set of entities.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -362,7 +350,7 @@ enabled = ["sshd", "cockpit.socket", "httpd"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And the following command lists the types of composes that Image Builder recognizes:</p>
+<p>The following command lists the types of composes that Image Builder recognizes:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -370,7 +358,7 @@ enabled = ["sshd", "cockpit.socket", "httpd"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can use the <code>--help</code> option with any object or verb, and you can also use the <code>help</code> command, so all the following are examples ways of getting online help from the Image Builder CLI:</p>
+<p>You can use the <code>--help</code> option with any object or verb, and you can also use the <code>help</code> command, so all the following are examples of ways of getting online help from the Image Builder CLI:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -422,7 +410,7 @@ $ <strong>composer-cli blueprints list --help</strong></code></pre>
 <div class="content">
 <img src="_images/cockpit-image-builder-images.png" alt="cockpit image builder images">
 </div>
-<div class="title">Figure 3. The Composer Cockpit module in the images page, which lists composes.</div>
+<div class="title">Figure 3. The Composer Cockpit module on the images page, lists composes.</div>
 </div>
 <div class="paragraph">
 <p>Notice that the Image Builder web UI is designed for large monitors and requires wide horizontal resolution, else headings and data may be truncated in the images page.</p>

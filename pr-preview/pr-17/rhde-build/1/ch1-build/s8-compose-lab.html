@@ -210,31 +210,19 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your <em>development machine</em> was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your <em>development machine</em> is configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You also need the blueprint that was created and uploaded to the Image Builder service by the <a href="#s5-blueprint-lab.adoc" class="xref unresolved">previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>. If not, please adapt the instructions to your test environment.</p>
@@ -282,7 +270,7 @@ name = "httpd"
 </div>
 </li>
 <li>
-<p>Build an OSTree commit from the blueprint, but cancel it before its finished.</p>
+<p>Build an OSTree commit from the blueprint, but cancel it before it&#8217;s finished.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -462,7 +450,7 @@ ostree commit: rhel/9/x86_64/edge (7ff678881e89e96c90eb083b905dce411740caf19c524
 </div>
 </li>
 <li>
-<p>You can now delete the temporary directory, or leave it around for the next activity</p>
+<p>You can now delete the temporary directory, or leave it around for the next activity.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rm -rf delete-me</strong></code></pre>
@@ -480,7 +468,7 @@ ostree commit: rhel/9/x86_64/edge (7ff678881e89e96c90eb083b905dce411740caf19c524
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The next activity, in the next chapter, pushes the edge commit image to an OSTree repository, making it available to edge systems, and in later activities you provision a local virtual machine, as a stand in for an edge device, from that OSTree repository.</p>
+<p>The next activity, in the next chapter, pushes the edge commit image to an OSTree repository, making it available to edge systems, and in later activities you provision a local virtual machine, as a stand-in for an edge device, from that OSTree repository.</p>
 </div>
 </div>
 </div>

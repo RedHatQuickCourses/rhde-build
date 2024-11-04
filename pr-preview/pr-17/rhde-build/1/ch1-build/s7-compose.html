@@ -210,18 +210,6 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -240,10 +228,10 @@ Pending SME Review &amp; Proofreading
 <p>Remember that a compose is not an actual system image, but the job which produces a system image. If a compose finishes successfully, you can download the image produced by it.</p>
 </div>
 <div class="paragraph">
-<p>After you build an edge system image, you can optionally create another compose to create a derived installation image, which embeds the edge system image and a RHEL installation program into a bootable media that you can use to provision edge devices without access to network servers.</p>
+<p>After you build an edge system image, you can optionally create another compose to create a derived installation image, which embeds the edge system image and an RHEL installation program into a bootable media that you can use to provision edge devices without access to network servers.</p>
 </div>
 <div class="paragraph">
-<p>In this section, we focus on the edge system images and its RPM-OSTree technology. Later in this course we learn how to create installation images.</p>
+<p>In this section, we focus on the edge system images and its RPM-OSTree technology. Later in this course, we learn how to create installation images.</p>
 </div>
 </div>
 </div>
@@ -254,13 +242,13 @@ Pending SME Review &amp; Proofreading
 <p>Edge images from Image Builder are based on the OSTree technology, which configures the root file system as read-only. Well, not the true root file system, it&#8217;s actually a chroot, but you learn about such lower-level details later in this course. In a pure OSTree-based system, you cannot change a system file, not even as root, except by deploying a new system image an rebooting into the new image.</p>
 </div>
 <div class="paragraph">
-<p>OSTree can keep multiple system images side-by-side in a system, so downloading updates does not affect a running system&#8201;&#8212;&#8201;contrast that with RPM package updates, which can alter files which are in use by running processes and produce unpredictable results.</p>
+<p>OSTree can keep multiple system images side-by-side in a system, so downloading updates does not affect a running system&#8201;&#8212;&#8201;contrast that with RPM package updates, which can alter files that are in use by running processes and produce unpredictable results.</p>
 </div>
 <div class="paragraph">
-<p>The OSTree technology is not designed to be usable by itself, but to be infrastructure under higher-level Linux distribution tooling. In RHEL, the higher level infrastructure is RPM-OSTree, which builds OSTree system images from RPM packages.</p>
+<p>The OSTree technology is not designed to be usable by itself, but to be infrastructure under higher-level Linux distribution tooling. In RHEL, the higher-level infrastructure is RPM-OSTree, which builds OSTree system images from RPM packages.</p>
 </div>
 <div class="paragraph">
-<p>Image Builder users do not interact with the RPM-OSTree and OSTree tooling directly, at least not to build edge system images. But they must interact with RPM-OSTree to apply updates to edge systems, and they must interact with OSTree directly ti publish those updates to remote servers.</p>
+<p>Image Builder users do not interact with the RPM-OSTree and OSTree tooling directly, at least not to build edge system images. But they must interact with RPM-OSTree to apply updates to edge systems, and they must interact with OSTree directly to publish those updates to remote servers.</p>
 </div>
 </div>
 </div>
@@ -313,7 +301,7 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 3. Edge device installation and update Workflow using an edge installer image</div>
 </div>
 <div class="paragraph">
-<p>If you wish to generate an edge cloud image, you also require another blueprint plus a web server URL and a OSTree reference as arguments to the compose.</p>
+<p>If you wish to generate an edge cloud image, you also require another blueprint plus a web server URL and an OSTree reference as arguments to the compose.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -322,10 +310,10 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 4. Edge device installation and update Workflow using an edge cloud image</div>
 </div>
 <div class="paragraph">
-<p>Whatever the boot method and compose type you use for installing an edge system, it requires access to a remote OSTree repository to fetch and deploy system updates. Image Builder cannot build anything similar to an "edge update image", which would boot from local media or network boot and apply a system update. Such feature is currently in development, as part of the <a href="https://www.redhat.com/en/blog/red-hat-vehicle-os-hardware-enablement-program">Red Hat In Vehicle Operating System (RHIVOS)</a>, but it is not supported yet by Image Builder on RHEL.</p>
+<p>Whatever the boot method and compose type you use for installing an edge system, it requires access to a remote OSTree repository to fetch and deploy system updates. Image Builder cannot build anything similar to an "edge update image", which would boot from local media or network boot and apply a system update. Such a feature is currently in development, as part of the <a href="https://www.redhat.com/en/blog/red-hat-vehicle-os-hardware-enablement-program">Red Hat In Vehicle Operating System (RHIVOS)</a>, but it is not supported yet by Image Builder on RHEL.</p>
 </div>
 <div class="paragraph">
-<p>In fact, all bootable types of edge composers supported by Image Builder are preconfigured with an OSTree remote, which points to an OSTree repository server, except for the <strong>edge container image</strong>. This is a special type of compose designed to run as a Linux container which serves an OSTree commit over HTTP. It is intended as a quick way for a developer to provision a remote OSTree repository to build and test edge installer images, but it is not designed for long term usage nor for serving system updates.</p>
+<p>In fact, all bootable types of edge composers supported by Image Builder are preconfigured with an OSTree remote, which points to an OSTree repository server, except for the <strong>edge container image</strong>. This is a special type of compose designed to run as a Linux container which serves an OSTree commit over HTTP. It is intended as a quick way for a developer to provision a remote OSTree repository to build and test edge installer images, but it is not designed for long-term usage nor for serving system updates.</p>
 </div>
 <div class="paragraph">
 <p>In this course, you will NOT use edge container composes, you will instead learn how to configure and manage remote OSTree repositories so you can provide system updates to edge devices.</p>
@@ -336,7 +324,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_naming_composes"><a class="anchor" href="#_naming_composes"></a>Naming Composes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Image Builder allows you to give human-readable names to blueprints, but it always identifies composes using UUIDs. A compose refers to a specific build of a blueprint, so there could me multiple composes for the same blueprint. For example, you could build a new compose from an existing blueprint to create a new image with RPM package updates from RHEL.</p>
+<p>Image Builder allows you to give human-readable names to blueprints, but it always identifies composes using UUIDs. A compose refers to a specific build of a blueprint, so there could be multiple composes for the same blueprint. For example, you could build a new compose from an existing blueprint to create a new image with RPM package updates from RHEL.</p>
 </div>
 <div class="paragraph">
 <p>Image Builder maintains not only the image data for a compose, but also metadata such as package lists and build logs. Using the compose metadata, it is easy to compare two composes from the same blueprint and see what changed in the resulting image.</p>
@@ -347,7 +335,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_managing_composes"><a class="anchor" href="#_managing_composes"></a>Managing Composes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Because a compose is a build job, it takes a few minutes to complete, and you want monitor its status to check if it completed successfully or failed. You can also cancel running composes and fetch its build logs and other metadata from either running, finished, or failed composes.</p>
+<p>Because a compose is a build job, it takes a few minutes to complete, and you want to monitor its status to check if it is completed successfully or failed. You can also cancel running composes and fetch its build logs and other metadata from either running, finished, or failed composes.</p>
 </div>
 <div class="paragraph">
 <p>As you create multiple composes, from the same blueprint or different blueprints, sooner or later you will need to delete older composes to conserve disk space in the system running Image Builder. Consider that Image Builder may store multiple copies of the same edge system image, for example as part of a compose that builds an edge commit image and as part of another compose that builds an edge installer image.</p>
@@ -372,7 +360,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that you know about Image Builder composes and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.</p>
+<p>Now that you know about Image Builder composes and edge image types, the next activity creates a compose for an edge commit image and validates its image for integrity. Later in this course, we will publish the edge commit image in a remote web server and use it to provision a virtual edge device.</p>
 </div>
 </div>
 </div>
