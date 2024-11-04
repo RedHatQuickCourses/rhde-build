@@ -105,7 +105,7 @@ Compose {compose-uuid-httpd-v1-aaaaaaaaaaaa} added to the queue
 $ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_*
 --
 
-.. Repeat the command that the list composes until you see that the latest changed its status to `FINISHED`.
+.. Repeat the command that list composes until you see that the latest changed its status to `FINISHED`.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
