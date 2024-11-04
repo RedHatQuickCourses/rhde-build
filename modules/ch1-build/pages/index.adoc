@@ -3,10 +3,8 @@
 Goal:: 
 Build RHEL for Edge images using RHEL Image Builder
 
-WARNING: Pending SME Review & Proofreading
-
 == Introduction
 
 This chapter explains how edge devices differ from traditional servers in data centers and cloud providers and introduces the features from Red Hat Enterprise Linux (RHEL) designed to meet the needs of edge devices, such as the RHEL Image Builder tool and the RPM-OSTree technology, collectively known as RHEL for Edge.
 
-After explaining these concepts, this chapter presents a series of hands-on activities which walks through the process of building operating system images for edge device. These activities continue through the next chapters with publishing those image in a web server, using those images to provision devices in edge locations, and delivering updates to edge devices.
+After explaining these concepts, this chapter presents a series of hands-on activities which walks through the process of building operating system images for edge device. These activities continue through the next chapters with publishing those image in a web server, using those images to provision devices in edge locations, and deliver updates to edge devices.

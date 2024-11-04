@@ -8,8 +8,6 @@ Objective::
 
 Install and configure Image Builder in a RHEL machine for creating edge images.
 
-WARNING: Pending SME Review & Proofreading
-
 == Before you Begin
 
 You need a _development machine_ running RHEL, to which you have unrestricted sudo rights and also access to RHEL package repositories. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable installation images.
@@ -88,7 +86,7 @@ $ *echo 'source /etc/bash_completion.d/composer-cli' >> $HOME/.bashrc*
 
 4. Verify that an unprivileged user can access Image Builder using its CLI.
 
-.. Log out and login again, then verify that the `student` belongs to the `weldr` group.
+.. Log out and log in again, then verify that the `student` belongs to the `weldr` group.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -143,7 +141,7 @@ image::s4-cockpit-error.png[]
 
 6. Configure Image Builder to access package repositories from the local network.
 +
-This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization's policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.
+This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but it may be necessary depending on your organization's policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.
 
 .. Create a directory to store your repository overrides.
 +
@@ -210,7 +208,7 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"
 
 .. You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
 +
-Enter the btn:[Image Builder] item in Cockpit and click btn:[Sources]. Then, for both the btn:[BaseOS] and the btn:[AppStreams] channels, click btn:[>] to expand the URL and verify it matches your configuration overide.
+Enter the btn:[Image Builder] item in Cockpit and click btn:[Sources]. Then, for both the btn:[BaseOS] and the btn:[AppStreams] channels, click btn:[>] to expand the URL and verify it matches your configuration override.
 +
 image::s4-cockpit-repository-url.png[]
 +
