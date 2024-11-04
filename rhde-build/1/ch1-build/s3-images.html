@@ -210,18 +210,6 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -252,7 +240,7 @@ Pending SME Review &amp; Proofreading
 <p>The same bootable installation images could be used with a standard PXE or UEFI network boot server, which usually is an edge server.</p>
 </div>
 <div class="paragraph">
-<p>Regardless of how an edge device was originally provisioned, edge device updates must follow the same workflow: the device downloads a new OSTree commit from a remote web server. You must copy (or push) the update images from Image Builder a that web server, so that edge devices can fetch the new image and update themselves.</p>
+<p>Regardless of how an edge device was originally provisioned, edge device updates must follow the same workflow: the device downloads a new OSTree commit from a remote web server. You must copy (or push) the update images from Image Builder to a web server, so that edge devices can fetch the new image and update themselves.</p>
 </div>
 </div>
 </div>
@@ -272,7 +260,7 @@ Pending SME Review &amp; Proofreading
 <p>Depending on the target environment and the type of image, you can use different methods to perform additional installation-time (or day-1) customization of new systems, for device or site-specific configurations. Anaconda Kickstart and CoreOS Ignition are among the supported alternatives. Or you could build your own workflow for adding local customizations to an image, for example by using an interactive application which runs during the first boot.</p>
 </div>
 <div class="paragraph">
-<p>Image Builder can also generate edge images for cloud edge platform such as AWS Outposts. Those images are still based on RPM-OSTree image but use the cloud service formats, for example AWS AMI; they support cloud provider agents, such as AWS System Manager; and also cloud provider configuration services, for example Cloud-Init for AWS.</p>
+<p>Image Builder can also generate edge images for cloud edge platforms such as AWS Outposts. Those images are still based on RPM-OSTree image but use the cloud service formats, for example AWS AMI; they support cloud provider agents, such as AWS System Manager; and also cloud provider configuration services, for example Cloud-Init for AWS.</p>
 </div>
 </div>
 </div>
@@ -296,7 +284,7 @@ Pending SME Review &amp; Proofreading
 </ul>
 </div>
 <div class="paragraph">
-<p>Later on this course we learn the details of using each of these interfaces to the Image Builder service.</p>
+<p>Later in this course we learn the details of using each of these interfaces to the Image Builder service.</p>
 </div>
 </div>
 </div>
@@ -307,7 +295,7 @@ Pending SME Review &amp; Proofreading
 <p>You don&#8217;t interact directly with RPM-OSTree to build edge system images, this is the job of the Image Builder service. But you must use the RPM-OSTree tooling to manage edge devices themselves.</p>
 </div>
 <div class="paragraph">
-<p>Edge devices use RPM-OSTree to download system image updates, as new OSTree commits, and deploy them as the active system image for the next boot. System administrators must log in manually on each edge device and use the RPM-OSTree tooling, more specifically the <code>rpm-ostree</code> command, to fetch and deploy updates or to rollback an update and return to the previous system system image, or automate those operations using Ansible.</p>
+<p>Edge devices use RPM-OSTree to download system image updates, as new OSTree commits, and deploy them as the active system image for the next boot. System administrators must log in manually on each edge device and use the RPM-OSTree tooling, more specifically the <code>rpm-ostree</code> command, to fetch and deploy updates or to rollback an update and return to the previous system image, or automate those operations using Ansible.</p>
 </div>
 <div class="paragraph">
 <p>As you would expect, all edge system images produced by Image Builder are hard-coded to include the RPM-OSTree tooling, so that edge devices can be updated.</p>
@@ -321,7 +309,7 @@ Pending SME Review &amp; Proofreading
 <p>Once you build a system image with the Image Builder service, no matter if it&#8217;s the initial image for provisioning an edge device or if it&#8217;s an update image for existing devices, you must publish the image, that is, its OSTree commit, on a remote OSTree repository, so that edge devices can fetch it.</p>
 </div>
 <div class="paragraph">
-<p>You either use OSTree repository management commands to copy (or push) the OSTree commit, or you automate that process publishing edge images using Ansible.</p>
+<p>You either use OSTree repository management commands to copy (or push) the OSTree commit, or you automate that process by publishing edge images using Ansible.</p>
 </div>
 <div class="paragraph">
 <p>Your development system, which you use to build and test RHEL for Edge system images, may include the OSTree tooling, in addition to the Image Builder service and its clients, so you can publish images and updates to a test OSTree repository. Alternatively, you could have a dedicated system, which you use to set up and manage OSTree repositories, separate from the system you run the Image Builder service. In any of these cases, you need the <code>ostree</code> command.</p>
@@ -335,7 +323,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that you was introduced to the essential concepts and tools of RHEL for Edge, a series of hands-on activities install and configure Image Builder, RPM-OStree, and OSTree in a development system, which you use to build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and them update those VMs to use newer system images.</p>
+<p>Now that you have been introduced to the essential concepts and tools of RHEL for Edge, a series of hands-on activities install and configure Image Builder, RPM-OStree, and OSTree in a development system, which you use to build simple edge images. Later in this course you will publish those images in a web server, test those edge images using local VMs, and then update those VMs to use newer system images.</p>
 </div>
 </div>
 </div>

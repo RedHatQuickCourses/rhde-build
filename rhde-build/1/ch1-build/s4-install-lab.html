@@ -210,18 +210,6 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -336,7 +324,7 @@ success</code></pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Log out and login again, then verify that the <code>student</code> belongs to the <code>weldr</code> group.</p>
+<p>Log out and log in again, then verify that the <code>student</code> belongs to the <code>weldr</code> group.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>id</strong>
@@ -415,7 +403,7 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
 <li>
 <p>Configure Image Builder to access package repositories from the local network.</p>
 <div class="paragraph">
-<p>This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but may be necessary depending on your organization&#8217;s policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.</p>
+<p>This step is not always required, because Image Builder will download RPM packages from the Red Hat Customer Portal, but it may be necessary depending on your organization&#8217;s policies. If you have local mirrors of RHEL package repositories, it is best to use then for faster image builds and to conserve internet bandwidth.</p>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -502,7 +490,7 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
 <li>
 <p>You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
 <div class="paragraph">
-<p>Enter the <b class="button">Image Builder</b> item in Cockpit and click <b class="button">Sources</b>. Then, for both the <b class="button">BaseOS</b> and the <b class="button">AppStreams</b> channels, click <b class="button">&gt;</b> to expand the URL and verify it matches your configuration overide.</p>
+<p>Enter the <b class="button">Image Builder</b> item in Cockpit and click <b class="button">Sources</b>. Then, for both the <b class="button">BaseOS</b> and the <b class="button">AppStreams</b> channels, click <b class="button">&gt;</b> to expand the URL and verify it matches your configuration override.</p>
 </div>
 <div class="imageblock">
 <div class="content">

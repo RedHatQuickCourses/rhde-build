@@ -210,28 +210,16 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your development machine was configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your development machine is configured and verified by following the instructions from the <a href="s4-install-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>. If not, please adapt the instructions to your test environment.</p>
@@ -362,7 +350,7 @@ Red Hat does NOT recommend that you use Image Builder as the source of truth for
 <li>
 <p>Use your preferred text editor to change the <code>rhel9-httpd.toml</code> file as follows. Make sure you do NOT change its <code>name</code> attribute!</p>
 <div class="paragraph">
-<p>Add Services and Firewall customizations, so the service is readily available on the device?</p>
+<p>Add Services and Firewall customizations, so the service is readily available on the device.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -450,7 +438,7 @@ ERROR: BlueprintsError: 400 Bad Request: The browser (or proxy) sent a request t
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The next activity builds an edge commit image from the blueprint you just created, and later in this course you will use that image to provision virtual edge devices.</p>
+<p>The next activity builds an edge commit image from the blueprint you just created, and later in this course, you will use that image to provision virtual edge devices.</p>
 </div>
 </div>
 </div>

@@ -210,18 +210,6 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -250,10 +238,10 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 1. Components of Red Hat Device Edge</div>
 </div>
 <div class="paragraph">
-<p>All of these three components can be purchased as part of a number of other subscriptions from Red Hat. For example, RHEL and Ansible are frequently purchased as their own subscriptions, instead of as part of a bundle, and MicroShift is also available as part of Red Hat OpenShift Container Platform and Red Hat OpenShift Plus.</p>
+<p>All of these three components can be purchased as part of a number of other subscriptions from Red Hat. For example, RHEL and Ansible are frequently purchased as their own subscriptions, instead of as part of a bundle, and MicroShift is also available as part of the Red Hat OpenShift Container Platform and Red Hat OpenShift Plus.</p>
 </div>
 <div class="paragraph">
-<p>In the end, you may purchase Red Hat Device Edge to use the RHEL for Edge feature in an army of small edge devices, but you could also find out that your edge machines are "large" and best suited to another subscription which also includes RHEL, OpenShift, and other Red Hat products, and still take advantage of the RHEL for Edge feature. You could also mix entitlements from differnet subscriptions, for example some from RHEL for Edge and other from regular RHEL, on an same edge site that contains multiple kinds of machines.</p>
+<p>In the end, you may purchase Red Hat Device Edge to use the RHEL for Edge feature in an army of small edge devices, but you could also find out that your edge machines are "large" and best suited to another subscription which also includes RHEL, OpenShift, and other Red Hat products, and still take advantage of the RHEL for Edge feature. You could also mix entitlements from different subscriptions, for example, some from RHEL for Edge and others from regular RHEL, on the same edge site that contains multiple kinds of machines.</p>
 </div>
 <div class="paragraph">
 <p>In this course, we focus on the technical capabilities provided by RHEL for Edge, while other courses in this learning path focus on MicroShift and Ansible management of edge devices.</p>
@@ -264,7 +252,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_what_is_rhel_for_edge"><a class="anchor" href="#_what_is_rhel_for_edge"></a>What is RHEL for Edge</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>RHEL for Edge offers a number of technical capabilities designed to make it more productive and cost-effective to provision and manage a larger fleet of edge devices, compared to a relatively smaller fleet of office workstations and corporate servers. These capabilities also addresses the common constraints on the availability of good network connectivity and highly skilled IT personnel at edge sites.</p>
+<p>RHEL for Edge offers a number of technical capabilities designed to make it more productive and cost-effective to provision and manage a larger fleet of edge devices, compared to a relatively smaller fleet of office workstations and corporate servers. These capabilities also address the common constraints on the availability of good network connectivity and highly skilled IT personnel at edge sites.</p>
 </div>
 <div class="paragraph">
 <p>The RHEL for Edge feature relies on the following components of Red Hat Enterprise Linux:</p>
@@ -285,7 +273,7 @@ Pending SME Review &amp; Proofreading
 </dd>
 <dt class="hdlist1">Green Boot</dt>
 <dd>
-<p>The Green Boot technology enables performing health checks at system boot and, if those checks detect any issue, rolling back the system to a previous system image. Green Boot ensures that system updates can be applied safely and reliably, without intervention from IT personal in case of issues.</p>
+<p>The Green Boot technology enables performing health checks at system boot and, if those checks detect any issue, rolling back the system to a previous system image. Green Boot ensures that system updates can be applied safely and reliably, without intervention from IT personnel in case of issues.</p>
 </dd>
 <dt class="hdlist1">FIDO Device Onboard (FDO)</dt>
 <dd>
@@ -294,10 +282,10 @@ Pending SME Review &amp; Proofreading
 </dl>
 </div>
 <div class="paragraph">
-<p>Notice that the components of RHEL for Edge depend on each other, for example: Green Boot can only rollback a system update because RPM-OSTree keeps the previous OSTree image on disk, unchanged.</p>
+<p>Notice that the components of RHEL for Edge depend on each other, for example: Green Boot can only roll back a system update because RPM-OSTree keeps the previous OSTree image on disk, unchanged.</p>
 </div>
 <div class="paragraph">
-<p>In this course, we focus on using the Image Builder and RPM-OSTree components of RHEL for Edge to deploy and update edge devices. Other courses will teach the use of Green Boot and FDO to automate system image rollback and device on-boarding.</p>
+<p>In this course, we focus on using the Image Builder and RPM-OSTree components of RHEL for Edge to deploy and update edge devices. Other courses will teach the use of Green Boot and FDO to automate system image rollback and device onboarding.</p>
 </div>
 <div class="paragraph">
 <p>To understand how these components address the needs of edge devices, you must consider how edge devices differ from traditional office workstations and data center servers.</p>
@@ -308,7 +296,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_what_is_an_edge_device"><a class="anchor" href="#_what_is_an_edge_device"></a>What is an Edge Device</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Edge devices, sometimes called edge endpoints, edge gateways, and edge servers, come in varying shapes and forms. Some of them  look like standard computers, maybe in a rugged and smaller form factory, which connect to varying kinds of sensors and machinery. They could also take unique form factors which integrate sensors, servo mechanisms, and other kinds machinery with an Intel or ARM computer in the same system board and might not look, from the outside, anything like a "personal computer", despite being built on the same fundamental architecture, processors, chipsets, and peripheral busses.</p>
+<p>Edge devices, sometimes called edge endpoints, edge gateways, and edge servers, come in varying shapes and forms. Some of them  look like standard computers, maybe in a rugged and smaller form factory, which connect to varying kinds of sensors and machinery. They could also take unique form factors which integrate sensors, servo-mechanisms, and other kinds of machinery with an Intel or ARM computer in the same system board and might not look, from the outside, anything like a "personal computer", despite being built on the same fundamental architecture, processors, chipsets, and peripheral busses.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -317,25 +305,25 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 2. Illustrative images of edge devices and traditional computers</div>
 </div>
 <div class="paragraph">
-<p>Some kinds of computers, such as mini-PCs, are blurring the line between what looks like a traditional computer and an edge device. They might be elligble for Red Hat Device Edge subscriptions, or might require another subscription which provides Red Hat Enterprise Linux, depending on their capacity and intended applications.</p>
+<p>Some kinds of computers, such as mini-PCs, are blurring the line between what looks like a traditional computer and an edge device. They might be eligible for Red Hat Device Edge subscriptions, or might require another subscription which provides Red Hat Enterprise Linux, depending on their capacity and intended applications.</p>
 </div>
 <div class="paragraph">
 <p>RHEL for Edge is designed to support devices which are close in hardware architecture to standard personal computers and servers. It benefits from the large ecosystem of software and hardware certified for RHEL and the fact that the economy of edge devices got to a point where a "standard computer" is cost-effective and brings a lot more flexibility and power than a custom processor and chipset design.</p>
 </div>
 <div class="paragraph">
-<p>For example you cannot run RHEL directly in a surveillance camera, even if many security cameras do indeed run Linux. But you could run RHEL in edge devices that monitor the video feed from a surveillance camera (or from multiple cameras) to detect potential security threats and fire an alarm to call security or the police.</p>
+<p>For example, you cannot run RHEL directly in a surveillance camera, even if many security cameras do indeed run Linux. But you could run RHEL in edge devices that monitor the video feed from a surveillance camera (or from multiple cameras) to detect potential security threats and fire an alarm to call security or the police.</p>
 </div>
 <div class="paragraph">
-<p>A similar edge device could use a video camera to perform quality control in a factory, identifying defective pieces and reducing the need for human inspection, and also reroute the defective pieces for either disposal or recycling without manual intervention.</p>
+<p>A similar edge device could use a video camera to perform quality control in a factory, identifying defective pieces and reducing the need for human inspection, and also rerouting the defective pieces for either disposal or recycling without manual intervention.</p>
 </div>
 <div class="paragraph">
-<p>Now imagine that the same edge device controls a robotic arm with a spray gun: instead of being programmed with a fixed path to paint only a few pieces known in advance, an edge device could adapt and optimize the paint process based on the whatever piece it sees.</p>
+<p>Now imagine that the same edge device controls a robotic arm with a spray gun: instead of being programmed with a fixed path to paint only a few pieces known in advance, an edge device could adapt and optimize the paint process based on whatever piece it sees.</p>
 </div>
 <div class="paragraph">
 <p>Each of the scenarios above requires some specialized hardware, but they are more about the application software which controls the hardware than about custom chips and peripherals. Having a common and standard foundation for that software, based on Red Hat Device Edge, reduces the development and maintenance effort.</p>
 </div>
 <div class="paragraph">
-<p>There are many more potential scenarios for edge devices than we can describe here. Most times, edge devices co-exist with more traditional computers and applications in the same site. Edge devices usually connect to traditional computers in remote sites such as corporate headquarters or a regional distribution center. For more information on the applicability of RHEL for Edge and Red Hat Device Edge to different edge scenarios, we invite you to explore <a href="https://www.redhat.com/en/products/edge/hatville">HatVille, the miniature city where edge computing comes to life</a>.</p>
+<p>There are many more potential scenarios for edge devices than we can describe here. Most times, edge devices co-exist with more traditional computers and applications on the same site. Edge devices usually connect to traditional computers in remote sites such as corporate headquarters or a regional distribution center. For more information on the applicability of RHEL for Edge and Red Hat Device Edge to different edge scenarios, we invite you to explore <a href="https://www.redhat.com/en/products/edge/hatville">HatVille, the miniature city where edge computing comes to life</a>.</p>
 </div>
 <div class="paragraph">
 <p>Another set of factors to consider in assessing your edge device use case is the infrastructure available on an edge site. Edge devices may exist by themselves, in a site where the owner has little control of anything, like a pick-up locker location or an ATM machine at a drugstore. But edge devices might exist in a location which has a server room, uninterruptible power supplies, and reasonable cooling, such as in a large department store.</p>
@@ -347,7 +335,7 @@ Pending SME Review &amp; Proofreading
 <div class="title">Figure 3. Generic edge site with many classes of edge devices</div>
 </div>
 <div class="paragraph">
-<p>The following table compares edge devices with more traditional computers to help you distinguish when you might have a case of RHEL for Edge versus a case for traditional RHEL. Parts of it may become quickly outdated as hardware evolve and costs come down, so instead of focus on fixed numbers, focus on relative differences and check the <a href="https://www.redhat.com/en/resources/red-hat-enterprise-linux-subscription-guide">RHEL Subscription Guide</a> or ask your Red Hat Account Manager for pricing and eligibility for the many edge and non-edge product SKUs.</p>
+<p>The following table compares edge devices with more traditional computers to help you distinguish when you might have a case of RHEL for Edge versus a case for traditional RHEL. Parts of it may become quickly outdated as hardware evolves and costs come down, so instead of focusing on fixed numbers, focus on relative differences and check the <a href="https://www.redhat.com/en/resources/red-hat-enterprise-linux-subscription-guide">RHEL Subscription Guide</a> or ask your Red Hat Account Manager for pricing and eligibility for the many edge and non-edge product SKUs.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -416,7 +404,7 @@ Pending SME Review &amp; Proofreading
 <td class="tableblock halign-left valign-top"><p class="tableblock">Locked in server rooms</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Rely on minimal to no infra-structure on edge sites, such as DHCP servers and IP routers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rely on minimal to no infrastructure on edge sites, such as DHCP servers and IP routers</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Depend on extensive infra-structure from corporate IT, such as identity managers, backup appliances, file servers, and remote control</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Depend on extensive infra-structure from corporate IT, such as automated management, certificate servers, CI/CD, storage arrays, and firewalls</p></td>
 </tr>
@@ -455,13 +443,13 @@ Pending SME Review &amp; Proofreading
 </ul>
 </div>
 <div class="paragraph">
-<p>This course focus on the second option.</p>
+<p>This course focuses on the second option.</p>
 </div>
 <div class="paragraph">
 <p>An image-based system manages an entire operating system as a single system image. You do not install or update individual parts of the operating system, like you would do with package-based systems, using a package manager.</p>
 </div>
 <div class="paragraph">
-<p>Package-based systems require extensive day-2 customizations to install additional packages and edit system configuration files. On the other side, with image-based systems it is expected that most day-2 customizations are already embedded on the system image. This is consistent with the shift-left approaches popular among DevOps and cloud-native practitioners.</p>
+<p>Package-based systems require extensive day-2 customizations to install additional packages and edit system configuration files. On the other side, with image-based systems it is expected that most day-2 customizations are already embedded in the system image. This is consistent with the shift-left approaches popular among DevOps and cloud-native practitioners.</p>
 </div>
 <div class="paragraph">
 <p>The following table compares common actions for deploying and managing traditional RHEL, or package-based RHEL, with RHEL for Edge.</p>
@@ -508,16 +496,16 @@ Pending SME Review &amp; Proofreading
 <p>When you create a RHEL cloud instance, for example using the AMI or Qcow2 cloud images for RHEL, they deploy package-based RHEL, which you manage the same way as if you installed from the RHEL installation media. But, with RHEL for Edge, you can create cloud images which deploy image-based systems, even if your cloud instances are not cloud edge instances.</p>
 </div>
 <div class="paragraph">
-<p>The RPM-OSTree technology allows you to add RPM packages to a system installed from an OSTree system image, but it enforces a clear separation between the contents from the system image and the packages (mostly applications) layered over the system image, similar to how Android and iOS devices deploy and update their operating systems independent of applications from the marketplace. Do not abuse from this capability, else you could lose track of the state of each individual edge devices. It exists mostly for development, testing, and troubleshooting of changes that will become part of the next system image.</p>
+<p>The RPM-OSTree technology allows you to add RPM packages to a system installed from an OSTree system image, but it enforces a clear separation between the contents from the system image and the packages (mostly applications) layered over the system image, similar to how Android and iOS devices deploy and update their operating systems independent of applications from the marketplace. Do not abuse this capability, or else you could lose track of the state of each individual edge device. It exists mostly for the development, testing, and troubleshooting of changes that will become part of the next system image.</p>
 </div>
 <div class="paragraph">
 <p>RHEL for Edge can also consume applications as OCI container images, and update those container images from container registries. This is more manageable than RPM packages because there is an automatic rollback capability from Podman and Systemd, which is similar to Green Boot with OSTree updates. Anyway, it is usually preferable to include your application container images in the OSTree system image so you know the state of edge devices corresponds to a system image and nothing else.</p>
 </div>
 <div class="paragraph">
-<p>When you think about customizations of an edge device, consider how much of it is actually per-device or per-site. You may find that many, if not most, of the day-2 customizations you&#8217;re used to perform in package-based systems could be included in a system image. For example, the public key of your corporate certificate authority, for secure TLS communications, is a customization that applies to all your edge devices equally, in all sites. But the IP address of a web proxy is probably different for each site and multiple devices on the same site require the same web proxy configuration.</p>
+<p>When you think about customizations of an edge device, consider how much of it is actually per-device or per-site. You may find that many, if not most, of the day-2 customizations you&#8217;re used to performing in package-based systems could be included in a system image. For example, the public key of your corporate certificate authority, for secure TLS communications, is a customization that applies to all your edge devices equally, in all sites. But the IP address of a web proxy is probably different for each site and multiple devices on the same site require the same web proxy configuration.</p>
 </div>
 <div class="paragraph">
-<p>It is your option to build site-specific edge images, which embed customizations for each individual site, or building a single edge image for all edge sites, and apply the same configurations to multiple devices in the same location. In any case, you can use Ansible automation to apply or change site and device-specific customizations, similar to what you would do with traditional computers. You just expect to have fewer customizations to apply using automation, because more of them are already done in the system image.</p>
+<p>It is your option to build site-specific edge images, which embed customizations for each individual site, or build a single edge image for all edge sites, and apply the same configurations to multiple devices in the same location. In any case, you can use Ansible automation to apply or change site and device-specific customizations, similar to what you would do with traditional computers. You just expect to have fewer customizations to apply using automation, because more of them are already done in the system image.</p>
 </div>
 </div>
 </div>
