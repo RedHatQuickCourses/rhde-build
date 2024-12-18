@@ -53,14 +53,20 @@ Pay attention to the final path element of the URL, which should be "edge".
 
 2. On your _development machine_, install the Libvirtd tools and its Cockpit module, if they are not already installed.
 
-.. Install the "Virtualization Host" package group to get the Libvirt, KVM, and Qemu daemons and tools.
+.. Install the Libvirt, KVM, and Qemu daemons and tools. Alternativelly, install the "Virtualization Host" package group, which provides all those components.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo dnf group install -y "Virtualization Host"*
+$ *sudo dnf install qemu-kvm libvirt virt-install virt-viewer*
 ...
 Complete!
-$ *dnf install -y cockpit-machines*
+--
+
+.. Install the virtual machines module for Cockpit
++
+[source,subs="verbatim,quotes"]
+--
+$ *sudo dnf install -y cockpit-machines*
 ...
 Complete!
 --
@@ -72,7 +78,20 @@ Complete!
 $ *sudo groupmod libvirt -a -U student*
 --
 
-.. Log off and log in again to update the user membership of your unprivileged user.
+.. Log off and log in again to update the user membership of your unprivileged user and check that it can use libvirt's session interface.
+
++
+[source,subs="verbatim,quotes"]
+--
+$ *virsh uri*
+qemu:///session
+$ *virsh nodeinfo*
+CPU model:           x86_64
+...
+--
+
+.. TODO: Configure unprivileged user access to Libvirt's default network [ NOT USED HERE BUT NECESSARY FOR OTHER COURSES ]
+
 
 3. On your _development machine_, create and publish a kickstart file which points to the OSTree repository on the web server.
 
