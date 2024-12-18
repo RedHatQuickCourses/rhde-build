@@ -44,18 +44,16 @@ Complete!
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo systemctl enable osbuild-composer*
-Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.service → /usr/lib/systemd/system/osbuild-composer.service.
-$ *sudo systemctl start osbuild-composer*
+$ *sudo systemctl enable osbuild-composer.socket --now*
+Created symlink /etc/systemd/system/sockets.target.wants/osbuild-composer.socket → /usr/lib/systemd/system/osbuild-composer.socket.
 --
 
 .. Enable and activate the Cockpit service, if not already enabled on your development machine.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo systemctl enable cockpit*
-Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → /usr/lib/systemd/system/cockpit.service.
-$ *sudo systemctl start cockpit*
+$ *sudo systemctl enable cockpit.socket --now*
+Created symlink /etc/systemd/system/sockets.target.wants/cockpit.socket → /usr/lib/systemd/system/cockpit.socket.
 --
 
 .. Enable remote access to the Cockpit service, if not already enabled on your development machine.
