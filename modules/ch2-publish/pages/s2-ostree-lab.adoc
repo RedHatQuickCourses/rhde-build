@@ -135,7 +135,7 @@ $ *UUID=_{compose-uuid-httpd-v1-aaaaaaaaaaaa}_*
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo yum install -y httpd*
+$ *sudo dnf install httpd*
 ...
 Complete!
 --
@@ -144,9 +144,8 @@ Complete!
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo systemctl enable httpd*
+$ *sudo systemctl enable httpd --now*
 Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.
-$ *sudo systemctl start httpd*
 ...
 --
 
@@ -164,7 +163,7 @@ success
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo yum install -y rpm-ostree ostree*
+$ *sudo dnf install rpm-ostree ostree*
 ...
 Complete!
 --
