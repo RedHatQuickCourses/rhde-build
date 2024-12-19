@@ -152,7 +152,7 @@ $ *sudo mkdir -p /etc/osbuild-composer/repositories*
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo cp /usr/share/osbuild-composer/repositories/rhel-92.json /etc/osbuild-composer/repositories/*
+$ *sudo cp /usr/share/osbuild-composer/repositories/rhel-9.5.json /etc/osbuild-composer/repositories/*
 --
 
 .. Modify the configuration file to match your local DNF repository. Pay attention to attributes such as `baseurl`, `rhsm` and `check_gpg`.
@@ -162,13 +162,17 @@ In the classroom environment, you should make the following edits:
 [source,subs="verbatim,quotes"]
 --
 ...
-include::1@samples:repos:example$rhel-92.json[lines=50..53]
+include::1@samples:repos:example$rhel-9.5.json[lines=50..53]
 ...
-include::1@samples:repos:example$rhel-92.json[lines=58..60]
+include::1@samples:repos:example$rhel-9.5.json[lines=55..56]
+...
+include::1@samples:repos:example$rhel-9.5.json[lines=58..60]
+...
+include::1@samples:repos:example$rhel-9.5.json[lines=62..63]
 ...
 --
 +
-You can download a https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-92.json[configuration file] with all changes done from the sample applications repository in GitHub.
+You can download a https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-9.5.json[configuration file] with all changes done from the sample applications repository in GitHub.
 
 .. Restart the Image Builder service.
 +
@@ -193,7 +197,7 @@ check_repogpg = false
 rhsm = false
 system = true
 type = "yum-baseurl"
-url = "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS"
+url = "http://content.example.com/rhel9.5/x86_64/dvd/BaseOS"
 $ *composer-cli sources info appstream*
 check_gpg = false
 check_repogpg = false
@@ -201,12 +205,14 @@ check_repogpg = false
 rhsm = false
 system = true
 type = "yum-baseurl"
-url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"
+url = "http://content.example.com/rhel9.5/x86_64/dvd/ApStream"
 --
 
 .. You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
 +
 Enter the btn:[Image Builder] item in Cockpit and click btn:[Sources]. Then, for both the btn:[BaseOS] and the btn:[AppStreams] channels, click btn:[>] to expand the URL and verify it matches your configuration override.
++
+TODO update screen shot
 +
 image::s4-cockpit-repository-url.png[]
 +
