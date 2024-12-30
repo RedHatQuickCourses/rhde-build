@@ -162,6 +162,11 @@ include::1@samples:ks:example$rhel9-httpd.ks[lines=1..3]
 .. Download the standard https://access.redhat.com/downloads/content/rhel[RHEL installation ISO] from the customer portal, from https://developers.redhat.com/products/rhel/download#getredhatenterpriselinux7163[Red Hat Developers], or download a copy in the http://content.example.com/rhde/isos/[classroom server]. Choose either the Network Install Image or the RHEL Server ISO for a smaller download. You do *NOT* need an Offline Install Image.
 +
 Ensure you have a complete and consistent RHEL installation ISO in the `/home/student/Downloads/rhel-9.4-x86_64-boot.iso` file before proceeding.
++
+[source,subs="verbatim,quotes"]
+--
+$ *wget -q http://content.example.com/rhde/isos/rhel-9.5-x86_64-boot.iso*
+--
 
 .. Create a local VM, with a serial console and direct kernel loading, which uses the kickstart file from the previous steps.
 +
