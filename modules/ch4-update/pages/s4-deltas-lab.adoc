@@ -349,11 +349,11 @@ edge-db login:
 State: idle
 Deployments:
 ● db:rhel/9/x86_64/db
-                  Version: 9.2 (2024-10-21T23:02:11Z)
+                  Version: 9.5 (2024-10-21T23:02:11Z)
                    Commit: {commit-mysql-v2}
 
   db:rhel/9/x86_64/db
-                  Version: 9.2 (2024-10-18T15:36:53Z)
+                  Version: 9.5 (2024-10-18T15:36:53Z)
                    Commit: {commit-mysql-v1}
 [core@edge-db ~]$ *rpm -q nano*
 nano-5.6.1-6.el9.x86_64

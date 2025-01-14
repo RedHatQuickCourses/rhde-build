@@ -411,11 +411,11 @@ microweb login:
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-15T20:27:34Z)
+                  Version: 9.5 (2024-10-15T20:27:34Z)
                    Commit: {commit-httpd-v2}
 
   edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-17T15:11:55Z)
+                  Version: 9.5 (2024-10-17T15:11:55Z)
                    Commit: {commit-httpd-v3}
 --
 
