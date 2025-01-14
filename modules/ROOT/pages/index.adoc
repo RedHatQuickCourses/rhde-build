@@ -8,6 +8,14 @@ This course teaches how to create *Red Hat Device Edge* images for edge devices 
 * Using the Image Builder tool to create and deploy edge images based on the RPM-OSTree technology.
 * Performing OSTree repository management to deliver updates to edge devices.
 
+It is part of a Red Hat Device Learning path, which currently includes two courses:
+
+* *Building Red Hat Device Edge Images* (this course)
+* https://redhatquickcourses.github.io/rhde-microshift/[Deploying MicroShift on Red Hat Device] (follow-up course)
+
+IMPORTANT: Red Hat employees must enroll using its https://training-lms.redhat.com/sso/saml/auth/rhlpint?RelayState=deeplinkoffering%3D66848400[LMS entry] to get completion credits, and Red Hat Partners must enroll using its https://training-lms.redhat.com/sso/saml/auth/rhopen?RelayState=deeplinkoffering%3D66848513[Partner Portal entry].
+
+
 == Audience
 
 Operations-focused roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
