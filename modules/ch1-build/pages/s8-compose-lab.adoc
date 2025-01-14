@@ -57,6 +57,8 @@ include::1@samples:blueprints:example$rhel9-httpd.toml[lines=8..9]
 $ *composer-cli compose start-ostree rhel9-edge edge-commit*
 Compose {compose-uuid-canceled-aaaaaaaaaaaa} added to the queue
 --
++
+IMPORTANT: You must use the `start-ostree` for all edge composes. The `start` command only starts package-based composes.
 
 .. To ease the following steps, copy and paste the UUID from the previous command output to a shell variable.
 +
