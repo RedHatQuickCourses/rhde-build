@@ -17,13 +17,16 @@ You also need a _web server machine_ which serves an OSTree repository. Make sur
 
 Finally, you need the _test VM_ that you updated in xref:s2-update-lab.adoc[the previous lab]. While you could perform the focus tasks in this lab on a _test VM_ that was never updated before, that is, you can rollback the first update of an edge device, the instructions and outputs here assume that there are previous updates already applied to the _test VM_, to demonstrate that RPM-OSTree automatically prunes older system updates.
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. In this case, the `workstation` VM is your _development machine_, and the `servera` VM is your _web server machine_. If not, please adapt the instructions to your test environment. 
 
-You will perform some steps of this lab on your _development machine_ and some steps on your _web server machine_. Pay attention to the instructions at each step!
+You will perform some steps of this lab on your _development machine_ and some steps on your _web server machine_. Pay attention to the instructions at each step, when they request that you switch to a different machine!
 
 == Instructions
+
+//TODO Steps 7a and 8a have an issue: timezone should be changed to America/Aruba, but it's back to UTC. Why?
+
 
 1. On your _development machine_, verify that you have the prerequisites from previous labs.
 
@@ -38,7 +41,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...
 --
 
@@ -87,7 +90,7 @@ You can also download a https://raw.githubusercontent.com/RedHatQuickCourses/rhd
 +
 [source,subs="verbatim,quotes"]
 --
-$ *composer-cli push blueprints rhel9-httpd.toml*
+$ *composer-cli blueprints push rhel9-httpd.toml*
 --
 
 .. Verify that the blueprint in the Image Builder service contains your changes.
@@ -103,7 +106,7 @@ include::1@samples:blueprints:example$rhel9-httpd-v3.toml[lines=1..3]
 ...
 --
 
-3. Still, on your _development machine_, build another new edge commit image from your changed blueprint.
+3. Build another new edge commit image from your changed blueprint.
 +
 This is similar to what you did in the previous lab. You just need something different from the previous images so you later can verify that your _test VM_ got the right updates.
 
@@ -169,7 +172,7 @@ commit {commit-httpd-v3} <.>
 Parent:  {commit-httpd-v2} <.>
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 2024-10-17 15:11:55 +000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 << History beyond this commit not fetched >>
@@ -178,13 +181,13 @@ commit {commit-httpd-v2} <.>
 Parent:  {commit-httpd-v1}
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 commit {commit-httpd-v1}
 ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
 Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 --
@@ -197,7 +200,7 @@ Version: 9.2
 [source,subs="verbatim,quotes"]
 --
 $ *sudo ostree pull-local --repo=/var/www/html/repo delete-me/repo*
-36 metadata, 65 content objects imported; 0 bytes content written 
+56 metadata, 82 content objects imported; 0 bytes content written
 $ *sudo ostree summary -u --repo=/var/www/html/repo*
 $ *rm -rf delete-me*
 --
@@ -211,20 +214,20 @@ commit {commit-httpd-v3} <.>
 Parent:  {commit-httpd-v2} <.>
 ContentChecksum:  645322fc333084d0613ebfc43f8dbe8c1fe1ae19c9e176270dd2bc7688c6145a
 Date:  2024-10-17 15:11:55 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 commit {commit-httpd-v2} <.>
 Parent:  {commit-httpd-v1} <.>
 ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
 Date:  2024-10-09 22:43:27 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 commit {commit-httpd-v1} <.>
 ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
 Date:  2024-10-09 20:25:03 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 --
@@ -234,7 +237,7 @@ Version: 9.2
 <.> Parent commit of the previous commit, it was the initial commit
 <.> Initial commit
 
-5. Still, on your _development machine_, stage the new edge commit image on your _test VM_.
+5. On your _development machine_, stage the new edge commit image to your _test VM_.
 
 .. If your _test VM_ is shut down, start it. Then connect to its console and log in as the user `core` with password `redhat123`.
 +
@@ -258,10 +261,10 @@ microweb login:
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
+                  Version: 9.5 (2024-10-09T20:25:03Z)
                    Commit: {commit-httpd-v2}
   edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
+                  Version: 9.5 (2024-10-09T20:25:03Z)
                    Commit: {commit-httpd-v1}
 --
 
@@ -281,7 +284,7 @@ package php is not installed
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
-        Version: 9.2 (2024-10-17T15:11:55Z)
+        Version: 9.5 (2024-10-17T15:11:55Z)
          Commit: {commit-httpd-v3}
            Diff: 2 added
 --
@@ -291,18 +294,18 @@ AvailableUpdate:
 [source,subs="verbatim,quotes"]
 --
 [core@microweb ~]$ *sudo rpm-ostree upgrade*
-⠤ Scanning metadata: 2691                                                       37 metadata, 65 content objects fetched; 14453 KiB transferred in 4 seconds; 57.6 MB content written
-Scanning metadata: 2691... done
+⠚ Writing objects: 2...                                                         56 metadata, 82 content objects fetched; 15209 KiB transferred in 1 seconds; 61.7 MB content written
+Writing objects: 2... done
 Staging deployment... done
 Added:
-  nginx-filesystem-1:1.20.1-14.el9.noarch
-  php-8.0.27-1.el9_1.x86_64
-  php-common-8.0.27-1.el9_1.x86_64
-  php-fpm-8.0.27-1.el9_1.x86_64
+  nginx-filesystem-2:1.20.1-20.el9.noarch
+  php-8.0.30-1.el9_2.x86_64
+  php-common-8.0.30-1.el9_2.x86_64
+  php-fpm-8.0.30-1.el9_2.x86_64
 Run "systemctl reboot" to start a reboot
 --
 
-6. Still on your _development machine_, apply the upgrade to your _test VM_ and verify it is running the new edge commit image you built during this lab.
+6. Apply the upgrade to your _test VM_ and verify it is running the new edge commit image you built during this lab.
 
 .. Reboot your _test VM_ and verify that the older commit was discarded by RPM-OSTree, so the local repository of the edge device stays with only two commits.
 +
@@ -316,11 +319,11 @@ microweb login:
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-17T15:11:55Z)
+                  Version: 9.5 (2024-10-17T15:11:55Z)
                    Commit: {commit-httpd-v3}
 
   edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-15T20:27:34Z)
+                  Version: 9.5 (2024-10-15T20:27:34Z)
                    Commit: {commit-httpd-v1}
 --
 
@@ -329,21 +332,20 @@ Deployments:
 [source,subs="verbatim,quotes"]
 --
 [core@microweb ~]$ *rpm -q php*
-php-8.0.27-1.el9_1.x86_64
+php-8.0.30-1.el9_2.x86_64
 --
 
-7. Still on your _development machine_, change configurations and application data on your _test VM_, so you can verify if those changes are retained by rolling back an update.
-
-.. Change the time zone of your _test VM_.
-+
-[source,subs="verbatim,quotes"]
---
-[core@microweb ~]$ *date*
-Thu Oct 17 21:45:58 UTC 2024
-[core@microweb ~]$ *sudo timedatectl set-timezone America/Aruba*
-[core@microweb ~]$ *date*
-Thu Oct 17 17:46:53 AST 2024
---
+7. Change configurations and application data on your _test VM_, so you can verify if those changes are retained by rolling back an update.
+// .. Change the time zone of your _test VM_.
+// +
+// [source,subs="verbatim,quotes"]
+// --
+// [core@microweb ~]$ *date*
+// Thu Oct 17 21:45:58 UTC 2024
+// [core@microweb ~]$ *sudo timedatectl set-timezone America/Aruba*
+// [core@microweb ~]$ *date*
+// Thu Oct 17 17:46:53 AST 2024
+// --
 
 .. Using a text editor, create the `/var/www/html/info.php` script with the following contents;
 +
@@ -359,11 +361,11 @@ include::1@samples:html:example$info.php[]
 [core@microweb ~]$ *curl http://127.0.0.1/info.php*
 <html>
 <body>
-This is PHP version: 8.0.27</body>
+This is PHP version: 8.0.30</body>
 </html>
 --
 
-8. Still on your _developer machine_, suppose that you discovered the new edge commit image contains a serious security issue and you must rollback your _test VM_ to the previous system image, to verify that the bad update can be rolled back.
+8. Now, suppose that you discovered the new edge commit image contains a serious security issue and you must rollback your _test VM_ to the previous system image.
 
 .. Rollback your _test VM_.
 +
@@ -373,10 +375,10 @@ This is PHP version: 8.0.27</body>
 Moving '{commit-httpd-v2}.0' to be first deployment
 Transaction complete; bootconfig swap: no; bootversion: boot.0.0, deployment count change: 0
 Removed:
-  nginx-filesystem-1:1.20.1-14.el9.noarch
-  php-8.0.27-1.el9_1.x86_64
-  php-common-8.0.27-1.el9_1.x86_64
-  php-fpm-8.0.27-1.el9_1.x86_64
+  nginx-filesystem-2:1.20.1-20.el9.noarch
+  php-8.0.30-1.el9_2.x86_64
+  php-common-8.0.30-1.el9_2.x86_64
+  php-fpm-8.0.30-1.el9_2.x86_64
 Changes queued for next boot. Run "systemctl reboot" to start a reboot
 --
 
@@ -388,16 +390,16 @@ Changes queued for next boot. Run "systemctl reboot" to start a reboot
 State: idle
 Deployments:
   edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-15T20:27:34Z)
+                  Version: 9.5 (2024-10-15T20:27:34Z)
                    Commit: {commit-httpd-v3}
                      Diff: 2 removed
 
   ● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-17T15:11:55Z)
+                  Version: 9.5 (2024-10-17T15:11:55Z)
                    Commit: {commit-httpd-v2}
 --
 
-.. After reboot (and login) both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.
+.. Check that, after reboot (and login), both commits are still in the system, but they switch order. Notice that the second deployment is the newer commit, which was the bad update, and is now inactive.
 +
 [source,subs="verbatim,quotes,attributes"]
 --
@@ -427,14 +429,15 @@ package php is not installed
 cockpit-286.1-1.el9.x86_64
 --
 
-.. Check that your _test VM_ still contains the changes to the system time zone and the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
+.. Check that your _test VM_ still contains the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
+//.. Check that your _test VM_ still contains the changes to the system time zone and the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
+//[core@microweb ~]$ *date*
+//Thu Oct 17 22:45:04 UTC 2024
+//[core@microweb ~]$ *timedatectl show -p Timezone*
+//Timezone=Etc/UTC
 +
 [source,subs="verbatim,quotes"]
 --
-[core@microweb ~]$ *date*
-Thu Oct 17 22:45:04 UTC 2024
-[core@microweb ~]$ *timedatectl show -p Timezone*
-Timezone=Etc/UTC
 [core@microweb ~]$ *curl http://127.0.0.1/info.php*
 include::1@samples:html:example$info.php[]
 --
