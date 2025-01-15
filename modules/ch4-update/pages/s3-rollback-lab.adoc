@@ -25,9 +25,6 @@ You will perform some steps of this lab on your _development machine_ and some s
 
 == Instructions
 
-//TODO Steps 7a and 8a have an issue: timezone should be changed to America/Aruba, but it's back to UTC. Why?
-
-
 1. On your _development machine_, verify that you have the prerequisites from previous labs.
 
 .. Check that the Image Builder service is active and that the current Linux user can submit requests to it.
@@ -335,17 +332,18 @@ Deployments:
 php-8.0.30-1.el9_2.x86_64
 --
 
-7. Change configurations and application data on your _test VM_, so you can verify if those changes are retained by rolling back an update.
-// .. Change the time zone of your _test VM_.
-// +
-// [source,subs="verbatim,quotes"]
-// --
-// [core@microweb ~]$ *date*
-// Thu Oct 17 21:45:58 UTC 2024
-// [core@microweb ~]$ *sudo timedatectl set-timezone America/Aruba*
-// [core@microweb ~]$ *date*
-// Thu Oct 17 17:46:53 AST 2024
-// --
+7. Change configurations and application data on your _test VM_, so you can verify if those changes are lost by rolling back an update.
+
+.. Change the time zone of your _test VM_.
++
+[source,subs="verbatim,quotes"]
+--
+[core@microweb ~]$ *date*
+Thu Oct 17 21:45:58 UTC 2024
+[core@microweb ~]$ *sudo timedatectl set-timezone America/Aruba*
+[core@microweb ~]$ *date*
+Thu Oct 17 17:46:53 AST 2024
+--
 
 .. Using a text editor, create the `/var/www/html/info.php` script with the following contents;
 +
@@ -430,16 +428,21 @@ cockpit-286.1-1.el9.x86_64
 --
 
 .. Check that your _test VM_ still contains the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
-//.. Check that your _test VM_ still contains the changes to the system time zone and the PHP script, which doesn't work anymore because there's no PHP engine on its Apache Web Server.
-//[core@microweb ~]$ *date*
-//Thu Oct 17 22:45:04 UTC 2024
-//[core@microweb ~]$ *timedatectl show -p Timezone*
-//Timezone=Etc/UTC
 +
 [source,subs="verbatim,quotes"]
 --
 [core@microweb ~]$ *curl http://127.0.0.1/info.php*
 include::1@samples:html:example$info.php[]
+--
+
+.. Check that your _test VM_ lost the changes to the system time zone because of the rollback operation.
++
+[source,subs="verbatim,quotes"]
+--
+[core@microweb ~]$ *date*
+Thu Oct 17 22:45:04 UTC 2024
+[core@microweb ~]$ *timedatectl show -p Timezone*
+Timezone=Etc/UTC
 --
 
 As you see, rolling back an RPM-OSTree system just switches the active system image for the next boot. The newer but inactive system image remains available in edge devices, and could be marked active again, until a future upgrade removes it.
