@@ -38,7 +38,7 @@ If a system update requires changes to application data, for example, migrating 
 
 == Device Rollbacks and Configuration or Application Data
 
-If you roolback a system update, application data in `/var` is preserved, which might create issues in scenarios such as changes to database schemas required by a new application version: that data could be incompatible with the older version the system is rolling back to. It is the reponsibility of the application to ensure data in `/var` is usable after both updates and rollbacks.
+If you rollback a system update, application data in `/var` is preserved, which might create issues in scenarios such as changes to database schemas required by a new application version: that data could be incompatible with the older version the system is rolling back to. It is the responsibility of the application to ensure data in `/var` is usable after both updates and rollbacks.
 
 Configuration data in `/etc` is effectively reverted to its old state after a rollback. That happens because each OSTree deployment contains its own `/etc` and files there are merged only at deployment time. The rollback operation just restarts the system to an existing deployment, it will NOT perform a new three-way merge, so any configuration change performed after an update will be lost because of a rollback.
 
