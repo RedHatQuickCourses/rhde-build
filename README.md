@@ -14,7 +14,7 @@ Figures on this course are designed using Google Slides, and the deck is availab
 
 Refer to the [Red Hat Quick Courses Contributor Guide](https://redhatquickcourses.github.io/welcome/1/guide/overview.html) for instructions about collaborating in this repository.
 
-The first release of this borrows a virtual classroom environment from another course, see [here](https://docs.google.com/document/d/1WzCPaNG-IPubtlqYtvQlz6XHVVWtDZscWSBqwgLDzmo/edit?usp=sharing) notes about the progress on creating a classroom environment customized for the requirements of this and other RHDE courses.
+The first release of this borrows a virtual classroom environment from another course, see [here](https://docs.google.com/document/d/1WzCPaNG-IPubtlqYtvQlz6XHVVWtDZscWSBqwgLDzmo/edit?usp=sharing) notes about the progress on creating a classroom environment customized for the requirements of this and other RHDE courses. The current course release uses a ROLE classroom shared by all Red Hat Device Edge quick courses.
 
 ## Updates
 

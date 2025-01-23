@@ -47,6 +47,8 @@ Used the following links to access the virtual labs on ROLE:
 * https://role.rhu.redhat.com/rol-rhu/app/courses/hol014-9.5/pages/pr01[HOL014 for Red Hat employees]
 * https://rol.redhat.com/rol/app/courses/hol014-9.5/pages/pr01[HOL014 for Red Hat customers and partners with a Learning Subscription].
 
+If you can provision your own RHEL servers or VMs, it should be possible to configure all that is required for the hands-on activities by using a https://developers.redhat.com/products/rhel/download[free subscription] from the https://developers.redhat.com/about[Red Hat Developer Program], which gives access to RHEL installation media and RHEL package repositories.
+
 == Red Hat Device Edge Quick Courses Series
 
 Currently, the follopwing quick courses on Red Hat Device Edge are available:
