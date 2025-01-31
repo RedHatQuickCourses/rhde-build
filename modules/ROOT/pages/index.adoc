@@ -63,6 +63,10 @@ NOTE: The Red Hat Device Edge Quick Courses Series use ROLE for its virtual clas
 
 A basic https://www.redhat.com/en/services/training/learning-subscription[Red Hat Learning Subscription] offers access to a number Red Hat Training courses and virtual classroom lab time. Higher subscription tiers offer additional benefits such as Red Hat Certification Exam vouchers.
 
+== Course Updates
+
+This course was updated to use classroom labs based on RHEL 9.5 and to share the same classroom labs (HOL014) with other Red Hat Device Edge courses. If you started this course using the previous RHELL 9.2 classroom labs (HOL014) we suggest that you start over using a new classroom environment.
+
 == Other Sources of Information About Red Hat Device Edge
 
 The main product documentation of Red Hat Device Edge is an https://docs.redhat.com/en/documentation/red_hat_device_edge/4/html/overview/index[overview document], which points to the product documentation of RHEL, OpenShift, and Ansible.
