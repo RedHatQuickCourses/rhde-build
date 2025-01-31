@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab: Create And Publish Edge Image Updates :: Building Red Hat Device Edge Images</title>
+    <link rel="prev" href="s1-deltas.html">
+    <link rel="next" href="s3-rollback-lab.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building Red Hat Device Edge Images</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/rhde-build/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="rhde-build" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building Red Hat Device Edge Images</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch1-build/index.html">Build Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s1-devices.html">Introduction to Red Hat Device Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s2-devices-quiz.html">Quiz: Use Cases for Edge Devices and RHEL for Edge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s3-images.html">Design, Build, and Publish Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s4-install-lab.html">Lab: Install Image Builder on a Development Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s5-blueprint.html">Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s6-blueprint-lab.html">Lab: Create and Manage Blueprints for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s7-compose.html">Create Edge Images as Image Builder Composes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s8-compose-lab.html">Lab: Create and Manage Composes for Edge Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-build/s9-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-publish/index.html">Publish Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s1-ostree.html">Introduction to OSTree Technology</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s2-ostree-lab.html">Lab: Create a Remote OSTree Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s3-pull-local-lab.html">Lab: Publish Edge Images on Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-publish/s4-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-test/index.html">Test Operating System Images for Edge Devices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s1-boot.html">Validate and Test Edge Images Using Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s2-boot-lab.html">Lab: Boot Test VMs from Remote OSTree Repositories</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s3-installer-lab.html">Lab: Boot Test VMs from Edge Installer Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-test/s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Update Edge Devices with New Operating System Images</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s4-deltas-lab.html">Lab: Update Edge Devices Using Static Deltas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="s5-summary.html">Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building Red Hat Device Edge Images</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building Red Hat Device Edge Images</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <a class="title" href="../../../samples/1/index.html">samples</a>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../samples/1/index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building Red Hat Device Edge Images</a></li>
+    <li><a href="index.html">Update Edge Devices with New Operating System Images</a></li>
+    <li><a href="s2-update-lab.html">Lab: Create And Publish Edge Image Updates</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab: Create And Publish Edge Image Updates</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Estimated reading time: <strong>13 minutes</strong>.</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Objective</dt>
+<dd>
+<p>Build RHEL for Edge image updates, publish them as OSTree deltas, and apply the updates to a test VM.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your development machine is configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+</div>
+<div class="paragraph">
+<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that the machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
+</div>
+<div class="paragraph">
+<p>Finally, you need the <em>test VM</em> that you created and published in <a href="../ch3-test/s2-boot-lab.html" class="xref page">another lab</a>.</p>
+</div>
+<div class="paragraph">
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. In this case, the <code>workstation</code> VM is your <em>development machine</em>, and the <code>servera</code> VM is your <em>web server machine</em>. If not, please adapt the instructions to your test environment.</p>
+</div>
+<div class="paragraph">
+<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step, when they request that you switch to a different machine!</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On your <em>development machine</em>, verify that you have the prerequisites from previous labs.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Check that the Image Builder service is active and that the current Linux user can submit requests to it.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli status show</strong>
+API server status:
+    Database version:   0
+    Database supported: true
+    Schema version:     0
+    API version:        1
+    Backend:            osbuild-composer
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that a remote client can access the OSTree repository in the <em>web server machine</em> and get the current commit ID of the OSTree branch with the Apache Web Server system image that you created in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>. You will get a different ID:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl http://servera.lab.example.com/repo/refs/heads/rhel/9/x86_64/edge</strong>
+7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pay attention to the final path element of the URL, which should be "edge". The commit ID you got will be the parent commit of the edge commit image you are building during this lab.</p>
+</div>
+</li>
+<li>
+<p>Check that you can manage local VMs, and that there&#8217;s a VM left from the <a href="#ch3-test:s2-boot-lab:">previous lab</a> named <code>edge-test-1</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh list --all</strong>
+ Id   Name          State
+---------------------------
+ 1    edge-test-1   shut-off
+ 2    edge-db-1     shut-off</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s fine if the existing VM displays a status of "running" instead of "shut off".</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Make changes to the edge image blueprint to add the Cockpit packages.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Open the <code>rhel9-httpd.toml</code> file, which you created in a <a href="../ch1-build/s6-blueprint-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
+<div class="paragraph">
+<p>Increment the minor version number, at the beginning of the TOML file, add a new <code>packages</code> section, and make changes to its <code>services</code> and <code>firewall</code> customization sections. The file should look like the following, after all edits:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-edge"
+description = "blueprint-rhel9-edge"
+version = "0.2.0"
+modules = []
+groups = []
+distro = ""
+
+[[packages]]
+name = "cockpit"
+
+[[packages]]
+name = "httpd"
+
+[customizations]
+hostname = "edge"
+
+[customizations.services]
+enabled = ["sshd", "httpd", "cockpit"]
+
+[customizations.firewall.services]
+enabled = ["ssh", "http", "cockpit"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also download a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/blueprints/rhel9-httpd-v2.toml">TOML file with all edits</a> from the course samples repository in GitHub. Beware that the files in the samples repository have different file names, but the same blueprint name, so they can be used as-is, without renaming.</p>
+</div>
+</li>
+<li>
+<p>Push the updated blueprint to the Image Builder service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-httpd.toml</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the blueprint in the Image Builder service contains your changes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints list</strong>
+mysql-installer
+rhel9-edge
+rhel9-mysql
+$ <strong>composer-cli blueprints show rhel9-edge</strong>
+name = "rhel9-edge"
+description = "blueprint-rhel9-edge"
+version = "0.2.0"
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Build a new edge commit image from your changed blueprint.</p>
+<div class="paragraph">
+<p>This is very similar to what you did in the previous labs, but pay attention to the differences required for updating images and a few hints about the usage of the <code>composer-cli</code> command.</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Start a compose for an edge commit image and copy its UUID to a shell variable.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-edge edge-commit --url http://servera.lab.example.com/repo --ref rhel/9/x86_64/edge</strong>
+Compose fb5ef664-1def-4589-919d-1a0681f86371 added to the queue
+$ <strong>UUID=fb5ef664-1def-4589-919d-1a0681f86371</strong></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Be sure you include the URL of your remote OSTree repository and its branch name, so you can use the image from this compose for system updates.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Wait until the compose finishes. To avoid clutter from previous labs, this time we filter the list of composes to only show running composes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list running</strong>
+ID                                     Status    Blueprint    Version   Type
+fb5ef664-1def-4589-919d-1a0681f86371   RUNNING   rhel9-edge   0.2.0     edge-commit
+...
+$ <strong>composer-cli compose list running</strong>
+ID   Status   Blueprint   Version   Type</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the list of running composes is empty, it means your compose job is either finished or failed. You could filter the list of composes on those statuses, but after some time both lists could become too large for visual inspection.</p>
+</div>
+</li>
+<li>
+<p>Filter the JSON output of <code>composer-cli</code> to get the status of just one compose by its UUID:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list -j | jq -r ".[1].body.finished[] | select(.id==\"$UUID\").queue_status"</strong>
+FINISHED</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If your compose had failed, you would need a different filter, such as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose list -j | jq -r ".[2].body.failed[] | select(.id==\"$UUID\").queue_status"</strong>
+FAILED</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Because our compose didn&#8217;t fail, the previous query returns empty.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can download, from the source samples repository in GitHub, a <a href="https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/sh/status-compose.sh">simple Bash script</a> that returns the status of a compose and gives its UUID. The script contains the <code>jq</code> from previous commands and also a couple of other queries.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Download the edge commit image and copy it to your <em>web server machine</em>.</p>
+<div class="paragraph">
+<p>Because you have to track two sets of hashes, one for compose UUIDs, and another for OSTree commit IDs, use the <code>--filename</code> option to give a mnemonic name to the TAR file of your edge commit image. This way, you won&#8217;t be lost trying to figure out which of your many TAR files corresponds to each edge image, especially after they are moved to a different machine than the one where you run the Image Builder service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose image $UUID --filename rhel9-httpd-v2-commit.tar</strong>
+rhel9-httpd-v2-commit.tar
+$ <strong>scp rhel9-httpd-v2-commit.tar servera:~</strong>
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open a terminal on your <em>web server machine</em> and copy the new edge image to the OSTree repository.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Check that the new edge commit image exists in your home folder.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls rhel9-httpd-v2-commit.tar</strong>
+rhel9-httpd-v2-commit.tar</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Extract the new edge commit image to an empty temporary directory and verify that it contains a branch that exists on the OSTree repository of the web server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
+$ <strong>tar xf rhel9-httpd-v2-commit.tar -C delete-me/</strong>
+$ <strong>ostree refs --repo=delete-me/repo</strong>
+rhel/9/x86_64/edge
+$ <strong>ostree refs --repo=/var/www/html/repo</strong>
+rhel/9/x86_64/edge
+rhel/9/x86_64/db</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the OSTree repository contains the commit that your edge commit image references as its parent.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree log rhel/9/x86_64/edge --repo=delete-me/repo</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b <i class="conum" data-value="1"></i><b>(1)</b>
+Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 <i class="conum" data-value="2"></i><b>(2)</b>
+ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
+Date:  2024-10-09 22:43:27 +0000
+Version: 9.5
+(no subject)
+
+&lt;&lt; History beyond this commit not fetched &gt;&gt;
+$ <strong>ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo</strong>
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 <i class="conum" data-value="3"></i><b>(3)</b>
+ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
+Date:  2024-10-09 20:25:03 +0000
+Version: 9.5
+(no subject)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Commit ID of the new edge commit image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Commit ID of the parent of the new edge commit image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Commit ID of the current head of the remote OSTree repository, which should match the previous commit ID.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Now that you have verified that your new edge commit image can connect to the existing history of your OSTree repository, pull the new edge commit image into the OSTree repository on the web server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo ostree pull-local --repo=/var/www/html/repo delete-me/repo</strong>
+488 metadata, 2054 content objects imported; 0 bytes content written</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Update the summary file of the OSTree repository on the web server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo ostree summary -u --repo=/var/www/html/repo</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>As an additional check, verify that the OSTree repository contains both the new commit, from the new edge commit image, and the previous commit.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree log rhel/9/x86_64/edge --repo=/var/www/html/repo</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b <i class="conum" data-value="1"></i><b>(1)</b>
+Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 <i class="conum" data-value="2"></i><b>(2)</b>
+ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
+Date:  2024-10-09 22:43:27 +0000
+Version: 9.5
+(no subject)
+
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746 <i class="conum" data-value="3"></i><b>(3)</b>
+ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
+Date:  2024-10-09 20:25:03 +0000
+Version: 9.5
+(no subject)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Commit ID of the new edge commit image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Commit ID of the parent of the new edge commit image</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Commit ID of the old edge commit image, which is the parent of the new edge commit image</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>You can now delete the temporary directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rm -rf delete-me</strong></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Back to your <em>development machine</em>, make some changes to configuration and data on your <em>test VM</em>, which you created in a <a href="../ch3-test/s2-boot-lab.html" class="xref page">previous lab</a>, so you can verify if those changes are retained after an update.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If your <em>test VM</em> is shut down, start it.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh domstate edge-test-1</strong>
+shut off
+$ <strong>virsh start edge-test-1</strong>
+$ <strong>virsh domstate edge-test-1</strong>
+running</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Attach to the console of your <em>test VM</em> and log in as the user <code>core</code> with password <code>redhat123</code>. It may be necessary to press <kbd>Enter</kbd> a few times to get a login prompt.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh console edge-test-1</strong>
+...
+edge login:</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the hostname of your <em>test VM</em> and verify that the change is stored in a file under the <code>/etc/</code> directory.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo hostnamectl set-hostname microweb</strong>
+[core@edge ~]$ <strong>cat /etc/hostname</strong>
+microweb</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will not see the change of hostname in your shell prompt until you log off.</p>
+</div>
+</li>
+<li>
+<p>Add a welcome page the Apache Web Server on your <em>test VM</em>. Because it is on <code>/var</code>, it is treated as application data by RPM-OSTree.</p>
+<div class="paragraph">
+<p>Using a text editor, create the <code>/var/www/html/index.html</code> with any contents you like, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">&lt;html&gt;
+&lt;body&gt;
+	&lt;h1&gt;This is an Edge Web Server&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the Apache Web Server inside your <em>test VM</em> uses your new welcome page.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>curl http://127.0.0.1</strong>
+&lt;html&gt;
+...</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Stage the new edge commit image on your <em>test VM</em>, which you created in a <a href="../ch3-test/s2-boot-lab.html" class="xref page">previous lab</a>.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Verify that your <em>test VM</em> is running the system image from the OSTree commit you got at the beginning of this lab.</p>
+<div class="paragraph">
+<p>Notice that there&#8217;s a single OSTree deployment, because your <em>test VM</em> was just provisioned and didn&#8217;t get any upgrade so far.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.5 (2024-10-09T20:25:03Z)
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> does NOT contain the RPM package which provides Cockpit.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm -q cockpit</strong>
+package cockpit is not installed</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> is preconfigured with an OSTree remote which points to your <em>web server machine</em>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>ostree remote list --show-urls</strong>
+edge  http://servera.lab.example.com/repo/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that your <em>test VM</em> can find available upgrades in the remote OSTree repository.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade --check</strong>
+2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
+Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
+AvailableUpdate:
+        Version: 9.5 (2024-10-09T22:43:27Z)
+         Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+           Diff: 46 added</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You safely can ignore the warning about <code>--check</code> being unreliable. It refers to the use of <code>/usr</code> overlays to install RPMs packages not included in the system image. We are not using this feature of RPM-OSTree.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Stage the upgrade on your <em>test VM</em>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo rpm-ostree upgrade</strong>
+⠉ Receiving objects; 52% (10/19) 110.5 kB/s 110.5 kB...                         [  214.985957] SELinux:  Context system_u:object_r:cockpit_ws_exec_t:s0 is not valid (left unmapped).
+[  214.999919] SELinux:  Context system_u:object_r:cockpit_session_exec_t:s0 is not valid (left unmapped).
+⠄ Writing objects: 1                                                            [  223.288671] SELinux:  Context system_u:object_r:cockpit_unit_file_t:s0 is not valid (left unmapped).
+⠒ Scanning metadata: 2937                                                       488 metadata, 2055 content objects fetched; 121655 KiB transferred in 17 seconds; 185.4 MB content written
+Scanning metadata: 2937... done
+Staging deployment... done
+Added:
+  adobe-source-code-pro-fonts-2.030.1.050-12.el9.1.noarch
+  cockpit-323.1-1.el9_5.x86_64
+...
+Run "systemctl reboot" to start a reboot</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can safely ignore the SELinux errors during staging of a new system image. Those issues are fixed by reboot, when the kernel loads the SELinux policy included in the new system image.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>You can verify that the new system image is not active (it&#8217;s the second deployment) but it is marked for the next reboot (notice the bullet).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
+State: idle
+Deployments:
+  edge:rhel/9/x86_64/edge
+                  Version: 9.5 (2024-10-15T20:27:34Z)
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+                     Diff: 46 added
+
+● edge:rhel/9/x86_64/edge
+                  Version: 9.5 (2024-10-15T19:56:56Z)
+                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Apply the upgrade to your <em>test VM</em> and verify it is running the new edge commit image you built during this lab.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Reboot your <em>test VM</em>, log in again, and verify that the new commit is now the first (active) deployment and also the one marked for the next boot (as indicated by the bullet).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>sudo systemctl reboot</strong>
+...
+microweb login:
+...
+[core@microweb ~]$ <strong>rpm-ostree status</strong>
+State: idle
+Deployments:
+● edge:rhel/9/x86_64/edge
+                  Version: 9.5 (2024-10-09T22:43:27Z)
+                   Commit: 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+
+  edge:rhel/9/x86_64/edge
+                  Version: 9.5 (2024-10-09T20:25:03Z)
+                   Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also notice that the hostname is changed, demonstrating that changes to the <code>/etc</code> directory are preserved after system image updates.</p>
+</div>
+</li>
+<li>
+<p>As a sanity check, verify that the OSTree repository on your <em>test VM</em> contains both the new and the previous commits, but nothing more.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>ostree log rhel/9/x86_64/edge</strong>
+commit 4afeda6a96ec8b2c263b6965a9c3f92db1db2436ae1e1233da70b7776fc6137b
+Parent:  7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+ContentChecksum:  94e275f4f9c9a9f68426ed9421845a48065467aea8bfcb57d826ed43fa50a253
+Date:  2024-10-09 22:43:27 +0000
+Version: 9.5
+(no subject)
+
+commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
+ContentChecksum:  f938c449602ad38c31a74bd35f0e438beb833e8ca592c07c87ef90a56f659586
+Date:  2024-10-09 20:25:03 +0000
+Version: 9.5
+(no subject)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>To prove it&#8217;s running the new edge commit image, verify it contains the Cockpit RPM packages:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@microweb ~]$ <strong>rpm -q cockpit</strong>
+cockpit-323.1-1.el9_5.x86_64</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the changes to configuration and data files were retained by the upgrade.</p>
+<div class="paragraph">
+<p>You already noticed the change of hostname in the login and shell prompts of the <em>test VM</em>. Now fetch the welcome page of its Apache Web Server.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>curl http://127.0.0.1</strong>
+&lt;html&gt;
+&lt;body&gt;
+	&lt;h1&gt;This is an Edge Web Server&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you wish, you can leave the console of your <em>test VM</em> by typing <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>]</kbd></span> and stop your <em>test VM</em>. Or you can leave it there to use the terminal for the next activity and open another terminal on your <em>development VM</em>.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You successfully built an edge commit image and applied it as an update to a <em>test VM</em>, demonstrating that your new system image can upgrade edge devices. You also demonstrated that edge devices retain configuration and application data over system upgrades.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The next activity builds another edge commit image that is applied as an update and then rolled back, to show how you can revert an RPM-OSTree upgrade of an edge device.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="s1-deltas.html">Apply, and Rollback Updates to Edge Devices</a></span>
+  <span class="next"><a href="s3-rollback-lab.html">Lab: Rollback Edge Image Updates</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
