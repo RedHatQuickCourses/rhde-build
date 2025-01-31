@@ -19,7 +19,7 @@ You also need a _web server machine_ which serves an OSTree repository. Make sur
 
 Finally, you need the database image that you created and published in xref:ch2-publish:s2-ostree-lab.adoc[another lab].
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`, and you start SSH sessions to the `servera` VM from the same user. If not, please adapt the instructions to your test environment.
 
@@ -49,7 +49,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              composer-cli status show
 ...
 --
 
@@ -166,23 +166,6 @@ $ *cat temp-iso/osbuild.ks*
 ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/9/x86_64/db --nogpg
 --
 
-.. Find the label of the ISO image, you will need it for the next steps. Copy the argument of the `-l` option to a shell variable
-+
-[source,subs="verbatim,quotes"]
---
-$ *grep search temp-iso/EFI/BOOT/grub.cfg*
-search --no-floppy --set=root -l 'RHEL-9-2-0-BaseOS-x86_64'
-$ *LABEL=RHEL-9-2-0-BaseOS-x86_64*
---
-
-.. Extract the ISO contents into another temporary directory
-+
-[source,subs="verbatim,quotes"]
---
-$ *mkdir new-iso*
-$ *sudo tar cf - -C temp-iso . | tar xf - -C new-iso*
---
-
 .. Unmount the ISO.
 +
 [source,subs="verbatim,quotes"]
@@ -192,13 +175,24 @@ $ *sudo umount temp-iso*
 
 4. Replace the kickstart in the edge installer image with one designed for unattended installation.
 
-.. Verify that you have the `mkisofs` command. If you don't, install the `xorriso` package. It's fine if have a different version than shown below.
+.. Install the Lorax tools for manipulating Anaconda installation media.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *mkisofs --version*
-xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
+$ *sudo dnf install lorax*
 ...
+Complete!
+--
+
+.. Set a shell variable with the disk label of your installer image, by copy-and-paste from the output of the `iso-info` command.
++
+[source,subs="verbatim,quotes"]
+--
+$ *iso-info $UUID-installer.iso*
+...
+Volume      : RHEL-9-5-0-BaseOS-x86_64
+Joliet Level: 3
+$ *LABEL=RHEL-9-5-0-BaseOS-x86_64*
 --
 
 .. Create a new kickstart file with uses the same `ostreesetup` command from the minimal kickstart file you see in the edge installer image, but adds other commands so it can run unattended. Save the new kickstart file as `rhel9-mysql-installer.ks`
@@ -210,49 +204,13 @@ include::1@samples:ks:example$rhel9-mysql-installer.ks[]
 +
 You can also download the contents of the https://raw.githubusercontent.com/RedHatQuickCourses/rhde-build-samples/refs/heads/main/ks/rhel9-mysql-installer.ks[new kickstart file] from the course samples repository in GitHub.
 
-.. Copy your custom kickstart file over the kickstart file on the edge installer image.
+.. Create a new ISO file including your custom kickstart file.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *cp rhel9-mysql-installer.ks new-iso/osbuild.ks*
---
-
-.. Build a new iso. If you notice that the following command specifies the `-no-emul-boot` option twice, this is *not* a mistake! You really need the two of them.
-+
-[source,subs="verbatim,quotes"]
---
-$ *mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/boot.cat \
--no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot \
--graft-points -joliet-long -V "$LABEL" new-iso*
+$ *mkksiso --ks rhel9-mysql-installer.ks $UUID-installer.iso new-installer.iso*
 ...
-Writing to 'stdio:new-installer.iso' completed successfully.
---
-
-.. Ensure that your bootable ISO is compatible with UEFI firmware and has a checksum for media checks. You will get a different MD5 checksum.
-+
-[source,subs="verbatim,quotes"]
---
-$ *isohybrid --uefi new-installer.iso*
-isohybrid: Warning: more than 1024 cylinders: 2220
-isohybrid: Not all BIOSes will be able to boot this device
-$ *implantisomd5 new-installer.iso*
-Inserting md5sum into iso image...
-md5 = 0f4dbe4cf8235c24b29477d2acbbb943
-Inserting fragment md5sums into iso image...
-fragmd5 = 938f9cf2c2967feaa5944a8be971126197a684a278739579f68ff45f48c6
-frags = 20
-Setting supported flag to 0
---
-
-.. Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unmount it.
-+
-[source,subs="verbatim,quotes"]
---
-$ *sudo mount -o loop,ro new-installer.iso temp-iso*
-$ *cat temp-iso/osbuild.ks*
-include::1@samples:ks:example$rhel9-mysql-installer.ks[lines=1..3]
-...
-$ *sudo umount temp-iso*
+Writing to '/home/student/new-installer.iso' completed successfully.
 --
 
 5. Create a _database VM_ that boots from the edge installer image.
@@ -265,7 +223,7 @@ NOTE: You must do this from a graphics desktop.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=20 \
+$ *virt-install --name edge-db-1 --os-variant rhel9.5 --memory 4096 --vcpus 2 --disk size=20 \
 --cdrom /home/student/new-installer.iso -v*
 --
 +
@@ -275,20 +233,20 @@ NOTE: You can do this from a secure shell session.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=20 \
+$ *virt-install --name edge-db-1 --os-variant rhel9.5 --memory 4096 --vcpus 2 --disk size=20 \
 --location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 \
---extra-arg inst.ks=hd:LABEL=$LABEL:/osbuild.ks -v*
+--extra-arg inst.ks=hd:LABEL=$LABEL:/rhel9-mysql-installer.ks -v*
 --
 +
 * If you are used to managing Libvirt VMs using Cockpit, feel free to perform VM creation and other tasks using its web UI.
 +
 
-.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `core` with password `redhat123`. [ review for  RHEL 9.4 ]
+.. Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user `core` with password `redhat123`.
 +
 [source,subs="verbatim,quotes"]
 --
-Red Hat Enterprise Linux 9.2 (Plow)
-Kernel 5.14.0-284.11.1.el9_2.x86_64 on an x86_64
+Red Hat Enterprise Linux 9.5 (Plow)
+Kernel 5.14.0-503.11.1.el9_5.x86_64 on an x86_64
 
 edge-db login: *core*
 Password: 
@@ -301,11 +259,11 @@ Password:
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-[core@edge-db ~]$ *rpm-ostree status*
+$ *rpm-ostree status*
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/db
-                  Version: 9.2 (2024-09-06T22:07:45Z)
+                  Version: 9.5 (2024-09-06T22:07:45Z)
                    Commit: {commit-mysql-v1}
 --
 +
@@ -315,19 +273,19 @@ Notice that the commit ID you see matches the one from the `curl` command at the
 +
 [source,subs="verbatim,quotes"]
 --
-[core@edge-db ~]$ *ostree remote list --show-urls*
+$ *ostree remote list --show-urls*
 db  file:///run/install/repo/ostree/repo
 --
 
 .. If you wish, you can explore the file system inside the _database VM_. You should see the same mounts you already saw in the xref:s2-boot-lab.adoc[previous lab]. Different types of edge images should produce the same file system layout.
 
-7. On your _database VM_, check that there is a MySQL database running.
+7. Check that there is a MySQL database running.
 
 .. Verify that the `mysqld` Systemd service is enabled and active
 +
 [source,subs="verbatim,quotes"]
 --
-[core@edge-db ~]$ *systemctl is-active mysqld*
+$ *systemctl is-active mysqld*
 active
 --
 
@@ -335,7 +293,7 @@ active
 +
 [source,subs="verbatim,quotes"]
 --
-[core@edge-db ~]$ *sudo mysqlshow*
+$ *sudo mysqlshow*
 +--------------------+
 |     Databases      |
 +--------------------+

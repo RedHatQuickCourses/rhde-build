@@ -15,7 +15,7 @@ You need a _development machine_ with RHEL and configured with the Image Builder
 
 You also need the blueprint that was created and uploaded to the Image Builder service by the xref:s5-blueprint-lab.adoc[previous lab].
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`. If not, please adapt the instructions to your test environment.
 
@@ -34,7 +34,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...
 --
 
@@ -42,7 +42,7 @@ API server status:
 +
 [source,subs="verbatim,quotes"]
 --
-$ *composer-cli blueprint show rhel9-edge*
+$ *composer-cli blueprints show rhel9-edge*
 ...
 include::1@samples:blueprints:example$rhel9-httpd.toml[lines=8..9]
 ...
@@ -57,6 +57,8 @@ include::1@samples:blueprints:example$rhel9-httpd.toml[lines=8..9]
 $ *composer-cli compose start-ostree rhel9-edge edge-commit*
 Compose {compose-uuid-canceled-aaaaaaaaaaaa} added to the queue
 --
++
+IMPORTANT: You must use the `start-ostree` for all edge composes. The `start` command only starts package-based composes.
 
 .. To ease the following steps, copy and paste the UUID from the previous command output to a shell variable.
 +
@@ -121,7 +123,7 @@ ID                                     Status     Blueprint    Version   Type
 +
 [source,subs="verbatim,quotes,attributes"]
 --
-$ *compose-cli info $UUID | less*
+$ *composer-cli compose info $UUID | less*
 {compose-uuid-httpd-v1-aaaaaaaaaaaa} FINISHED rhel9-edge      0.1.0 edge-commit      
 Packages:
     httpd-
@@ -129,7 +131,7 @@ Modules:
 Dependencies:
     ModemManager-1.20.2-1.el9.x86_64
     ModemManager-glib-1.20.2-1.el9.x86_64
-    NetworkManager-1:1.42.2-1.el9.x86_64
+    NetworkManager-1:1.48.10-2.el9_5.x86_64
 ...
 --    
 
@@ -137,7 +139,7 @@ Dependencies:
 +
 [source,subs="verbatim,quotes"]
 --
-$ *compose-cli log $UUID | less*
+$ *composer-cli compose log $UUID | less*
 Pipeline build
 Stage org.osbuild.rpm
 Output:
@@ -148,7 +150,7 @@ imported gpg key
 imported gpg key
 Verifying packages...
 Preparing packages...
-libgcc-11.3.1-4.3.el9.x86_64
+libgcc-11.5.0-2.el9.x86_64
 ...
 --
 
@@ -180,7 +182,7 @@ $ rpm-ostree db list rhel/9/x86_64/edge --repo=delete-me/repo
 ostree commit: rhel/9/x86_64/edge ({commit-httpd-v1})
  ModemManager-1.20.2-1.el9.x86_64
  ModemManager-glib-1.20.2-1.el9.x86_64
- NetworkManager-1:1.42.2-1.el9.x86_64
+ NetworkManager-1:1.48.10-2.el9_5.x86_64
 ...
 --
 

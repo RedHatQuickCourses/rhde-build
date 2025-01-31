@@ -36,6 +36,12 @@ The goal is, on one side, to preserve application data in `/var` across system u
 
 If a system update requires changes to application data, for example, migrating data to a new database schema, this is the responsibility of the application. It could run a first boot job to perform the database migration or use any other strategy. Just do not rely on RPM-OSTree itself to make application data compatible with a new version of an application and its dependencies.
 
+== Device Rollbacks and Configuration or Application Data
+
+If you rollback a system update, application data in `/var` is preserved, which might create issues in scenarios such as changes to database schemas required by a new application version: that data could be incompatible with the older version the system is rolling back to. It is the responsibility of the application to ensure data in `/var` is usable after both updates and rollbacks.
+
+Configuration data in `/etc` is effectively reverted to its old state after a rollback. That happens because each OSTree deployment contains its own `/etc` and files there are merged only at deployment time. The rollback operation just restarts the system to an existing deployment, it will NOT perform a new three-way merge, so any configuration change performed after an update will be lost because of a rollback.
+
 == Building Update Images with Image Builder
 
 An update image is just a regular edge commit image produced by Image Builder, but its single OSTree commit must reference a parent commit so it can be later pulled into a remote OSTree repository and preserve the history if its branch.

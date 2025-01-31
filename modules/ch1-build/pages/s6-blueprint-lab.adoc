@@ -12,7 +12,7 @@ Create, validate, and update Image Builder blueprints for building edge images.
 
 You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the `weldr` group. Make sure your development machine is configured and verified by following the instructions from the xref:s4-install-lab.adoc[previous lab].
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student`. If not, please adapt the instructions to your test environment.
 
@@ -29,7 +29,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...
 --
 
@@ -76,9 +76,9 @@ include::1@samples:blueprints:example$rhel9-edge.toml[lines=1..3]
 --
 $ *composer-cli blueprints depsolve rhel9-edge*
 blueprint: rhel9-edge v0.0.1
-    acl-2.3.1-3.el9.x86_64
-    alternatives-1.20-2.el9.x86_64
-    audit-libs-3.0.7-103.el9.x86_64
+    acl-2.3.1-4.el9.x86_64
+    alternatives-1.24-1.el9_5.1.x86_64
+    audit-libs-3.1.5-1.el9.x86_64
 ...
 --
 +
@@ -99,7 +99,7 @@ IMPORTANT: Red Hat does NOT recommend that you use Image Builder as the source o
 
 .. Use your preferred text editor to change the `rhel9-httpd.toml` file as follows. Make sure you do NOT change its `name` attribute!
 +
-Add Services and Firewall customizations, so the service is readily available on the device.
+Add services and firewall customizations, so the service is readily available on the device.
 +
 [source,subs="verbatim,quotes"]
 --
@@ -130,8 +130,8 @@ $ *composer-cli blueprints push rhel9-httpd.toml*
 --
 
 $ *composer-cli blueprints depsolve rhel9-edge | grep httpd*
-    httpd-2.4.53-11.el9_2.4.x86_64
-    httpd-core-2.4.53-11.el9_2.4.x86_64
+    httpd-2.4.62-1.el9.x86_64
+    httpd-core-2.4.62-1.el9.x86_64
 ...
 --
 

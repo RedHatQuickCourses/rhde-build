@@ -8,6 +8,14 @@ This course teaches how to create *Red Hat Device Edge* images for edge devices 
 * Using the Image Builder tool to create and deploy edge images based on the RPM-OSTree technology.
 * Performing OSTree repository management to deliver updates to edge devices.
 
+It is part of a Red Hat Device Learning path, which currently includes two courses:
+
+* *Building Red Hat Device Edge Images* (this course)
+* https://redhatquickcourses.github.io/rhde-microshift/[Deploying MicroShift on Red Hat Device] (follow-up course)
+
+IMPORTANT: Red Hat employees must enroll using its https://training-lms.redhat.com/sso/saml/auth/rhlpint?RelayState=deeplinkoffering%3D66848400[LMS entry] to get completion credits, and Red Hat Partners must enroll using its https://training-lms.redhat.com/sso/saml/auth/rhopen?RelayState=deeplinkoffering%3D66848513[Partner Portal entry].
+
+
 == Audience
 
 Operations-focused roles, who design and implement device edge images, but are not usually in-person at edge sites, such as:
@@ -32,9 +40,23 @@ Red Hat and Partner roles that support Red Hat Device Edge on customers, such as
 
 == Classroom Environment
 
-You can perform all activities in this course using the virtual classroom from https://role.rhu.redhat.com/rol-rhu/app/courses/hol007-9.2/pages/pr01[HOL007: Red Hat Enterprise Linux (RHEL): Create the RHEL for Edge Image], based on RHEL 9.2.
+You can perform all activities in this course using the virtual classroom from [HOL014: Red Hat Device Edge Quick Course Series], which is shared by all Red Hat Device Edge quick courses and will be updated as required by future related courses.
 
-A new classroom in is the works, featuring a newer RHEL release, and which will be shared by future Red Hat Device Edge courses. This page will be updated with links and details about the new classroom, when it is available.
+Used the following links to access the virtual labs on ROLE:
+
+* https://role.rhu.redhat.com/rol-rhu/app/courses/hol014-9.5/pages/pr01[HOL014 for Red Hat employees]
+* https://rol.redhat.com/rol/app/courses/hol014-9.5/pages/pr01[HOL014 for Red Hat customers and partners with a Learning Subscription].
+
+If you can provision your own RHEL servers or VMs, it should be possible to configure all that is required for the hands-on activities by using a https://developers.redhat.com/products/rhel/download[free subscription] from the https://developers.redhat.com/about[Red Hat Developer Program], which gives access to RHEL installation media and RHEL package repositories.
+
+== Red Hat Device Edge Quick Courses Series
+
+Currently, the follopwing quick courses on Red Hat Device Edge are available:
+
+* Building Red Hat Device Edge Images (this course)
+
+* https://github.com/RedHatQuickCourses/rhde-microshift/[Deploying MicroShift on Red Hat Device Edge]
+
 
 == Other Sources of Information About Red Hat Device Edge
 

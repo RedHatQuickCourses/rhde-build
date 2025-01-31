@@ -12,7 +12,7 @@ Install and configure Image Builder in a RHEL machine for creating edge images.
 
 You need a _development machine_ running RHEL, to which you have unrestricted sudo rights and also access to RHEL package repositories. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable installation images.
 
-These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.
+These instructions were tested on RHEL 9.5 but should work with minimal or no change on and newer and older RHEL 9.x releases.
 
 If you are using the course classroom, you will log in on the `workstation` VM as the user `student` with password `student` and grant that same user access to the Image Builder service. If not, please adapt the instructions to your test environment.
 
@@ -44,18 +44,16 @@ Complete!
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo systemctl enable osbuild-composer*
-Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.service → /usr/lib/systemd/system/osbuild-composer.service.
-$ *sudo systemctl start osbuild-composer*
+$ *sudo systemctl enable osbuild-composer.socket --now*
+Created symlink /etc/systemd/system/sockets.target.wants/osbuild-composer.socket → /usr/lib/systemd/system/osbuild-composer.socket.
 --
 
 .. Enable and activate the Cockpit service, if not already enabled on your development machine.
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo systemctl enable cockpit*
-Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → /usr/lib/systemd/system/cockpit.service.
-$ *sudo systemctl start cockpit*
+$ *sudo systemctl enable cockpit.socket --now*
+Created symlink /etc/systemd/system/sockets.target.wants/cockpit.socket → /usr/lib/systemd/system/cockpit.socket.
 --
 
 .. Enable remote access to the Cockpit service, if not already enabled on your development machine.
@@ -154,7 +152,7 @@ $ *sudo mkdir -p /etc/osbuild-composer/repositories*
 +
 [source,subs="verbatim,quotes"]
 --
-$ *sudo cp /usr/share/osbuild-composer/repositories/rhel-92.json /etc/osbuild-composer/repositories/*
+$ *sudo cp /usr/share/osbuild-composer/repositories/rhel-9.5.json /etc/osbuild-composer/repositories/*
 --
 
 .. Modify the configuration file to match your local DNF repository. Pay attention to attributes such as `baseurl`, `rhsm` and `check_gpg`.
@@ -164,20 +162,27 @@ In the classroom environment, you should make the following edits:
 [source,subs="verbatim,quotes"]
 --
 ...
-include::1@samples:repos:example$rhel-92.json[lines=50..53]
+include::1@samples:repos:example$rhel-9.5.json[lines=50..53]
 ...
-include::1@samples:repos:example$rhel-92.json[lines=58..60]
+include::1@samples:repos:example$rhel-9.5.json[lines=55..56]
+...
+include::1@samples:repos:example$rhel-9.5.json[lines=58..60]
+...
+include::1@samples:repos:example$rhel-9.5.json[lines=62..63]
 ...
 --
 +
-You can download a https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-92.json[configuration file] with all changes done from the sample applications repository in GitHub.
+You can download a https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-9.5.json[configuration file] with all changes done from the sample applications repository in GitHub.
 
 .. Restart the Image Builder service.
 +
 [source,subs="verbatim,quotes"]
 --
+$ *sudo systemctl stop osbuild-worker@1.service*
 $ *sudo systemctl restart osbuild-composer*
 --
++
+IMPORTANT: Restarting Image Builder this way  only works because there was no attempt at building any image, so there should be only one active `osbuild-worker@<number>` service. If there were more, it would be necessary to either stop all of them or reboot your _developer machine_.
 
 7. Check that the Image Builder service is using your RHEL repository overides.
 
@@ -195,7 +200,7 @@ check_repogpg = false
 rhsm = false
 system = true
 type = "yum-baseurl"
-url = "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS"
+url = "http://content.example.com/rhel9.5/x86_64/dvd/BaseOS"
 $ *composer-cli sources info appstream*
 check_gpg = false
 check_repogpg = false
@@ -203,12 +208,14 @@ check_repogpg = false
 rhsm = false
 system = true
 type = "yum-baseurl"
-url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"
+url = "http://content.example.com/rhel9.5/x86_64/dvd/ApStream"
 --
 
 .. You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.
 +
 Enter the btn:[Image Builder] item in Cockpit and click btn:[Sources]. Then, for both the btn:[BaseOS] and the btn:[AppStreams] channels, click btn:[>] to expand the URL and verify it matches your configuration override.
++
+TODO update screen shot
 +
 image::s4-cockpit-repository-url.png[]
 +
@@ -229,11 +236,11 @@ Complete!
 --
 $ *rpm-ostree --version*
 rpm-ostree:
- Version: '2022.19'
+ Version: '2024.7'
 ...
 $ *ostree --version*
 libostree:
- Version: '2023.1'
+ Version: '2024.7'
 ...
 --
 
