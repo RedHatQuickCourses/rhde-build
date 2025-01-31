@@ -210,18 +210,6 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -231,16 +219,16 @@ Pending SME Review &amp; Proofreading
 <p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure you web server was configured and verified by following the instructions from the <a href="s2-ostree-lab.html" class="xref page">previous lab</a></p>
+<p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure you web server was configured and verified by following the instructions from the <a href="s2-ostree-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you will start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step!</p>
+<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step, when they request that you switch to a different machine!</p>
 </div>
 </div>
 </div>
@@ -264,7 +252,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -281,7 +269,7 @@ mode=archive-z2</code></pre>
 </div>
 </li>
 <li>
-<p>Open a web browser and navigate to the path <code>/repo/refs/heads</code> of the web server. This directory tree this lists all branches of an OSTree repository. You should see a branch with the path <code>rhel/9/x86_64/edge</code>.</p>
+<p>Open a web browser and navigate to the path <code>/repo/refs/heads</code> of the web server. This directory tree lists all branches of an OSTree repository. You should see a branch with the path <code>rhel/9/x86_64/edge</code>.</p>
 <div class="paragraph">
 <p>Alternatively, fetch the current commit ID of that branch from the command line. Your will get a different ID:</p>
 </div>
@@ -299,7 +287,7 @@ mode=archive-z2</code></pre>
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, get a blueprint to build a second edge system image, running a different application than the image used in previous exercises. The first image run an Apache Web Server, this second image runs a MySQL database.</p>
+<p>Get a blueprint to build a second edge system image, running a different application than the image used in previous exercises. The first image runs an Apache Web Server, and this second image runs a MySQL database.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -327,8 +315,7 @@ hostname = "db"
 enabled = ["sshd", "mysqld"]
 
 [customizations.firewall.services]
-enabled = ["ssh", "mysql"]
-...</code></pre>
+enabled = ["ssh", "mysql"]</code></pre>
 </div>
 </div>
 </li>
@@ -347,7 +334,7 @@ rhel9-mysql</code></pre>
 </div>
 </li>
 <li>
-<p>Again on your <em>development machine</em>, build an edge commit image from the MySQL bluerprint.</p>
+<p>Build an edge commit image from the MySQL bluerprint.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -355,7 +342,7 @@ rhel9-mysql</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-mysql edge-commit --ref rhel/9/x86_64/db</strong>
-Compose ff15f8cd-21da-489a-87d0-bb39df4b79ad added to the queue</code></pre>
+Compose ff15f8cd-21da-489a-87d0-bb39df4b79ad added to the queue.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -395,7 +382,7 @@ ff15f8cd-21da-489a-87d0-bb39df4b79ad-commit.tar</code></pre>
 </div>
 </li>
 <li>
-<p>Copy the edge commit image to your home directory on the web server machine.</p>
+<p>Copy the edge commit image to your home directory on the <em>web server machine</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>scp $UUID-commit.tar servera.lab.example.com:~</strong>
@@ -407,15 +394,14 @@ ff15f8cd-21da-489a-87d0-bb39df4b79ad-commit.tar</code></pre>
 </div>
 </li>
 <li>
-<p>Switch to your <em>web sever machine</em> and publish the edge commit image on its OSTree repository.</p>
+<p>Switch to your <em>web server machine</em> and publish the edge commit image on its OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>On another terminal, start an SSH session on your web server machine (<code>servera</code>), and copy the shell variable from the first terminal.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ssh servera</strong>
-$ <strong>UUID=<em>ff15f8cd-21da-489a-87d0-bb39df4b79ad</em></strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>UUID=<em>ff15f8cd-21da-489a-87d0-bb39df4b79ad</em></strong></code></pre>
 </div>
 </div>
 </li>
@@ -424,7 +410,7 @@ $ <strong>UUID=<em>ff15f8cd-21da-489a-87d0-bb39df4b79ad</em></strong></code></pr
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir delete-me</strong>
-$ <strong>sudo tar xf ~/$UUID-commit.tar -C delete-me</strong></code></pre>
+$ <strong>tar xf ~/$UUID-commit.tar -C delete-me</strong></code></pre>
 </div>
 </div>
 </li>

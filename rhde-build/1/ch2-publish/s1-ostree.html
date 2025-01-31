@@ -210,18 +210,6 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -234,13 +222,13 @@ Pending SME Review &amp; Proofreading
 <div class="content">
 <img src="_images/s1-ostree-fig1.svg" alt="s1 ostree fig1">
 </div>
-<div class="title">Figure 1. OSTree commits in an edge device installation and update workflow</div>
+<div class="title">Figure 1. OSTree commits in the workflow for installing and updating edge devices</div>
 </div>
 <div class="paragraph">
-<p>The contents of an edge commit image produced by the Image Builder is single OSTree commit, packaged as a TAR archive. That OSTree commit is, by itself, a valid OSTree repository, but it will likely be published in a larger OSTree repository, which contains multiple edge images and multiple versions of each edge image.</p>
+<p>The contents of an edge commit image produced by the Image Builder is a single OSTree commit, packaged as a TAR archive. That OSTree commit is, by itself, a valid OSTree repository, but it will likely be published in a larger OSTree repository, which contains multiple edge images and multiple versions of each edge image.</p>
 </div>
 <div class="paragraph">
-<p>The RPM-OSTree technology is used by the Image Builder service to build OSTree commits and is also the technology used by edge devices deploy OSTree commits as the bootable system images and to download and apply system updates. But RPM-OSTree alone does not provide capabilities for OSTree repository management, which is the focus of this section.</p>
+<p>The RPM-OSTree technology is used by the Image Builder service to build OSTree commits and is also the technology used by edge devices to deploy OSTree commits as the bootable system images and to download and apply system updates. But RPM-OSTree alone does not provide capabilities for OSTree repository management, which is the focus of this section.</p>
 </div>
 <div class="paragraph">
 <p>The OSTree technology is used by more than RPM-OSTree and RHEL for Edge. It is a core technology of many innovative community projects, such as <a href="https://fedoraproject.org/iot/">Fedora IoT</a> and <a href="https://flatpak.org/">Flatpack</a>. It is also a core technology of <a href="https://docs.openshift.com/container-platform/4.16/architecture/architecture-rhcos.html">RHEL CoreOS</a> which powers cluster nodes of Red Hat OpenShift 4.</p>
@@ -257,10 +245,10 @@ Pending SME Review &amp; Proofreading
 <div class="content">
 <img src="_images/s1-ostree-fig-2.svg" alt="s1 ostree fig 2">
 </div>
-<div class="title">Figure 2. OSTree repostory, branches, commits, and remotes</div>
+<div class="title">Figure 2. OSTree repository, branches, commits, and remotes</div>
 </div>
 <div class="paragraph">
-<p>If OSTree and Git are so similar, Why not just using Git? Because OSTree adds the following features, which are required to manage bootable Linux file systems but are not needed to manage application source code:</p>
+<p>If OSTree and Git are so similar, Why not just use Git? Because OSTree adds the following features, which are required to manage bootable Linux file systems but are not needed to manage application source code:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -273,13 +261,13 @@ Pending SME Review &amp; Proofreading
 </ul>
 </div>
 <div class="paragraph">
-<p>Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files with Git. Which is consistent with its purpose: OSTree is designed to manage file system trees which contain operating system binaries, while Git is designed to manage file system trees which contain source code.</p>
+<p>Unlike Git, OSTree is optimized for handling large binary files, as opposed to small text files with Git. This is consistent with its purpose: OSTree is designed to manage file system trees which contain operating system binaries, while Git is designed to manage file system trees which contain source code.</p>
 </div>
 <div class="paragraph">
 <p>With RPM-OSTree, each branch of an OSTree repository is a system image. Updating an image means adding a new commit to the head of a branch. If you store, in the same OSTree repository, multiple system images based on the same RHEL release, each image adding a different set of applications and configurations file, those images share the same files for the Linux kernel, system binaries, and system libraries, for efficient use of disk space.</p>
 </div>
 <div class="paragraph">
-<p>On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to different sets of packages from RHEL. OSTree branches are not required to share files, but will not store duplicated files from other branches. Users of an OSTree repository do not need to be aware of the branches from other users: deduplication of files happen automatically.</p>
+<p>On the other side, each branch could be updated, at different times, to different RHEL releases, or receive updates to different sets of packages from RHEL. OSTree branches are not required to share files, but will not store duplicated files from other branches. Users of an OSTree repository do not need to be aware of the branches from other users: deduplication of files happens automatically.</p>
 </div>
 </div>
 </div>
@@ -304,7 +292,7 @@ Pending SME Review &amp; Proofreading
 <p>An edge device contains a local OSTree repository, which could contain multiple OSTree commits, but only one of those commits is active, or <strong>deployed</strong>. The deployed commit is similar to the active branch of a Git repository: you can read and write directly to its files, as in an exploded archive.</p>
 </div>
 <div class="paragraph">
-<p>Edge devices can pull many commits from a remote OSTree repository, and that&#8217;s how they gets system updates. You can switch to, or deploy, a different OSTree commit present in the local OSTree repository of the device, which requires a reboot. The process is basically the same for applying updates and rolling back them.</p>
+<p>Edge devices can pull many commits from a remote OSTree repository, and that&#8217;s how they get system updates. You can switch to, or deploy, a different OSTree commit present in the local OSTree repository of the device, which requires a reboot. The process is basically the same for applying updates and rolling back them.</p>
 </div>
 </div>
 </div>
@@ -312,7 +300,7 @@ Pending SME Review &amp; Proofreading
 <h2 id="_the_ostree_tooling"><a class="anchor" href="#_the_ostree_tooling"></a>The OSTree tooling</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You must perform OSTree repository management from the command line, using the <code>ostree</code> command. Most of the OSTree commands are single-level, and each subcommand takes their own options and arguments, as in:</p>
+<p>You must perform OSTree repository management from the command line, using the <code>ostree</code> command. Most of the OSTree commands are single-level, and each subcommand takes its own options and arguments, as in:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -344,7 +332,7 @@ Pending SME Review &amp; Proofreading
 </div>
 </div>
 <div class="paragraph">
-<p>At any level, you can use the <code>--help</code> option to display on-line help for the available command, subcommands, options, and arguments. All the following are valid examples of getting online help from the <code>ostree</code> command:</p>
+<p>At any level, you can use the <code>--help</code> option to display online help for the available command, subcommands, options, and arguments. All the following are valid examples of getting online help from the <code>ostree</code> command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -360,7 +348,7 @@ $ <strong>ostree admin config-diff --help</strong></code></pre>
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that you was introduced to the essential concepts of OSTree repositories, a series of hands-on activities install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course you will test those edge images using local VMs, and them update those VMs to use new system images.</p>
+<p>Now that you have been introduced to the essential concepts of OSTree repositories, a series of hands-on activities install and configure a web server to host remote OSTree repositories and publish simple edge images on that web server. Later in this course, you will test those edge images using local VMs, and then update those VMs to use new system images.</p>
 </div>
 </div>
 </div>

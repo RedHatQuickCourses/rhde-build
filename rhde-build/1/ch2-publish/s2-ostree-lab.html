@@ -210,25 +210,13 @@
 </dd>
 </dl>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Pending SME Review &amp; Proofreading
-</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you Begin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
+<p>You need a <em>development machine</em> with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the <code>weldr</code> group. Make sure your test machine was configured and verified by following the instructions from the <a href="../ch1-build/s4-install-lab.html" class="xref page">first lab</a>.</p>
 </div>
 <div class="paragraph">
 <p>You also need a second machine, the <em>web server machine</em>, to run a web server, on which you have unrestricted sudo access to install packages and configure system services.</p>
@@ -240,7 +228,7 @@ Pending SME Review &amp; Proofreading
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You could run the web server in the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server accessible to remote edge devices in multiple locations.
+You could run the web server on the same machine you use to run the Image Builder service, and that would match some CI/CD environments, but production environments usually require a dedicated and hardened server accessible to remote edge devices in multiple locations.
 </td>
 </tr>
 </table>
@@ -249,13 +237,13 @@ You could run the web server in the same machine you use to run the Image Builde
 <p>You also need the edge commit image that was created and downloaded to your user home directory by the <a href="../ch1-build/s8-compose-lab.html" class="xref page">previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you will start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step!</p>
+<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step, when they request that you switch to a different machine!</p>
 </div>
 </div>
 </div>
@@ -279,7 +267,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -314,7 +302,7 @@ $ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, check the integrity of your edge commit image by inspecting its OSTree repository.</p>
+<p>Check the integrity of your edge commit image by inspecting its OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -336,7 +324,7 @@ rhel/9/x86_64/edge</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You would not need the commit ID nor branch name for an OSTree repository with a single commit, as the one you got from your first and only edge commit image. But as you build more edge images, or update existing images, you will need to be able to differentiate between multiple edge images, that is, multiple OSTree commits, in the same OSTree repository.
+You would not need the commit ID nor branch name for an OSTree repository with a single commit, as the one you got from your first and only edge commit image so far. But as you build more edge images, or update existing images, you will need to be able to differentiate between multiple edge images, that is, multiple OSTree commits, in the same OSTree repository.
 </td>
 </tr>
 </table>
@@ -350,7 +338,7 @@ You would not need the commit ID nor branch name for an OSTree repository with a
 commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
 Date:  2024-09-06 22:07:45 +0000
-Version: 9.2
+Version: 9.5
 (no subject)</code></pre>
 </div>
 </div>
@@ -365,7 +353,7 @@ rhel/9/x86_64/edge</code></pre>
 </div>
 </li>
 <li>
-<p>Peform an integrity check of the OSTree repository.</p>
+<p>Perform an integrity check of the OSTree repository.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree --repo=delete-me/repo fsck</strong>
@@ -384,7 +372,7 @@ object fsck of 1 commits completed successfully - no errors found.</code></pre>
 <li>
 <p>Switch to your <em>web server machine</em> and configure a web server dedicated to providing OSTree repositories.</p>
 <div class="paragraph">
-<p>The instructions bellow configure an Apache Web Server as a system service on the <em>web server machine</em>. You could use the NGinx web server and run the web server as a container, among other variations.</p>
+<p>The instructions below configure an Apache Web Server as a system service on the <em>web server machine</em>. You could use the NGinx web server and run the web server as a container, among other variations.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -412,7 +400,7 @@ Production deployments usually require further customization, such as enabling T
 <p>Install the Apache Web Server packages from RHEL.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo yum install -y httpd</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install httpd</strong>
 ...
 Complete!</code></pre>
 </div>
@@ -422,10 +410,8 @@ Complete!</code></pre>
 <p>Enable and start the Apache Web Server system service.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable httpd</strong>
-Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.
-$ <strong>sudo systemctl start httpd</strong>
-...</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable httpd --now</strong>
+Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.</code></pre>
 </div>
 </div>
 </li>
@@ -444,7 +430,7 @@ success</code></pre>
 <p>Install the RPM-OSTree and the lower level OSTree tooling on the web server machine, because you will need to perform maintenance on the OSTree repositories you store on it.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo yum install -y rpm-ostree ostree</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install rpm-ostree ostree</strong>
 ...
 Complete!</code></pre>
 </div>
@@ -484,7 +470,7 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Switch again to your <em>web sever machine</em> and publish the OSTree commit in the web server content directory.</p>
+<p>Switch again to your <em>web server machine</em> and publish the OSTree commit in the web server content directory.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -503,7 +489,7 @@ $ <strong>sudo tar xf ~/$UUID-commit.tar -C /var/www/html</strong></code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an edge image, you must use the <code>ostree init</code> and <code>ostree pull-local</code> commands.
+Extracting an edge commit image only works for initializing a new OSTree repository with a single branch and commit. If you must add multiple edge images to the same OSTree repository, or you need to add updates to an existing edge image, you must use the <code>ostree init</code> and <code>ostree pull-local</code> commands.
 </td>
 </tr>
 </table>
@@ -521,7 +507,7 @@ drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 
 </div>
 </li>
 <li>
-<p>If you need, change file permissions and SELinux labels.</p>
+<p>If you need, fix file permissions and SELinux labels.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo chmod -R a+X /var/www/html</strong>
@@ -543,7 +529,7 @@ $ <strong>sudo restorecon -R /var/www/html</strong></code></pre>
 <li>
 <p>Back to your <em>development machine</em>, verify that a remote client can access the remote OSTree repository.</p>
 <div class="paragraph">
-<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to setup a local OSTree repository on the development machine and configure it with a remote that points to the web server machine.</p>
+<p>Check that a remote client can read the OSTree repository configuration file. This way, you don&#8217;t need to set up a local OSTree repository on the development machine and configure it with a remote that points to the web server machine.</p>
 </div>
 <div class="listingblock">
 <div class="content">

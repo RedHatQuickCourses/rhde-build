@@ -234,13 +234,13 @@ Pending SME Review &amp; Proofreading
 <p>You also need a <em>web server machine</em> which serves an OSTree repository. Make sure that machine was configured and verified by following the instructions from <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">a previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>You will perform most steps in this lab alternating between your <em>development machine</em> and your <em>web server machine</em>. You will also perform a few steps from a <em>test VM</em> that you will create as part of this lab.</p>
+<p>You will perform most steps in this lab alternating between your <em>development machine</em> and your <em>web server machine</em>. You will also perform a few steps from a <em>test VM</em> that you will create as part of this lab. Pay attention to the instructions at each step, when they request that you switch to a different machine!</p>
 </div>
 </div>
 </div>
@@ -264,7 +264,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -285,17 +285,24 @@ API server status:
 </div>
 </li>
 <li>
-<p>On your <em>development machine</em>, install the Libvirtd tools and its Cockpit module, if they are not already installed.</p>
+<p>Install the Libvirtd tools and its Cockpit module, if they are not already installed.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Install the "Virtualization Host" package group to get the Libvirt, KVM, and Qemu daemons and tools.</p>
+<p>Install the Libvirt, KVM, and Qemu daemons and tools. Alternativelly, install the "Virtualization Host" package group, which provides all those components.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf group install -y "Virtualization Host"</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install qemu-kvm libvirt virt-install virt-viewer</strong>
 ...
-Complete!
-$ <strong>dnf install -y cockpit-machines</strong>
+Complete!</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the virtual machines module for Cockpit</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install cockpit-machines</strong>
 ...
 Complete!</code></pre>
 </div>
@@ -310,13 +317,22 @@ Complete!</code></pre>
 </div>
 </li>
 <li>
-<p>Log off and log in again to update the user membership of your unprivileged user.</p>
+<p>Log off and log in again to update the user membership of your unprivileged user and check that it can use libvirt&#8217;s session interface.</p>
 </li>
 </ol>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh uri</strong>
+qemu:///session
+$ <strong>virsh nodeinfo</strong>
+CPU model:           x86_64
+...</code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>On your <em>development machine</em>, create and publish a kickstart file which points to the OSTree repository on the web server.</p>
+<p>Create and publish a kickstart file which points to the OSTree repository on the web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -355,13 +371,13 @@ echo "core:redhat123" | chpasswd
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>autopart</code> command, which creates a disk partitioning scheme without using LVM. Else, your edge system would get a disk partitioning which is incompatible with RPM-OSTree and fail in a later installation stage.</p>
+<p>The <code>autopart</code> command, which creates a disk partitioning scheme without using LVM. You cannot use the default LVM paritioning scheme, because is incompatible with RPM-OSTree and fail in a later installation stage. To use LVM, you must ensure there&#8217;s only a root partition, without /var or /home being separated into their own partitions.</p>
 </li>
 <li>
 <p>The <code>ostreesetup</code> command, which directs Anaconda to download the latest commit from a remote OSTree repository using HTTP.</p>
 </li>
 <li>
-<p>The <code>%post</code> block, which replaces the <code>user</code> directive in a regular kickstart file.  A <code>user</code> directive would work here but it would not for edge installer images.</p>
+<p>The <code>%post</code> block, which replaces the <code>user</code> directive in a regular kickstart file. The <code>user</code> directive does NOT work consistently with all edge compose types.</p>
 </li>
 </ul>
 </div>
@@ -389,7 +405,7 @@ echo "core:redhat123" | chpasswd
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ls -1</strong>
 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746-commit.tar
 rhel9-httpd.ks
-$ <strong>sudo cp rhel9-httpd.ks /var/ww/html</strong></code></pre>
+$ <strong>sudo cp rhel9-httpd.ks /var/www/html</strong></code></pre>
 </div>
 </div>
 </li>
@@ -405,7 +421,7 @@ drwxr-xr-x. 7 root root unconfined_u:object_r:httpd_sys_content_t:s0 102 Sep  6 
 </div>
 </li>
 <li>
-<p>If you need, change file permissions and SELinux labels.</p>
+<p>If you need, fix file permissions and SELinux labels.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo chmod -R a+X /var/www/html</strong>
@@ -429,25 +445,42 @@ timezone Etc/UTC --utc
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, create a <em>test VM</em> which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
+<p>Create a <em>test VM</em> which boots from the RHEL installation ISO and fetches an edge commit image from a web server.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Download the standard <a href="https://access.redhat.com/downloads/content/rhel">RHEL installation ISO</a> from the customer portal, from <a href="https://developers.redhat.com/products/rhel/download#getredhatenterpriselinux7163">Red Hat Developers</a>, or download a copy in the classroom environment at [TBD]. Choose either the Network Install Image or the RHEL Server ISO for a smaller download. You do <strong>NOT</strong> need an Offline Install Image.</p>
+<p>Download a copy of the standard RHEL installation ISO from the <a href="http://content.example.com/rhde/isos/">classroom server</a>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>wget -q http://content.example.com/rhde/isos/rhel-9.5-x86_64-boot.iso</strong></code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>Ensure you have a complete and consistent RHEL installation ISO in the <code>/home/student/Downloads/rhel-9.4-x86_64-boot.iso</code> file before proceeding.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you are not using the classroom environment, download the standard <a href="https://access.redhat.com/downloads/content/rhel">RHEL installation ISO</a> from the customer portal or from <a href="https://developers.redhat.com/products/rhel/download#getredhatenterpriselinux7163">Red Hat Developers</a>. Choose either the Network Install Image or the RHEL Server ISO for a smaller download. You do <strong>NOT</strong> need an Offline Install Image.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
 <p>Create a local VM, with a serial console and direct kernel loading, which uses the kickstart file from the previous steps.</p>
 <div class="paragraph">
-<p>The following is a long command, it is broken into multiple lines for readability. [ REVIEW for RHEL 9.4 ]</p>
+<p>The following is a long command, it is broken into multiple lines for readability.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-test-1 --os-variant rhel9.2 \
---memory 4096 --vcpus 2 --disk size=20 --graphics=none \
---location /home/student/Downloads/rhel-9.4-x86_64-boot.iso \
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-test-1 --os-variant rhel9.5 \
+--memory 2048 --vcpus 2 --disk size=10 --graphics=none \
+--location /home/student/Downloads/rhel-9.5-x86_64-boot.iso \
 --extra-arg inst.ks=http://servera.lab.example.com/rhel9-httpd.ks \
 --extra-arg console=ttyS0 -v</strong></code></pre>
 </div>
@@ -469,11 +502,11 @@ You must use <code>--location</code> instead of <code>--cdrom</code> to be able 
 </div>
 </li>
 <li>
-<p>Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user <code>core</code> with password <code>redhat123</code>. [ review for  RHEL 9.4 ]</p>
+<p>Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user <code>core</code> with password <code>redhat123</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">Red Hat Enterprise Linux 9.2 (Plow)
-Kernel 5.14.0-284.11.1.el9_2.x86_64 on an x86_64
+<pre class="highlightjs highlight"><code class="language-none hljs">Red Hat Enterprise Linux 9.5 (Plow)
+Kernel 5.14.0-503.11.1.el9_5.x86_64 on an x86_64
 
 edge login: <strong>core</strong>
 Password:
@@ -492,11 +525,11 @@ Password:
 <p>Use the <code>rpm-ostree</code> command to see its deployed branch and commit.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>rpm-ostree status</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-09-06T22:07:45Z)
+                  Version: 9.5 (2024-09-06T22:07:45Z)
                    Commit: 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746</code></pre>
 </div>
 </div>
@@ -508,14 +541,14 @@ Deployments:
 <p>You can get similar information from the <code>ostree</code> command, using its default system repository.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>ostree refs</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree refs</strong>
 edge:rhel/9/x86_64/edge
 ostree/0/1/0
-[core@edge ~]$ <strong>ostree log rhel/9/x86_64/edge</strong>
+$ <strong>ostree log rhel/9/x86_64/edge</strong>
 commit 7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746
 ContentChecksum:  549eb067bbcfa59a90f1948e75702a34a857122a74d9936c062bc64349f24330
 Date:  2024-09-06 22:07:45 +0000
-Version: 9.2
+Version: 9.5
 (no subject)</code></pre>
 </div>
 </div>
@@ -524,7 +557,7 @@ Version: 9.2
 <p>Also, notice that the local OSTree repository connects to a remote repository on the web server machine.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>ostree remote list --show-urls</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree remote list --show-urls</strong>
 edge  http://servera.lab.example.com/repo/</code></pre>
 </div>
 </div>
@@ -533,9 +566,9 @@ edge  http://servera.lab.example.com/repo/</code></pre>
 <p>Check also the location of the local OSTree repository in <code>/sysroot</code></p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ ostree refs --repo=/sysroot/ostree/repo
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree refs --repo=/sysroot/ostree/repo</strong>
 ostree/0/1/0
-edge:rhel/9/x86_64/db</code></pre>
+edge:rhel/9/x86_64/edge</code></pre>
 </div>
 </div>
 </li>
@@ -543,10 +576,10 @@ edge:rhel/9/x86_64/db</code></pre>
 <p>Take the opportunity to familiarize yourself with the file system layout of an RPM-OSTree system and the multiple bind mounts on the root disk.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>df -h | grep vda</strong>
-/dev/vda3        35G  1.6G   34G   5% /sysroot
-/dev/vda1       960M  145M  816M  16% /boot
-[core@edge ~]$ <strong>mount | grep vda</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>df -h | grep vda</strong>
+/dev/vda3       8.0G  1.6G  6.4G  20% /sysroot
+/dev/vda1       960M  152M  809M  16% /boot
+$ <strong>mount | grep vda</strong>
 /dev/vda3 on /sysroot type xfs (ro,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
 /dev/vda3 on / type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
 /dev/vda3 on /etc type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
@@ -561,14 +594,14 @@ edge:rhel/9/x86_64/db</code></pre>
 </div>
 </li>
 <li>
-<p>On the <em>test VM</em>, verify that there is an Apache Web Server running.</p>
+<p>Verify that there is an Apache Web Server running.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Check that the <code>httpd</code> Systemd service is enabled and active</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>systemctl is-active httpd</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>systemctl is-active httpd</strong>
 active</code></pre>
 </div>
 </div>
@@ -577,7 +610,7 @@ active</code></pre>
 <p>Check that the Apache Web Server inside the VM returns the standard welcome page from RHEL.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge ~]$ <strong>curl 127.0.0.1</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>curl 127.0.0.1</strong>
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
 
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"&gt;
@@ -639,6 +672,18 @@ The <code>destroy</code> verb of the <code>virsh</code> command does not actuall
 </li>
 <li>
 <p>If the VM creation fails, which could be caused by an incorrect kickstart file, stop and delete the VM before retrying the previous step.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Do NOT run the following commands if all went well.
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virsh destroy edge-test-1</strong>

@@ -219,7 +219,7 @@
 <p>You need a <em>development machine</em> running RHEL, to which you have unrestricted sudo rights and also access to RHEL package repositories. That machine must have plenty of disk space to store multiple OSTree commits and also to use as scratch space for downloading RPM packages and bootable installation images.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on and newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code> and grant that same user access to the Image Builder service. If not, please adapt the instructions to your test environment.</p>
@@ -266,9 +266,8 @@ Complete!</code></pre>
 <p>Enable and activate the Image Builder service.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable osbuild-composer</strong>
-Created symlink /etc/systemd/system/multi-user.target.wants/osbuild-composer.service → /usr/lib/systemd/system/osbuild-composer.service.
-$ <strong>sudo systemctl start osbuild-composer</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable osbuild-composer.socket --now</strong>
+Created symlink /etc/systemd/system/sockets.target.wants/osbuild-composer.socket → /usr/lib/systemd/system/osbuild-composer.socket.</code></pre>
 </div>
 </div>
 </li>
@@ -276,9 +275,8 @@ $ <strong>sudo systemctl start osbuild-composer</strong></code></pre>
 <p>Enable and activate the Cockpit service, if not already enabled on your development machine.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable cockpit</strong>
-Created symlink /etc/systemd/system/multi-user.target.wants/cockpit.service → /usr/lib/systemd/system/cockpit.service.
-$ <strong>sudo systemctl start cockpit</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl enable cockpit.socket --now</strong>
+Created symlink /etc/systemd/system/sockets.target.wants/cockpit.socket → /usr/lib/systemd/system/cockpit.socket.</code></pre>
 </div>
 </div>
 </li>
@@ -419,7 +417,7 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
 <p>Copy the example configuration file for your distribution from the <code>/usr/share/osbuild-composer/</code> directory.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo cp /usr/share/osbuild-composer/repositories/rhel-92.json /etc/osbuild-composer/repositories/</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo cp /usr/share/osbuild-composer/repositories/rhel-9.5.json /etc/osbuild-composer/repositories/</strong></code></pre>
 </div>
 </div>
 </li>
@@ -434,24 +432,43 @@ ERROR: Types Error: you do not have permission to access /run/weldr/api.socket. 
   "x86_64": [
     {
       "name": "baseos",
-      "baseurl": "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS",
+      "baseurl": "http://content.example.com/rhel9.5/x86_64/dvd/BaseOS",
+...
+      "rhsm": false,
+      "check_gpg": true
 ...
     {
       "name": "appstream",
-      "baseurl": "http://content.example.com/rhel9.2/x86_64/dvd/AppStream",
+      "baseurl": "http://content.example.com/rhel9.5/x86_64/dvd/AppStream",
+...
+      "rhsm": false,
+      "check_gpg": true
 ...</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can download a <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-92.json">configuration file</a> with all changes done from the sample applications repository in GitHub.</p>
+<p>You can download a <a href="https://github.com/RedHatQuickCourses/rhde-build-samples/blob/main/repositories/rhel-9.5.json">configuration file</a> with all changes done from the sample applications repository in GitHub.</p>
 </div>
 </li>
 <li>
 <p>Restart the Image Builder service.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl restart osbuild-composer</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo systemctl stop osbuild-worker@1.service</strong>
+$ <strong>sudo systemctl restart osbuild-composer</strong></code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Restarting Image Builder this way  only works because there was no attempt at building any image, so there should be only one active <code>osbuild-worker@&lt;number&gt;</code> service. If there were more, it would be necessary to either stop all of them or reboot your <em>developer machine</em>.
+</td>
+</tr>
+</table>
 </div>
 </li>
 </ol>
@@ -475,7 +492,7 @@ check_repogpg = false
 rhsm = false
 system = true
 type = "yum-baseurl"
-url = "http://content.example.com/rhel9.2/x86_64/dvd/BaseOS"
+url = "http://content.example.com/rhel9.5/x86_64/dvd/BaseOS"
 $ <strong>composer-cli sources info appstream</strong>
 check_gpg = false
 check_repogpg = false
@@ -483,7 +500,7 @@ check_repogpg = false
 rhsm = false
 system = true
 type = "yum-baseurl"
-url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
+url = "http://content.example.com/rhel9.5/x86_64/dvd/ApStream"</code></pre>
 </div>
 </div>
 </li>
@@ -491,6 +508,9 @@ url = "http://content.example.com/rhel9.2/x86_64/dvd/ApStream"</code></pre>
 <p>You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
 <div class="paragraph">
 <p>Enter the <b class="button">Image Builder</b> item in Cockpit and click <b class="button">Sources</b>. Then, for both the <b class="button">BaseOS</b> and the <b class="button">AppStreams</b> channels, click <b class="button">&gt;</b> to expand the URL and verify it matches your configuration override.</p>
+</div>
+<div class="paragraph">
+<p>TODO update screen shot</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -520,11 +540,11 @@ Complete!</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rpm-ostree --version</strong>
 rpm-ostree:
- Version: '2022.19'
+ Version: '2024.7'
 ...
 $ <strong>ostree --version</strong>
 libostree:
- Version: '2023.1'
+ Version: '2024.7'
 ...</code></pre>
 </div>
 </div>

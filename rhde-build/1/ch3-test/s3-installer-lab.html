@@ -237,7 +237,7 @@ Pending SME Review &amp; Proofreading
 <p>Finally, you need the database image that you created and published in <a href="../ch2-publish/s2-ostree-lab.html" class="xref page">another lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. If not, please adapt the instructions to your test environment.</p>
@@ -267,7 +267,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              composer-cli status show
 ...</code></pre>
 </div>
 </div>
@@ -412,25 +412,6 @@ ostreesetup --osname=rhel --url=file:///run/install/repo/ostree/repo --ref=rhel/
 </div>
 </li>
 <li>
-<p>Find the label of the ISO image, you will need it for the next steps. Copy the argument of the <code>-l</code> option to a shell variable</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>grep search temp-iso/EFI/BOOT/grub.cfg</strong>
-search --no-floppy --set=root -l 'RHEL-9-2-0-BaseOS-x86_64'
-$ <strong>LABEL=RHEL-9-2-0-BaseOS-x86_64</strong></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Extract the ISO contents into another temporary directory</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkdir new-iso</strong>
-$ <strong>sudo tar cf - -C temp-iso . | tar xf - -C new-iso</strong></code></pre>
-</div>
-</div>
-</li>
-<li>
 <p>Unmount the ISO.</p>
 <div class="listingblock">
 <div class="content">
@@ -446,12 +427,24 @@ $ <strong>sudo tar cf - -C temp-iso . | tar xf - -C new-iso</strong></code></pre
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Verify that you have the <code>mkisofs</code> command. If you don&#8217;t, install the <code>xorriso</code> package. It&#8217;s fine if have a different version than shown below.</p>
+<p>Install the Lorax tools for manipulating Anaconda installation media.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkisofs --version</strong>
-xorriso 1.5.4 : RockRidge filesystem manipulator, libburnia project.
-...</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo dnf install lorax</strong>
+...
+Complete!</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Set a shell variable with the disk label of your installer image, by copy-and-paste from the output of the <code>iso-info</code> command.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>iso-info $UUID-installer.iso</strong>
+...
+Volume      : RHEL-9-5-0-BaseOS-x86_64
+Joliet Level: 3
+$ <strong>LABEL=RHEL-9-5-0-BaseOS-x86_64</strong></code></pre>
 </div>
 </div>
 </li>
@@ -487,53 +480,12 @@ echo "core:redhat123" | chpasswd
 </div>
 </li>
 <li>
-<p>Copy your custom kickstart file over the kickstart file on the edge installer image.</p>
+<p>Create a new ISO file including your custom kickstart file.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>cp rhel9-mysql-installer.ks new-iso/osbuild.ks</strong></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Build a new iso. If you notice that the following command specifies the <code>-no-emul-boot</code> option twice, this is <strong>not</strong> a mistake! You really need the two of them.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkisofs -o new-installer.iso -b isolinux/isolinux.bin -J -R -l -c isolinux/boot.cat \
--no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e images/efiboot.img -no-emul-boot \
--graft-points -joliet-long -V "$LABEL" new-iso</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>mkksiso --ks rhel9-mysql-installer.ks $UUID-installer.iso new-installer.iso</strong>
 ...
-Writing to 'stdio:new-installer.iso' completed successfully.</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Ensure that your bootable ISO is compatible with UEFI firmware and has a checksum for media checks. You will get a different MD5 checksum.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>isohybrid --uefi new-installer.iso</strong>
-isohybrid: Warning: more than 1024 cylinders: 2220
-isohybrid: Not all BIOSes will be able to boot this device
-$ <strong>implantisomd5 new-installer.iso</strong>
-Inserting md5sum into iso image...
-md5 = 0f4dbe4cf8235c24b29477d2acbbb943
-Inserting fragment md5sums into iso image...
-fragmd5 = 938f9cf2c2967feaa5944a8be971126197a684a278739579f68ff45f48c6
-frags = 20
-Setting supported flag to 0</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Mount the new ISO in a temporary directory and check that it contains the customized kickstart file, then unmount it.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo mount -o loop,ro new-installer.iso temp-iso</strong>
-$ <strong>cat temp-iso/osbuild.ks</strong>
-lang en_US.UTF-8
-keyboard us
-timezone Etc/UTC --isUtc
-...
-$ <strong>sudo umount temp-iso</strong></code></pre>
+Writing to '/home/student/new-installer.iso' completed successfully.</code></pre>
 </div>
 </div>
 </li>
@@ -564,7 +516,7 @@ You must do this from a graphics desktop.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=20 \
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.5 --memory 4096 --vcpus 2 --disk size=20 \
 --cdrom /home/student/new-installer.iso -v</strong></code></pre>
 </div>
 </div>
@@ -585,9 +537,9 @@ You can do this from a secure shell session.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.2 --memory 4096 --vcpus 2 --disk size=20 \
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>virt-install --name edge-db-1 --os-variant rhel9.5 --memory 4096 --vcpus 2 --disk size=20 \
 --location /home/student/new-installer.iso --graphics=none --extra-arg console=ttyS0 \
---extra-arg inst.ks=hd:LABEL=$LABEL:/osbuild.ks -v</strong></code></pre>
+--extra-arg inst.ks=hd:LABEL=$LABEL:/rhel9-mysql-installer.ks -v</strong></code></pre>
 </div>
 </div>
 </li>
@@ -598,11 +550,11 @@ You can do this from a secure shell session.
 </div>
 </li>
 <li>
-<p>Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user <code>core</code> with password <code>redhat123</code>. [ review for  RHEL 9.4 ]</p>
+<p>Wait until the installation finishes and you get a login prompt on the VM. It is expected that the VM reboots once during its installation. Log in as user <code>core</code> with password <code>redhat123</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">Red Hat Enterprise Linux 9.2 (Plow)
-Kernel 5.14.0-284.11.1.el9_2.x86_64 on an x86_64
+<pre class="highlightjs highlight"><code class="language-none hljs">Red Hat Enterprise Linux 9.5 (Plow)
+Kernel 5.14.0-503.11.1.el9_5.x86_64 on an x86_64
 
 edge-db login: <strong>core</strong>
 Password:
@@ -621,11 +573,11 @@ Password:
 <p>Use the <code>rpm-ostree</code> command to see its deployed branch and commit.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>rpm-ostree status</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>rpm-ostree status</strong>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/db
-                  Version: 9.2 (2024-09-06T22:07:45Z)
+                  Version: 9.5 (2024-09-06T22:07:45Z)
                    Commit: 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1</code></pre>
 </div>
 </div>
@@ -637,7 +589,7 @@ Deployments:
 <p>Verify that the local OSTree repository is <strong>not</strong> connected to a remote repository yet. You will need to configure a remote before you can update this edge VM.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>ostree remote list --show-urls</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>ostree remote list --show-urls</strong>
 db  file:///run/install/repo/ostree/repo</code></pre>
 </div>
 </div>
@@ -649,14 +601,14 @@ db  file:///run/install/repo/ostree/repo</code></pre>
 </div>
 </li>
 <li>
-<p>On your <em>database VM</em>, check that there is a MySQL database running.</p>
+<p>Check that there is a MySQL database running.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Verify that the <code>mysqld</code> Systemd service is enabled and active</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>systemctl is-active mysqld</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>systemctl is-active mysqld</strong>
 active</code></pre>
 </div>
 </div>
@@ -665,7 +617,7 @@ active</code></pre>
 <p>Verify that the MySQL database inside the VM containers only the standard system databases.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>sudo mysqlshow</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>sudo mysqlshow</strong>
 +--------------------+
 |     Databases      |
 +--------------------+

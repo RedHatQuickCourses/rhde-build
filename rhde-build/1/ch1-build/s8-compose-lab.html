@@ -222,7 +222,7 @@
 <p>You also need the blueprint that was created and uploaded to the Image Builder service by the <a href="#s5-blueprint-lab.adoc" class="xref unresolved">previous lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>. If not, please adapt the instructions to your test environment.</p>
@@ -249,7 +249,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -258,7 +258,7 @@ API server status:
 <p>Verify that your Image Builder service has a blueprint named <code>rhe9-edge</code> that includes the <code>httpd</code> package, from the <a href="s6-blueprint-lab.html" class="xref page">previous lab</a>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprint show rhel9-edge</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints show rhel9-edge</strong>
 ...
 [[packages]]
 name = "httpd"
@@ -280,6 +280,18 @@ name = "httpd"
 <pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-edge edge-commit</strong>
 Compose 01f3796b-85fd-4383-bbe8-eefc9550acdc added to the queue</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+You must use the <code>start-ostree</code> for all edge composes. The <code>start</code> command only starts package-based composes.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
@@ -363,7 +375,7 @@ ID                                     Status     Blueprint    Version   Type
 <p>Get information such as requested and dependency packages from the compose.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>compose-cli info $UUID | less</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose info $UUID | less</strong>
 575d8ddc-2902-4de3-a0d5-82f5f194f5d8 FINISHED rhel9-edge      0.1.0 edge-commit
 Packages:
     httpd-
@@ -371,7 +383,7 @@ Modules:
 Dependencies:
     ModemManager-1.20.2-1.el9.x86_64
     ModemManager-glib-1.20.2-1.el9.x86_64
-    NetworkManager-1:1.42.2-1.el9.x86_64
+    NetworkManager-1:1.48.10-2.el9_5.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -380,7 +392,7 @@ Dependencies:
 <p>Get the build logs of the compose. There are many errors at the start of the log which are expected and can be ignored.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>compose-cli log $UUID | less</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose log $UUID | less</strong>
 Pipeline build
 Stage org.osbuild.rpm
 Output:
@@ -391,7 +403,7 @@ imported gpg key
 imported gpg key
 Verifying packages...
 Preparing packages...
-libgcc-11.3.1-4.3.el9.x86_64
+libgcc-11.5.0-2.el9.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -441,7 +453,7 @@ $ <strong>tar xf $UUID-commit.tar -C delete-me</strong></code></pre>
 ostree commit: rhel/9/x86_64/edge (7ff678881e89e96c90eb083b905dce411740caf19c524481d7c1b848647b5746)
  ModemManager-1.20.2-1.el9.x86_64
  ModemManager-glib-1.20.2-1.el9.x86_64
- NetworkManager-1:1.42.2-1.el9.x86_64
+ NetworkManager-1:1.48.10-2.el9_5.x86_64
 ...</code></pre>
 </div>
 </div>

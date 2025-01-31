@@ -266,6 +266,17 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="_device_rollbacks_and_configuration_or_application_data"><a class="anchor" href="#_device_rollbacks_and_configuration_or_application_data"></a>Device Rollbacks and Configuration or Application Data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you rollback a system update, application data in <code>/var</code> is preserved, which might create issues in scenarios such as changes to database schemas required by a new application version: that data could be incompatible with the older version the system is rolling back to. It is the responsibility of the application to ensure data in <code>/var</code> is usable after both updates and rollbacks.</p>
+</div>
+<div class="paragraph">
+<p>Configuration data in <code>/etc</code> is effectively reverted to its old state after a rollback. That happens because each OSTree deployment contains its own <code>/etc</code> and files there are merged only at deployment time. The rollback operation just restarts the system to an existing deployment, it will NOT perform a new three-way merge, so any configuration change performed after an update will be lost because of a rollback.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_building_update_images_with_image_builder"><a class="anchor" href="#_building_update_images_with_image_builder"></a>Building Update Images with Image Builder</h2>
 <div class="sectionbody">
 <div class="paragraph">

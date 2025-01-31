@@ -225,13 +225,13 @@
 <p>Finally, you need the <em>database VM</em> that you created in <a href="../ch3-test/s3-installer-lab.html" class="xref page">another lab</a>.</p>
 </div>
 <div class="paragraph">
-<p>These instructions were tested on RHEL 9.4 [tentative!] but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
+<p>These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.</p>
 </div>
 <div class="paragraph">
 <p>If you are using the course classroom, you will log in on the <code>workstation</code> VM as the user <code>student</code> with password <code>student</code>, and you start SSH sessions to the <code>servera</code> VM from the same user. In this case, the <code>workstation</code> VM is your <em>development machine</em>, and the <code>servera</code> VM is your <em>web server machine</em>. If not, please adapt the instructions to your test environment.</p>
 </div>
 <div class="paragraph">
-<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step!</p>
+<p>You will perform some steps of this lab on your <em>development machine</em> and some steps on your <em>web server machine</em>. Pay attention to the instructions at each step, when they request that you switch to a different machine!</p>
 </div>
 </div>
 </div>
@@ -255,7 +255,7 @@ API server status:
     Schema version:     0
     API version:        1
     Backend:            osbuild-composer
-    Build:              NEVRA:osbuild-composer-76-2.el9_2.x86_64
+    Build:              NEVRA:osbuild-composer-118-1.el9.x86_64
 ...</code></pre>
 </div>
 </div>
@@ -291,14 +291,14 @@ API server status:
 </div>
 </li>
 <li>
-<p>On your <em>development machine</em>, make changes to the edge image blueprint to add the Nano text editor.</p>
+<p>Make changes to the edge image blueprint to add the Nano text editor.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Open the <code>rhel9-mysql.toml</code> file which you created in a <a href="../ch2-publish/s3-pull-local-lab.html" class="xref page">previous lab</a>, with any text editor.</p>
 </li>
 <li>
-<p>Increment the version number, at the beginning of the TOML file, and add a <code>packages</code> section that refers to packages from Nano.</p>
+<p>Increment the version number, at the beginning of the TOML file, and add a <code>packages</code> section that refers to packages from Nano text editor.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">name = "rhel9-mysql"
@@ -330,7 +330,7 @@ enabled = ["ssh", "mysql"]</code></pre>
 <p>Push the updated blueprint.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli push blueprints rhel9-mysql.toml</strong></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli blueprints push rhel9-mysql.toml</strong></code></pre>
 </div>
 </div>
 </li>
@@ -354,14 +354,14 @@ version = "0.2.0"
 </div>
 </li>
 <li>
-<p>Still on your <em>development machine</em>, build an edge commit image from your changed blueprint.</p>
+<p>Build an edge commit image from your changed blueprint.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Start a compose for an edge commit image and copy its UUID to a shell variable.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-db edge-commit --url http://servera.lab.example.com/repo --ref rhel/9/x86_64/db</strong>
+<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>composer-cli compose start-ostree rhel9-mysql edge-commit --url http://servera.lab.example.com/repo --ref rhel/9/x86_64/db</strong>
 Compose e0722e00-9cd1-4d7f-96fc-83776eac85fc added to the queue
 $ <strong>UUID=e0722e00-9cd1-4d7f-96fc-83776eac85fc</strong></code></pre>
 </div>
@@ -438,7 +438,7 @@ commit 7485f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3
 Parent:  12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
 ContentChecksum:  4b48cd779032b8b360f7b7bcb79e5148fd47a110ebc0946007fd5b4045ba0da5
 Date:  2024-10-21 23:02:11 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 &lt;&lt; History beyond this commit not fetched &gt;&gt;
@@ -446,7 +446,7 @@ $ <strong>ostree log rhel/9/x86_64/db --repo=/var/www/html/repo</strong>
 commit 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
 ContentChecksum:  6a4989dab6c787b5c4acc161569154cefe6928829af914bc092d65e3234489cb
 Date:  2024-10-18 15:36:53 +0000
-Version: 9.2
+Version: 9.5
 (no subject)(no subject)</code></pre>
 </div>
 </div>
@@ -471,13 +471,13 @@ commit 7485f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3
 Parent:  12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
 ContentChecksum:  4b48cd779032b8b360f7b7bcb79e5148fd47a110ebc0946007fd5b4045ba0da5
 Date:  2024-10-21 23:02:11 +0000
-Version: 9.2
+Version: 9.5
 (no subject)
 
 commit 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
 ContentChecksum:  6a4989dab6c787b5c4acc161569154cefe6928829af914bc092d65e3234489cb
 Date:  2024-10-18 15:36:53 +0000
-Version: 9.2
+Version: 9.5
 (no subject)</code></pre>
 </div>
 </div>
@@ -486,27 +486,9 @@ Version: 9.2
 </div>
 </li>
 <li>
-<p>Still, on your <em>web server machine</em>, create a static delta on the remote OSTree repository.</p>
+<p>Create a static delta on the remote OSTree repository.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
-<li>
-<p>If you&#8217;re using the HOL007 classroom, its <code>servera</code> VM has too little memory (less than 1GiB) and will fail to build static deltas. Work around that by creating and activating a swap file.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">$ <strong>free -h</strong>
-               total        used        free      shared  buff/cache   available
-Mem:           771Mi       408Mi        77Mi       4.0Mi       422Mi       363Mi
-Swap:             0B          0B          0B
-$ <strong>sudo dd if=/dev/zero of=/swap bs=1M count=1024  ^C</strong>
-$ <strong>sudo mkswap /swap</strong>
-$ <strong>sudo swapon /swap</strong>
-$ <strong>free -h</strong>
-               total        used        free      shared  buff/cache   available
-Mem:           771Mi       407Mi        77Mi       4.0Mi       422Mi       363Mi
-Swap:          1.0Gi          0B       1.0Gi</code></pre>
-</div>
-</div>
-</li>
 <li>
 <p>Check that there are no static deltas in the remote OSTree repository.</p>
 <div class="listingblock">
@@ -587,7 +569,7 @@ edge-db login:</code></pre>
 State: idle
 Deployments:
 ● edge:rhel/9/x86_64/edge
-                  Version: 9.2 (2024-10-09T20:25:03Z)
+                  Version: 9.5 (2024-10-09T20:25:03Z)
                    Commit: 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1</code></pre>
 </div>
 </div>
@@ -597,7 +579,7 @@ Deployments:
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">[core@edge-db ~]$ <strong>rpm -q mysql</strong>
-mysql-8.0.30-3.el9_0.x86_64
+mysql-8.0.36-1.el9_3.x86_64
 [core@edge-db ~]$ <strong>rpm -q nano</strong>
 package nano is not installed</code></pre>
 </div>
@@ -631,7 +613,7 @@ db  http://servera.lab.example.com/repo</code></pre>
 2 metadata, 0 content objects fetched; 18 KiB transferred in 0 seconds; 0 bytes content written
 Note: --check and --preview may be unreliable.  See https://github.com/coreos/rpm-ostree/issues/1579
 AvailableUpdate:
-        Version: 9.2 (2024-10-21T23:02:11Z)
+        Version: 9.5 (2024-10-21T23:02:11Z)
          Commit: 7485f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3
            Diff: 1 added</code></pre>
 </div>
@@ -645,7 +627,7 @@ AvailableUpdate:
 ...
 Staging deployment... done
 Added:
-  nano-5.6.1-5.el9.x86_64
+  nano-5.6.1-6.el9.x86_64
 Run "systemctl reboot" to start a reboot
 $ <strong>sudo systemctl reboot</strong>
 ...
@@ -655,14 +637,14 @@ edge-db login:
 State: idle
 Deployments:
 ● db:rhel/9/x86_64/db
-                  Version: 9.2 (2024-10-21T23:02:11Z)
+                  Version: 9.5 (2024-10-21T23:02:11Z)
                    Commit: 7485f70a7dbf8379b53c11548af162032260689e517eccded498d112c59460a3
 
   db:rhel/9/x86_64/db
-                  Version: 9.2 (2024-10-18T15:36:53Z)
+                  Version: 9.5 (2024-10-18T15:36:53Z)
                    Commit: 12a22681baff58184e22ebc3e189453ed18f0984727c81311781021ccab899a1
 [core@edge-db ~]$ <strong>rpm -q nano</strong>
-nano-5.6.1-5.el9.x86_64</code></pre>
+nano-5.6.1-6.el9.x86_64</code></pre>
 </div>
 </div>
 </li>
@@ -670,7 +652,7 @@ nano-5.6.1-5.el9.x86_64</code></pre>
 </div>
 </li>
 <li>
-<p>Still, on your <em>development machine</em>, verify that your <em>database VM</em> actually fetched upgrades using static deltas.</p>
+<p>Verify that your <em>database VM</em> actually fetched upgrades using static deltas.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
