@@ -13,7 +13,7 @@ Create and validate Image Builder composes for building edge images.
 
 You need a _development machine_ with RHEL and configured with the Image Builder service, its CLI and web UI, and a user that is a member of the `weldr` group. Make sure your _development machine_ is configured and verified by following the instructions from the xref:s4-install-lab.adoc[first lab].
 
-You also need the blueprint that was created and uploaded to the Image Builder service by the xref:s5-blueprint-lab.adoc[previous lab].
+You also need the blueprint that was created and uploaded to the Image Builder service by the xref:s6-blueprint-lab.adoc[previous lab].
 
 These instructions were tested on RHEL 9.5 but should work with minimal or no change on newer and older RHEL 9.x releases.
 
