@@ -486,7 +486,7 @@ Restarting Image Builder this way  only works because there was no attempt at bu
 appstream
 baseos
 $ <strong>composer-cli sources info baseos</strong>
-check_gpg = false
+check_gpg = true
 check_repogpg = false
 ...
 rhsm = false
@@ -494,7 +494,7 @@ system = true
 type = "yum-baseurl"
 url = "http://content.example.com/rhel9.5/x86_64/dvd/BaseOS"
 $ <strong>composer-cli sources info appstream</strong>
-check_gpg = false
+check_gpg = true
 check_repogpg = false
 ...
 rhsm = false
@@ -508,9 +508,6 @@ url = "http://content.example.com/rhel9.5/x86_64/dvd/ApStream"</code></pre>
 <p>You cannot configure repository overrides for RHEL packages using the Image Builder web UI but you can verify that the changes are in effect.</p>
 <div class="paragraph">
 <p>Enter the <b class="button">Image Builder</b> item in Cockpit and click <b class="button">Sources</b>. Then, for both the <b class="button">BaseOS</b> and the <b class="button">AppStreams</b> channels, click <b class="button">&gt;</b> to expand the URL and verify it matches your configuration override.</p>
-</div>
-<div class="paragraph">
-<p>TODO update screen shot</p>
 </div>
 <div class="imageblock">
 <div class="content">
