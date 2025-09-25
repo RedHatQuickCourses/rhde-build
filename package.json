@@ -9,5 +9,9 @@
     "build": "antora antora-playbook.yml",
     "watch:adoc": "watch 'npx antora antora-playbook.yml --fetch' ./modules",
     "serve": "npx http-server build/site -c-1"
+  },
+  "dependencies": {
+    "@antora/epub-extension": "^1.0.0-beta.5",
+    "@antora/pdf-extension": "^1.0.0-beta.5"
   }
 }
